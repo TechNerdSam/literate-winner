@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyseur de Bio-Résonance Temporelle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .aura-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        .video-feed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Effet miroir */
+        }
+        .card-glow {
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.3), 0 0 5px rgba(56, 189, 248, 0.2);
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #4f46e5;
+            border-radius: 10px;
+            border: 2px solid #1e293b;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300 antialiased">
+
+    <!-- Header -->
+    <header class="py-4 px-6 md:px-12 border-b border-slate-800 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold gradient-text">Bio-Résonance TX-1</h1>
+            <nav class="hidden md:flex space-x-6 text-sm">
+                <a href="#analyzer" class="hover:text-sky-400 transition-colors">Analyseur</a>
+                <a href="#how-it-works" class="hover:text-sky-400 transition-colors">Principe</a>
+                <a href="#disclaimer" class="hover:text-sky-400 transition-colors">Avertissement</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-6 md:p-12">
+
+        <!-- Hero Section -->
+        <section id="hero" class="text-center my-12 md:my-20">
+            <h2 class="text-4xl md:text-6xl font-extrabold text-slate-100 mb-4">Visualisez Votre Signature Énergétique</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-400 mb-8">
+                Une exploration technologique des micro-variations lumineuses capturées par votre webcam.
+                Cette application utilise des algorithmes de vision par ordinateur pour interpréter en temps réel les données de votre flux vidéo.
+            </p>
+            <a href="#analyzer" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow inline-block">
+                Démarrer l'analyse
+            </a>
+        </section>
+
+        <!-- Analyzer Section -->
+        <section id="analyzer" class="mb-24">
+            <div class="bg-slate-800/50 rounded-2xl p-6 md:p-8 card-glow backdrop-blur-lg">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    
+                    <!-- Video Feed Column -->
+                    <div class="lg:col-span-3">
+                        <div id="video-container" class="relative aspect-video bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center">
+                            <video id="video" class="video-feed" playsinline autoplay muted></video>
+                            <canvas id="canvas" class="aura-canvas"></canvas>
+                            <div id="loading-spinner" class="absolute z-10 text-white">
+                                <svg class="animate-spin h-10 w-10 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                            <div id="start-message" class="absolute z-20 text-center p-4">
+                                <p class="text-slate-300 mb-4">Cliquez pour activer la caméra et commencer l'analyse.</p>
+                                <button id="startButton" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow">Activer la caméra</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Column -->
+                    <div class="lg:col-span-2 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-100 mb-4">Analyse en Temps Réel</h3>
+                            <div id="results" class="space-y-4 hidden">
+                                <div class="bg-slate-900/70 p-4 rounded-lg">
+                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Couleur Dominante</h4>
+                                    <div class="flex items-start space-x-4">
+                                        <div id="dominant-color-preview" class="w-12 h-12 rounded-full border-2 border-slate-700 flex-shrink-0"></div>
+                                        <div>
+                                            <p id="dominant-color-name" class="text-xl font-bold text-white">En attente...</p>
+                                            <p id="dominant-color-wavelength" class="text-xs text-sky-400 font-mono">~ ... nm</p>
+                                            <div id="dominant-color-keywords" class="mt-2 flex flex-wrap gap-x-2 gap-y-1">
+                                                <!-- Les mots-clés seront injectés ici -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900/70 p-4 rounded-lg">
+                                    <h4 class="text-sm font-semibold text-slate-400 mb-3">Spectre de Fréquence</h4>
+                                    <div class="space-y-3">
+                                        <!-- Red -->
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-16 text-xs font-medium text-red-400">ROUGE</span>
+                                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                                <div id="red-bar" class="bg-red-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                        <!-- Green -->
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-16 text-xs font-medium text-green-400">VERT</span>
+                                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                                <div id="green-bar" class="bg-green-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                        <!-- Blue -->
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-16 text-xs font-medium text-blue-400">BLEU</span>
+                                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                                <div id="blue-bar" class="bg-blue-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900/70 p-4 rounded-lg">
+                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Interprétation Basée sur les Données</h4>
+                                    <p id="interpretation-text" class="text-slate-300 text-sm h-24 overflow-y-auto">L'analyse débutera lorsque la caméra sera active. Le système interprète les variations de chrominance et de luminance comme des indicateurs potentiels de l'état physiologique.</p>
+                                </div>
+                            </div>
+                            <div id="results-placeholder" class="text-center text-slate-500 pt-16">
+                                <p>Les résultats de l'analyse s'afficheront ici.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="mb-24 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-4">Principe de Fonctionnement</h2>
+            <p class="max-w-3xl mx-auto text-slate-400 mb-12">
+                Cette application n'utilise aucune méthode surnaturelle. Son fonctionnement repose sur des principes de vision par ordinateur et d'analyse de données.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="font-bold text-sky-400 mb-2">1. Capture Vidéo</h3>
+                    <p class="text-sm">L'application accède au flux vidéo de votre webcam en temps réel, image par image, via votre navigateur.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="font-bold text-sky-400 mb-2">2. Analyse Algorithmique</h3>
+                    <p class="text-sm">Un algorithme analyse la périphérie de la silhouette pour détecter les distributions de couleur et les micro-variations de lumière qui sont invisibles à l'œil nu.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="font-bold text-sky-400 mb-2">3. Visualisation des Données</h3>
+                    <p class="text-sm">Les données de couleur sont moyennées et traduites en un halo visuel et des graphiques. L'interprétation est une corrélation statistique et non un diagnostic.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Disclaimer Section -->
+        <section id="disclaimer" class="bg-amber-900/20 border border-amber-600/50 rounded-lg p-6 md:p-8 text-center">
+             <h2 class="text-2xl font-bold text-amber-300 mb-4">Avertissement Important</h2>
+            <p class="max-w-4xl mx-auto text-amber-300/80">
+                Cet outil est un projet technologique expérimental et ne doit pas être utilisé à des fins de diagnostic médical, psychologique ou spirituel. Les résultats sont des interprétations algorithmiques de données visuelles et n'ont aucune valeur de vérité absolue.
+                <br><br>
+                Ce projet a été développé dans le respect de toutes les convictions. Il ne promeut aucune croyance, idéologie ou pratique contraire aux principes fondamentaux des diverses confessions, y compris l'Islam. Il se distance explicitement de toute forme de divination, de voyance ou de pratiques associées au surnaturel, qui sont des concepts étrangers à sa nature purement technique.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 border-t border-slate-800 mt-16">
+        <p class="text-sm text-slate-500">&copy; 2024 Bio-Résonance Project. Conçu pour l'exploration technologique.</p>
+    </footer>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const startButton = document.getElementById('startButton');
+        const startMessage = document.getElementById('start-message');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const resultsContainer = document.getElementById('results');
+        const resultsPlaceholder = document.getElementById('results-placeholder');
+        const videoContainer = document.getElementById('video-container');
+
+        const dominantColorPreview = document.getElementById('dominant-color-preview');
+        const dominantColorName = document.getElementById('dominant-color-name');
+        const dominantColorWavelength = document.getElementById('dominant-color-wavelength');
+        const dominantColorKeywords = document.getElementById('dominant-color-keywords');
+        const redBar = document.getElementById('red-bar');
+        const greenBar = document.getElementById('green-bar');
+        const blueBar = document.getElementById('blue-bar');
+        const interpretationText = document.getElementById('interpretation-text');
+
+        const COLOR_DATA = {
+            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Énergie', 'Activité'] },
+            'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Interaction', 'Émotion'] },
+            'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Concentration', 'Clarté'] },
+            'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Harmonie', 'Calme'] },
+            'Bleu': { wavelength: '435-520', keywords: ['Relaxation', 'Communication', 'Sérénité'] },
+            'Indigo': { wavelength: '400-435', keywords: ['Introspection', 'Intuition', 'Perception'] },
+            'Violet': { wavelength: '380-400', keywords: ['Conscience', 'Haute Fréquence', 'Transformation'] },
+            'Blanc': { wavelength: 'Spectre large', keywords: ['Totalité', 'Équilibre', 'Pureté'] }
+        };
+
+        const INTERPRETATIONS = {
+            'Rouge': "Les tons rouges peuvent être associés à une forte vitalité ou à une activité métabolique élevée. En analyse de signal, cela peut correspondre à une augmentation du flux sanguin périphérique.",
+            'Orange': "La fréquence orange est souvent liée à des états de créativité ou d'interaction sociale. Algorithmiquement, c'est un mélange de fréquences rouges et jaunes.",
+            'Jaune': "Le jaune est souvent corrélé à une activité intellectuelle et à la concentration. Il représente des fréquences lumineuses de haute énergie dans le spectre visible.",
+            'Vert': "Le spectre vert est fréquemment associé à l'équilibre et au calme. Physiologiquement, il pourrait indiquer un état de repos du système nerveux autonome.",
+            'Bleu': "Les teintes bleues sont souvent interprétées comme des indicateurs de tranquillité et de relaxation. Elles peuvent être liées à une respiration plus lente et une fréquence cardiaque réduite.",
+            'Indigo': "L'indigo peut suggérer une activité cérébrale introspective. Il représente des fréquences plus profondes du spectre bleu, proches de l'ultraviolet.",
+            'Violet': "Le violet est la fréquence la plus élevée du spectre visible. En analyse de données, des pics dans cette plage pourraient être liés à des états de conscience élargie ou de méditation profonde.",
+            'Blanc': "Une distribution équilibrée de toutes les fréquences de couleur. Peut indiquer un état d'harmonie énergétique ou une forte réflectivité de la lumière ambiante.",
+        };
+
+        let animationFrameId;
+
+        async function setupCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    },
+                    audio: false 
+                });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                    startMessage.classList.add('hidden');
+                    loadingSpinner.classList.add('hidden');
+                    resultsContainer.classList.remove('hidden');
+                    resultsPlaceholder.classList.add('hidden');
+
+                    // Set canvas dimensions based on video container
+                    const containerWidth = videoContainer.clientWidth;
+                    const containerHeight = videoContainer.clientHeight;
+                    canvas.width = containerWidth;
+                    canvas.height = containerHeight;
+                    
+                    animationFrameId = requestAnimationFrame(tick);
+                };
+            } catch (err) {
+                console.error("Erreur d'accès à la caméra:", err);
+                startMessage.innerHTML = `<p class="text-red-400">Impossible d'accéder à la caméra. Veuillez vérifier les autorisations de votre navigateur.</p>`;
+                loadingSpinner.classList.add('hidden');
+                startMessage.classList.remove('hidden');
+            }
+        }
+
+        function getColorName(r, g, b) {
+            const hsv = rgbToHsv(r, g, b);
+            const h = hsv[0] * 360;
+            const s = hsv[1];
+            const v = hsv[2];
+
+            if (s < 0.2 || v < 0.2) return 'Blanc';
+            if (h >= 330 || h < 15) return 'Rouge';
+            if (h >= 15 && h < 45) return 'Orange';
+            if (h >= 45 && h < 75) return 'Jaune';
+            if (h >= 75 && h < 165) return 'Vert';
+            if (h >= 165 && h < 255) return 'Bleu';
+            if (h >= 255 && h < 285) return 'Indigo';
+            if (h >= 285 && h < 330) return 'Violet';
+            return 'Inconnu';
+        }
+
+        // Conversion RGB vers HSV pour une meilleure détection de couleur
+        function rgbToHsv(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+            let d = max - min;
+            s = max == 0 ? 0 : d / max;
+            if (max == min) {
+                h = 0;
+            } else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h, s, v];
+        }
+
+        function tick() {
+            const { width, height } = canvas;
+            ctx.save();
+            ctx.clearRect(0, 0, width, height);
+
+            // Effet miroir sur le canvas pour correspondre à la vidéo
+            ctx.translate(width, 0);
+            ctx.scale(-1, 1);
+            
+            // Dessiner la vidéo sur le canvas
+            ctx.drawImage(video, 0, 0, width, height);
+            
+            ctx.restore(); // Restaurer le contexte pour les opérations suivantes
+
+            // Obtenir les données de pixels
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            let r = 0, g = 0, b = 0, count = 0;
+            const blurRadius = Math.min(width, height) * 0.25; // Rayon du halo
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Analyser les pixels dans un cercle central
+            for (let y = 0; y < height; y += 4) {
+                for (let x = 0; x < width; x += 4) {
+                    const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+                    // On ne prend que les pixels dans un "donut" autour du centre
+                    if (dist > blurRadius * 0.5 && dist < blurRadius) {
+                        const index = (y * width + x) * 4;
+                        r += data[index];
+                        g += data[index + 1];
+                        b += data[index + 2];
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 0) {
+                const avgR = Math.floor(r / count);
+                const avgG = Math.floor(g / count);
+                const avgB = Math.floor(b / count);
+
+                // Dessiner le halo
+                const gradient = ctx.createRadialGradient(centerX, centerY, blurRadius * 0.6, centerX, centerY, blurRadius * 1.2);
+                gradient.addColorStop(0, `rgba(${avgR}, ${avgG}, ${avgB}, 0.5)`);
+                gradient.addColorStop(1, `rgba(${avgR}, ${avgG}, ${avgB}, 0)`);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+
+                // Mettre à jour l'UI
+                updateUI(avgR, avgG, avgB);
+            }
+
+            animationFrameId = requestAnimationFrame(tick);
+        }
+
+        function updateUI(r, g, b) {
+            const color = `rgb(${r}, ${g}, ${b})`;
+            const colorName = getColorName(r, g, b);
+            const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] };
+
+            dominantColorPreview.style.backgroundColor = color;
+            dominantColorName.textContent = colorName;
+            dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`;
+
+            // Mettre à jour les mots-clés
+            dominantColorKeywords.innerHTML = ''; // Effacer les anciens
+            colorData.keywords.forEach(keyword => {
+                const keywordElement = document.createElement('span');
+                keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full';
+                keywordElement.textContent = keyword;
+                dominantColorKeywords.appendChild(keywordElement);
+            });
+
+            const total = r + g + b;
+            redBar.style.width = (total === 0 ? 0 : (r / total) * 100) + '%';
+            greenBar.style.width = (total === 0 ? 0 : (g / total) * 100) + '%';
+            blueBar.style.width = (total === 0 ? 0 : (b / total) * 100) + '%';
+
+            interpretationText.textContent = INTERPRETATIONS[colorName] || "Analyse des données en cours...";
+        }
+
+        startButton.addEventListener('click', () => {
+            startMessage.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            setupCamera();
+        });
+
+        // Gérer le redimensionnement
+        window.addEventListener('resize', () => {
+            if (video.srcObject) {
+                 const containerWidth = videoContainer.clientWidth;
+                 const containerHeight = videoContainer.clientHeight;
+                 canvas.width = containerWidth;
+                 canvas.height = containerHeight;
+            }
+        });
+    </script>
+</body>
+</html>
+
