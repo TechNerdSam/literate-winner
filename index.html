@@ -6,7 +6,7 @@
     <title>Analyseur de Bio-Résonance Temporelle</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -52,6 +52,21 @@
             background-color: #4f46e5;
             border-radius: 10px;
             border: 2px solid #1e293b;
+        }
+        .recording-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
         }
     </style>
 </head>
@@ -152,7 +167,15 @@
                                     </div>
                                 </div>
                                 <div class="bg-slate-900/70 p-4 rounded-lg">
-                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Interprétation Basée sur les Données</h4>
+                                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Enregistrement de Session</h4>
+                                     <div class="flex items-center justify-between gap-4 mt-2">
+                                         <button id="recordButton" class="bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-sky-500 transition-all duration-300 btn-glow w-full disabled:bg-slate-600 disabled:cursor-not-allowed" disabled>Démarrer</button>
+                                         <p id="recordTimer" class="font-mono text-lg text-slate-300">00:00</p>
+                                     </div>
+                                     <p id="recordStatus" class="text-xs text-slate-500 mt-2 text-center">Activez la caméra pour pouvoir enregistrer.</p>
+                                </div>
+                                <div class="bg-slate-900/70 p-4 rounded-lg">
+                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Interprétation Symbolique</h4>
                                     <p id="interpretation-text" class="text-slate-300 text-sm h-24 overflow-y-auto">L'analyse débutera lorsque la caméra sera active. Le système interprète les variations de chrominance et de luminance comme des indicateurs potentiels de l'état physiologique.</p>
                                 </div>
                             </div>
@@ -191,13 +214,42 @@
         <section id="disclaimer" class="bg-amber-900/20 border border-amber-600/50 rounded-lg p-6 md:p-8 text-center">
              <h2 class="text-2xl font-bold text-amber-300 mb-4">Avertissement Important</h2>
             <p class="max-w-4xl mx-auto text-amber-300/80">
-                Cet outil est un projet technologique expérimental et ne doit pas être utilisé à des fins de diagnostic médical, psychologique ou spirituel. Les résultats sont des interprétations algorithmiques de données visuelles et n'ont aucune valeur de vérité absolue.
+                Cet outil est un projet technologique expérimental et ne doit pas être utilisé à des fins de diagnostic médical, psychologique ou spirituel. Les résultats sont des interprétations algorithmiques de données visuelles.
+                Les interprétations symboliques des couleurs sont basées sur des concepts issus de la psychologie des couleurs et de diverses approches holistiques. Elles sont fournies à titre informatif et exploratoire uniquement.
                 <br><br>
                 Ce projet a été développé dans le respect de toutes les convictions. Il ne promeut aucune croyance, idéologie ou pratique contraire aux principes fondamentaux des diverses confessions, y compris l'Islam. Il se distance explicitement de toute forme de divination, de voyance ou de pratiques associées au surnaturel, qui sont des concepts étrangers à sa nature purement technique.
             </p>
         </section>
 
     </main>
+    
+    <!-- Report Modal -->
+    <div id="report-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <header class="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+                <h2 class="text-xl font-bold text-slate-100">Rapport de Session d'Analyse</h2>
+                <button id="close-modal-button" class="text-slate-400 hover:text-white">&times;</button>
+            </header>
+            <div class="p-6 overflow-y-auto space-y-6">
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle</h3>
+                    <div id="timeline-container" class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden">
+                        <!-- Timeline will be generated here -->
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-2">Analyse de la Session</h3>
+                    <div id="report-analysis" class="text-sm space-y-3 text-slate-300">
+                        <!-- Analysis text will be generated here -->
+                    </div>
+                </div>
+            </div>
+             <footer class="p-4 border-t border-slate-700 text-center flex-shrink-0">
+                <button id="close-modal-button-2" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-full hover:bg-indigo-500 transition-all duration-300">Fermer</button>
+            </footer>
+        </div>
+    </div>
+
 
     <!-- Footer -->
     <footer class="text-center py-8 border-t border-slate-800 mt-16">
@@ -224,29 +276,47 @@
         const blueBar = document.getElementById('blue-bar');
         const interpretationText = document.getElementById('interpretation-text');
 
+        // Recording elements
+        const recordButton = document.getElementById('recordButton');
+        const recordTimer = document.getElementById('recordTimer');
+        const recordStatus = document.getElementById('recordStatus');
+
+        // Modal elements
+        const reportModal = document.getElementById('report-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const closeModalButton2 = document.getElementById('close-modal-button-2');
+        const timelineContainer = document.getElementById('timeline-container');
+        const reportAnalysis = document.getElementById('report-analysis');
+
         const COLOR_DATA = {
-            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Énergie', 'Activité'] },
-            'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Interaction', 'Émotion'] },
-            'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Concentration', 'Clarté'] },
-            'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Harmonie', 'Calme'] },
-            'Bleu': { wavelength: '435-520', keywords: ['Relaxation', 'Communication', 'Sérénité'] },
-            'Indigo': { wavelength: '400-435', keywords: ['Introspection', 'Intuition', 'Perception'] },
-            'Violet': { wavelength: '380-400', keywords: ['Conscience', 'Haute Fréquence', 'Transformation'] },
-            'Blanc': { wavelength: 'Spectre large', keywords: ['Totalité', 'Équilibre', 'Pureté'] }
+            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Force', 'Action'] },
+            'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Joie', 'Sociabilité'] },
+            'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Confiance', 'Optimisme'] },
+            'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Guérison', 'Nature'] },
+            'Bleu': { wavelength: '435-520', keywords: ['Calme', 'Communication', 'Vérité'] },
+            'Indigo': { wavelength: '400-435', keywords: ['Intuition', 'Sagesse', 'Perception'] },
+            'Violet': { wavelength: '380-400', keywords: ['Spiritualité', 'Conscience', 'Imagination'] },
+            'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Protection', 'Clarté'] }
         };
 
         const INTERPRETATIONS = {
-            'Rouge': "Les tons rouges peuvent être associés à une forte vitalité ou à une activité métabolique élevée. En analyse de signal, cela peut correspondre à une augmentation du flux sanguin périphérique.",
-            'Orange': "La fréquence orange est souvent liée à des états de créativité ou d'interaction sociale. Algorithmiquement, c'est un mélange de fréquences rouges et jaunes.",
-            'Jaune': "Le jaune est souvent corrélé à une activité intellectuelle et à la concentration. Il représente des fréquences lumineuses de haute énergie dans le spectre visible.",
-            'Vert': "Le spectre vert est fréquemment associé à l'équilibre et au calme. Physiologiquement, il pourrait indiquer un état de repos du système nerveux autonome.",
-            'Bleu': "Les teintes bleues sont souvent interprétées comme des indicateurs de tranquillité et de relaxation. Elles peuvent être liées à une respiration plus lente et une fréquence cardiaque réduite.",
-            'Indigo': "L'indigo peut suggérer une activité cérébrale introspective. Il représente des fréquences plus profondes du spectre bleu, proches de l'ultraviolet.",
-            'Violet': "Le violet est la fréquence la plus élevée du spectre visible. En analyse de données, des pics dans cette plage pourraient être liés à des états de conscience élargie ou de méditation profonde.",
-            'Blanc': "Une distribution équilibrée de toutes les fréquences de couleur. Peut indiquer un état d'harmonie énergétique ou une forte réflectivité de la lumière ambiante.",
+            'Rouge': "Associée à la force vitale, à l'énergie physique et à la volonté. Une prédominance de cette fréquence peut symboliser une période d'action, de courage et de connexion avec le monde matériel.",
+            'Orange': "Cette couleur est souvent liée à la créativité, aux émotions et aux relations. Sa présence peut indiquer une ouverture aux autres, un enthousiasme et une expression de la joie de vivre.",
+            'Jaune': "Symbolise l'intellect, la clarté mentale et le pouvoir personnel. Une forte présence de jaune peut suggérer une période de grande activité mentale, d'apprentissage et de confiance en soi.",
+            'Vert': "Représente l'équilibre, l'harmonie et la croissance. Cette fréquence est souvent associée au calme, à la compassion et à la capacité de guérison ou de régénération.",
+            'Bleu': "Liée à la communication, à la paix et à l'expression de la vérité. Une aura à dominante bleue peut indiquer un état de relaxation, de sérénité et une communication fluide.",
+            'Indigo': "Associée à l'intuition, à la perception et à la sagesse intérieure. Cette couleur profonde suggère une connexion avec une compréhension plus profonde des choses et une forte introspection.",
+            'Violet': "Symbolise la conscience élevée, l'imagination et la connexion à des concepts universels. Sa présence est souvent interprétée comme un signe de transformation et de sensibilité spirituelle.",
+            'Blanc': "Considérée comme une couleur de protection et de pureté, contenant toutes les autres couleurs. Elle peut indiquer une grande clarté, un équilibre énergétique ou une phase de nouveau départ.",
         };
 
         let animationFrameId;
+        // Recording state
+        let isRecording = false;
+        let recordingStartTime = null;
+        let recordIntervalId = null;
+        let recordedData = [];
+        const MAX_RECORD_TIME = 45 * 60; // 45 minutes in seconds
 
         async function setupCamera() {
             try {
@@ -265,6 +335,9 @@
                     loadingSpinner.classList.add('hidden');
                     resultsContainer.classList.remove('hidden');
                     resultsPlaceholder.classList.add('hidden');
+                    recordButton.disabled = false;
+                    recordStatus.textContent = "Prêt pour l'enregistrement.";
+
 
                     // Set canvas dimensions based on video container
                     const containerWidth = videoContainer.clientWidth;
@@ -362,6 +435,14 @@
                 const avgG = Math.floor(g / count);
                 const avgB = Math.floor(b / count);
 
+                if(isRecording) {
+                    // Store every second
+                    const now = Date.now();
+                    if (!recordedData.length || now - recordedData[recordedData.length - 1].t > 1000) {
+                        recordedData.push({ t: now, r: avgR, g: avgG, b: avgB });
+                    }
+                }
+
                 // Dessiner le halo
                 const gradient = ctx.createRadialGradient(centerX, centerY, blurRadius * 0.6, centerX, centerY, blurRadius * 1.2);
                 gradient.addColorStop(0, `rgba(${avgR}, ${avgG}, ${avgB}, 0.5)`);
@@ -379,13 +460,34 @@
         function updateUI(r, g, b) {
             const color = `rgb(${r}, ${g}, ${b})`;
             const colorName = getColorName(r, g, b);
-            const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] };
-
+            
             dominantColorPreview.style.backgroundColor = color;
-            dominantColorName.textContent = colorName;
+
+            if (colorName === 'Blanc') {
+                const hsv = rgbToHsv(r, g, b);
+                const v = hsv[2]; // Luminosité
+                let whiteType = "Blanc";
+                let interpretation = INTERPRETATIONS['Blanc'];
+                if (v > 0.95) {
+                    whiteType = "Blanc très immaculé";
+                    interpretation += " Une très haute luminosité suggère une clarté de signal et une pureté exceptionnelles.";
+                } else if (v > 0.85) {
+                    whiteType = "Blanc immaculé";
+                     interpretation += " Une haute luminosité indique un signal clair, bien défini et un fort équilibre.";
+                } else {
+                     interpretation += " Un signal de base équilibré, indiquant une harmonie générale.";
+                }
+                dominantColorName.textContent = whiteType;
+                interpretationText.textContent = interpretation;
+
+            } else {
+                dominantColorName.textContent = colorName;
+                interpretationText.textContent = INTERPRETATIONS[colorName] || "Analyse des données en cours...";
+            }
+
+            const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] };
             dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`;
 
-            // Mettre à jour les mots-clés
             dominantColorKeywords.innerHTML = ''; // Effacer les anciens
             colorData.keywords.forEach(keyword => {
                 const keywordElement = document.createElement('span');
@@ -398,8 +500,118 @@
             redBar.style.width = (total === 0 ? 0 : (r / total) * 100) + '%';
             greenBar.style.width = (total === 0 ? 0 : (g / total) * 100) + '%';
             blueBar.style.width = (total === 0 ? 0 : (b / total) * 100) + '%';
+        }
 
-            interpretationText.textContent = INTERPRETATIONS[colorName] || "Analyse des données en cours...";
+        function toggleRecording() {
+            isRecording = !isRecording;
+            if(isRecording) {
+                // Start
+                recordedData = [];
+                recordingStartTime = Date.now();
+                recordButton.textContent = "Arrêter";
+                recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse');
+                recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500');
+                recordStatus.textContent = "Enregistrement en cours...";
+                recordIntervalId = setInterval(updateTimer, 1000);
+            } else {
+                // Stop
+                clearInterval(recordIntervalId);
+                recordButton.textContent = "Démarrer";
+                recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse');
+                recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500');
+                recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`;
+                analyzeAndShowReport(recordedData);
+            }
+        }
+        
+        function updateTimer() {
+            const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
+            recordTimer.textContent = formatTime(elapsedSeconds);
+            if(elapsedSeconds >= MAX_RECORD_TIME) {
+                toggleRecording(); // Stop automatically
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function analyzeAndShowReport(data) {
+            if (data.length === 0) {
+                console.log("Pas de données à analyser.");
+                return;
+            }
+
+            // 1. Generate Timeline
+            timelineContainer.innerHTML = '';
+            data.forEach(d => {
+                const segment = document.createElement('div');
+                segment.style.flexGrow = '1';
+                segment.style.backgroundColor = `rgb(${d.r}, ${d.g}, ${d.b})`;
+                timelineContainer.appendChild(segment);
+            });
+
+            // 2. Analyze Colors
+            const colorCounts = {};
+            let colorChanges = 0;
+            let lastColor = '';
+
+            data.forEach(d => {
+                const colorName = getColorName(d.r, d.g, d.b);
+                if (!colorCounts[colorName]) {
+                    colorCounts[colorName] = 0;
+                }
+                colorCounts[colorName]++;
+
+                if (lastColor && colorName !== lastColor) {
+                    colorChanges++;
+                }
+                lastColor = colorName;
+            });
+            
+            const sortedColors = Object.entries(colorCounts).sort(([,a],[,b]) => b-a);
+            
+            // 3. Generate Analysis Text
+            let analysisHTML = '';
+            const totalPoints = data.length;
+
+            if (sortedColors.length > 0) {
+                const [mainColor, mainCount] = sortedColors[0];
+                const mainPercentage = ((mainCount / totalPoints) * 100).toFixed(0);
+                analysisHTML += `<p><strong class="text-white">Couleur Principale : ${mainColor} (${mainPercentage}%)</strong><br>${INTERPRETATIONS[mainColor]}</p>`;
+            }
+
+            if (sortedColors.length > 1) {
+                analysisHTML += `<p class="mt-4"><strong class="text-white">Influences Secondaires :</strong></p><ul class="list-disc list-inside space-y-2">`;
+                sortedColors.slice(1, 3).forEach(([color, count]) => {
+                    const percentage = ((count / totalPoints) * 100).toFixed(0);
+                    analysisHTML += `<li><strong>${color} (${percentage}%):</strong> ${INTERPRETATIONS[color]}</li>`;
+                });
+                 analysisHTML += `</ul>`;
+            }
+
+            const stabilityRatio = colorChanges / totalPoints;
+            let stabilityDesc = '';
+            if (stabilityRatio < 0.1) {
+                stabilityDesc = "Votre champ énergétique a montré une <strong>très grande stabilité</strong>, indiquant un état constant et bien ancré.";
+            } else if (stabilityRatio < 0.3) {
+                stabilityDesc = "Votre signature énergétique était <strong>relativement stable</strong>, avec des fluctuations mineures suggérant un équilibre dynamique.";
+            } else {
+                stabilityDesc = "Votre champ énergétique était <strong>très dynamique et fluctuant</strong>, ce qui peut indiquer une période de grande activité interne ou d'adaptation.";
+            }
+            analysisHTML += `<p class="mt-4"><strong class="text-white">Stabilité Énergétique :</strong><br>${stabilityDesc}</p>`;
+
+
+            reportAnalysis.innerHTML = analysisHTML;
+
+            // 4. Show Modal
+            reportModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            reportModal.classList.add('hidden');
         }
 
         startButton.addEventListener('click', () => {
@@ -407,6 +619,10 @@
             loadingSpinner.classList.remove('hidden');
             setupCamera();
         });
+
+        recordButton.addEventListener('click', toggleRecording);
+        closeModalButton.addEventListener('click', closeModal);
+        closeModalButton2.addEventListener('click', closeModal);
 
         // Gérer le redimensionnement
         window.addEventListener('resize', () => {
