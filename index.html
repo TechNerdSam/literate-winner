@@ -128,6 +128,9 @@
                                     <button id="startButton" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow">Activer la caméra</button>
                                 </div>
                             </div>
+                            <div class="mt-4 text-center">
+                                <button id="stopButton" class="hidden bg-red-600 text-white font-bold py-2 px-6 rounded-full hover:bg-red-500 transition-all duration-300 btn-glow">Arrêter l'analyse</button>
+                            </div>
                         </div>
 
                         <!-- Photo Analysis Tab -->
@@ -135,6 +138,11 @@
                             <div id="photo-container" class="relative aspect-video bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center">
                                 <img id="photo-preview" class="hidden absolute top-0 left-0 w-full h-full object-contain" style="z-index: 0;" />
                                 <canvas id="photo-canvas" class="aura-canvas" style="object-fit: contain; z-index: 1;"></canvas>
+                                <button id="clearPhotoButton" class="hidden absolute top-3 right-3 z-30 bg-slate-900/60 hover:bg-slate-700/80 p-1.5 rounded-full text-slate-300 hover:text-white transition-colors" title="Effacer la photo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
                                 <div id="photo-start-message" class="absolute z-20 text-center p-4">
                                     <p class="text-slate-300 mb-4">Chargez une photo pour analyser sa signature énergétique.</p>
                                     <input type="file" id="photoInput" class="hidden" accept="image/png, image/jpeg">
@@ -155,7 +163,7 @@
                     <!-- Results Column -->
                     <div class="lg:col-span-2 flex flex-col justify-between">
                         <div>
-                            <h3 class="text-2xl font-bold text-slate-100 mb-4">Analyse en Temps Réel</h3>
+                            <h3 id="analysis-title" class="text-2xl font-bold text-slate-100 mb-4"></h3>
                             <div id="results" class="space-y-4 hidden">
                                 <div class="bg-slate-900/70 p-4 rounded-lg">
                                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Couleur Dominante de l'Aura</h4>
@@ -197,8 +205,8 @@
                                 </div>
 
                                 <div class="bg-slate-900/70 p-4 rounded-lg">
-                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Interprétation Symbolique de l'Aura</h4>
-                                    <p id="interpretation-text" class="text-slate-300 text-sm h-24 overflow-y-auto">L'analyse débutera lorsque la caméra sera active. Le système interprète les variations de chrominance et de luminance comme des indicateurs potentiels de l'état physiologique.</p>
+                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Analyse Détaillée de l'Aura</h4>
+                                    <div id="interpretation-text" class="text-slate-300 text-sm h-32 overflow-y-auto">L'analyse débutera lorsque la caméra sera active. Le système interprète les variations de chrominance et de luminance comme des indicateurs potentiels de l'état physiologique.</div>
                                 </div>
 
                                  <div class="bg-slate-900/70 p-4 rounded-lg">
@@ -285,11 +293,13 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
         const startMessage = document.getElementById('start-message');
         const loadingSpinner = document.getElementById('loading-spinner');
         const resultsContainer = document.getElementById('results');
         const resultsPlaceholder = document.getElementById('results-placeholder');
         const videoContainer = document.getElementById('video-container');
+        const analysisTitle = document.getElementById('analysis-title');
 
         // Tabs elements
         const liveTabButton = document.getElementById('liveTabButton');
@@ -304,6 +314,7 @@
         const photoLoadingSpinner = document.getElementById('photo-loading-spinner');
         const photoCanvas = document.getElementById('photo-canvas');
         const photoCtx = photoCanvas.getContext('2d', { willReadFrequently: true });
+        const clearPhotoButton = document.getElementById('clearPhotoButton');
 
         // Aura elements
         const dominantColorPreview = document.getElementById('dominant-color-preview');
@@ -330,26 +341,103 @@
         const reportContent = document.getElementById('report-content');
         
         // --- CONSTANTS & STATE ---
-        const COLOR_DATA = { /* ... (same as original) ... */ };
-        const INTERPRETATIONS = { /* ... (same as original) ... */ };
-        const VIBRATIONAL_DATA = { /* ... (same as original) ... */ };
-        // Populate constants from original code
-        Object.assign(COLOR_DATA, {
-            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Force', 'Action'] }, 'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Joie', 'Sociabilité'] }, 'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Confiance', 'Optimisme'] }, 'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Harmonie', 'Nature'] }, 'Bleu': { wavelength: '435-520', keywords: ['Calme', 'Communication', 'Sérénité'] }, 'Indigo': { wavelength: '400-435', keywords: ['Intuition', 'Sagesse', 'Perception'] }, 'Violet': { wavelength: '380-400', keywords: ['Conscience', 'Transformation', 'Imagination'] }, 'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Clarté', 'Potentiel'] }
-        });
-        Object.assign(INTERPRETATIONS, {
-            'Rouge': "Associée à la force vitale, à l'énergie physique et à la volonté. Une prédominance de cette fréquence peut symboliser une période d'action, de courage et de connexion avec le monde matériel.", 'Orange': "Cette couleur est souvent liée à la créativité, aux émotions et aux relations. Sa présence peut indiquer une ouverture aux autres, un enthousiasme et une expression de la joie de vivre.", 'Jaune': "Symbolise l'intellect, la clarté mentale et le pouvoir personnel. Une forte présence de jaune peut suggérer une période de grande activité mentale, d'apprentissage et de confiance en soi.", 'Vert': "Représente l'équilibre, l'harmonie et la croissance. Cette fréquence est souvent associée au calme, à la compassion et à la capacité de régénération.", 'Bleu': "Liée à la communication, à la paix et à l'expression. Une aura à dominante bleue peut indiquer un état de relaxation, de sérénité et une communication fluide.", 'Indigo': "Associée à l'intuition et à la sagesse intérieure. Cette couleur profonde suggère une connexion avec une compréhension plus profonde des choses et une forte introspection.", 'Violet': "Symbolise la conscience élevée et l'imagination. Sa présence est souvent interprétée comme un signe de transformation et de sensibilité.", 'Blanc': "Considérée comme une couleur de protection et de pureté, contenant toutes les autres. Elle peut indiquer une grande clarté, un équilibre énergétique ou une phase de nouveau départ.",
-        });
-        Object.assign(VIBRATIONAL_DATA, {
-             tres_bas: { level: 'Très Basse Fréquence', commentary: "L'analyse indique une dispersion significative du signal bio-photonique. Cela peut correspondre à un état de fatigue physique profonde ou de stress mental important. Il est recommandé de privilégier le repos, l'hydratation et des activités calmes pour favoriser la régulation naturelle du système.", colorHex: '#ef4444' }, bas: { level: 'Basse Fréquence', commentary: "Le signal présente une faible cohérence, souvent associée à un état de préoccupation mentale ou de tension corporelle. Des pratiques de relaxation, comme la respiration consciente ou une marche dans la nature, peuvent aider à améliorer la stabilité du signal.", colorHex: '#f97316' }, equilibre: { level: 'Fréquence d\'Équilibre', commentary: "Le signal est stable et modérément cohérent, ce qui reflète un état d'homéostasie général. C'est le signe d'un équilibre fonctionnel entre l'activité mentale et la relaxation physique. Maintenir des habitudes de vie saines soutiendra cette stabilité.", colorHex: '#22c55e' }, eleve: { level: 'Haute Fréquence', commentary: "Une forte cohérence et une haute luminance caractérisent le signal. Cela correspond typiquement à un état de clarté mentale, de concentration focalisée ou de bien-être physique notable. Le système nerveux autonome montre des signes de régulation optimale.", colorHex: '#38bdf8' }, optimal: { level: 'Fréquence Optimale', commentary: "Le signal atteint un pic de cohérence et de luminance, une signature observée lors d'états de paix intérieure profonde ou de grande créativité. Cet état reflète une harmonie exceptionnelle entre les systèmes physiologique et psychologique.", colorHex: '#8b5cf6' }
-        });
+        const COLOR_DATA = {
+            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Force', 'Action'] },
+            'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Joie', 'Sociabilité'] },
+            'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Confiance', 'Optimisme'] },
+            'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Harmonie', 'Guérison'] },
+            'Bleu': { wavelength: '435-520', keywords: ['Calme', 'Communication', 'Sérénité'] },
+            'Indigo': { wavelength: '400-435', keywords: ['Intuition', 'Sagesse', 'Perception'] },
+            'Violet': { wavelength: '380-400', keywords: ['Spiritualité', 'Transformation', 'Imagination'] },
+            'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Clarté', 'Potentiel'] }
+        };
 
+        const INTERPRETATIONS = {
+            'Rouge': {
+                pale: "Un rouge pâle ou rosé signale une énergie vitale en phase de réveil. C'est le dégel après l'hiver : la force de vie revient doucement, la passion s'éveille sans bruit. Peut indiquer une convalescence, un nouveau départ prudent ou un amour naissant. C'est une force tranquille, pleine de potentiel.",
+                equilibre: "Un rouge rubis, équilibré, est la signature d'une vitalité saine et d'un ancrage solide. L'énergie est abondante mais maîtrisée. C'est la force de l'athlète, la passion de l'artiste engagé, le courage du leader. Il y a une harmonie entre le corps, la volonté et l'action.",
+                intense: "Un rouge profond ou écarlate révèle une énergie vitale intense, presque volcanique. C'est une force brute qui peut se traduire par une grande ambition ou une colère explosive. Souvent lié à des questions de survie, de territoire ou de stress intense. Cette puissance demande à être canalisée avec conscience pour ne pas devenir destructrice."
+            },
+            'Orange': {
+                pale: "L'orange pâle, couleur pêche, évoque une sensualité et une créativité qui s'éveillent en douceur. Les émotions sont présentes mais feutrées. C'est le début d'une ouverture aux autres, une socialisation timide mais sincère. L'optimisme est là, en germe.",
+                equilibre: "Un orange mandarine, stable et joyeux, est le signe d'un équilibre émotionnel sain. La créativité est fluide, les relations sont nourrissantes. C'est l'énergie de l'enthousiasme, de l'aventure partagée et du plaisir de vivre. Le rapport aux autres est sain et constructif.",
+                intense: "L'orange vif, presque fluorescent, traduit une forte charge émotionnelle ou un désir intense d'expériences. La créativité est explosive, mais peut mener à la recherche de sensations fortes ou à une dépendance affective. C'est une énergie d'expansion qui a besoin de cadre pour ne pas s'éparpiller."
+            },
+            'Jaune': {
+                pale: "Le jaune pâle est la lueur de l'intellect qui s'éveille. C'est la curiosité, l'émergence de nouvelles idées, la joie d'apprendre. La confiance en soi se construit, l'esprit est flexible et optimiste. C'est l'étudiant, le chercheur en début de parcours.",
+                equilibre: "Le jaune d'or, solaire et rayonnant, est le signe d'un intellect clair et d'une personnalité affirmée. La confiance en soi est bien établie, la joie est naturelle. C'est le pouvoir personnel utilisé avec sagesse et discernement. L'esprit est vif, organisé et efficace.",
+                intense: "Un jaune acide ou moutarde signale une surchauffe mentale. L'intellect est sur-sollicité, menant à la critique, au cynisme ou à un besoin de tout contrôler. C'est une énergie nerveuse, qui a grand besoin de se reconnecter au corps et à l'intuition pour retrouver la paix."
+            },
+            'Vert': {
+                pale: "Un vert pâle, mentholé, indique une phase de guérison. Le cœur, peut-être blessé, apprend à se rouvrir. C'est une énergie de renouveau fragile, un besoin de paix, d'espace et de compassion envers soi-même. Un nouveau cycle de croissance commence.",
+                equilibre: "Le vert émeraude, riche et profond, est la couleur du cœur ouvert et en paix. C'est l'amour inconditionnel en action : la compassion, l'harmonie, l'équilibre. Une forte connexion à la nature et aux autres. C'est le point central où toutes les énergies s'équilibrent.",
+                intense: "Un vert olive ou trop sombre peut signaler un cœur qui se ferme. Cela peut être le signe de jalousie, de ressentiment, ou d'un attachement rigide au passé. La stabilité devient stagnation. C'est une invitation à pardonner et à laisser aller pour que l'énergie puisse à nouveau circuler."
+            },
+            'Bleu': {
+                pale: "Le bleu ciel, léger et aérien, est le souffle de la paix. Il indique une communication douce, une pensée calme et une nature sincère. C'est l'énergie de l'inspiration, de la dévotion. Un esprit tranquille qui aspire à la sérénité et à l'expression de sa vérité intérieure.",
+                equilibre: "Le bleu roi, stable et affirmé, est le signe d'une communication claire et honnête. La parole est juste, l'écoute est attentive. C'est la force tranquille de celui qui connaît sa vérité et l'exprime avec intégrité. Parfait pour enseigner, conseiller ou diriger.",
+                intense: "Un bleu marine ou nuit, très dense, indique une plongée dans l'introspection. L'esprit est tourné vers l'intérieur, cherchant la vérité dans les profondeurs de l'être. Peut mener à un sentiment de solitude ou de mélancolie si la communication avec l'extérieur est coupée."
+            },
+            'Indigo': {
+                pale: "L'indigo pâle est le murmure de l'intuition. Les perceptions subtiles s'éveillent, les rêves deviennent plus vifs. C'est l'ouverture du 'troisième œil', une invitation à regarder au-delà du visible et à faire confiance à ses ressentis profonds.",
+                equilibre: "L'indigo, riche et vibrant, est la marque d'une intuition claire et d'une grande sagesse intérieure. La personne perçoit les schémas, les symboles, et comprend les situations avec une profondeur remarquable. C'est l'énergie de la clairvoyance et de la vision juste.",
+                intense: "Un indigo très sombre ou électrique peut signaler un mental surchargé d'informations subtiles. Le risque est de se perdre dans des mondes imaginaires ou des théories complexes, et de se déconnecter de la réalité pratique. L'ancrage est essentiel."
+            },
+            'Violet': {
+                pale: "Le lavande ou le lilas est la porte d'entrée vers la spiritualité. C'est une énergie de grande sensibilité, d'imagination, de connexion avec le monde des rêves et de l'art. Une nature douce, altruiste, qui aspire à la beauté et à l'harmonie universelle.",
+                equilibre: "Le violet améthyste est la couleur de la maîtrise spirituelle. La conscience est élevée, connectée à un but supérieur, mais parfaitement intégrée dans la réalité. C'est l'énergie du guide, du sage, qui allie connaissance universelle et action juste dans le monde.",
+                intense: "Le violet pourpre, intense, indique une conscience cosmique, une fusion avec le Tout. C'est une vibration très élevée qui peut rendre difficile l'incarnation dans les aspects pratiques de la vie. L'enjeu est de ramener cette sagesse 'd'en haut' pour la rendre accessible ici-bas."
+            },
+            'Blanc': {
+                pale: "Un blanc cassé ou brumeux indique une phase de transition. Le champ énergétique est en cours de nettoyage, ce qui peut créer un sentiment de confusion ou de vide. C'est le silence avant la création, un potentiel immense qui n'a pas encore pris forme.",
+                equilibre: "Le blanc cristallin, pur, est une aura de haute fréquence. Il indique une grande pureté d'intention et agit comme un bouclier protecteur. Contenant toutes les couleurs, il est le signe d'un équilibre parfait et d'une connexion claire à la conscience supérieure.",
+                intense: "Le blanc immaculé, presque aveuglant, est extrêmement rare. C'est l'énergie de la conscience pure, de la transcendance. Une connexion directe avec la Source. Cette vibration est si élevée qu'elle est au-delà de la personnalité, agissant comme un canal pur de lumière et de guérison."
+            }
+        };
+
+        const VIBRATIONAL_DATA = {
+             tres_bas: { level: 'Très Basse Fréquence', commentary: "L'analyse indique une dispersion significative du signal bio-photonique. Cela peut correspondre à un état de fatigue physique profonde ou de stress mental important. Il est recommandé de privilégier le repos, l'hydratation et des activités calmes pour favoriser la régulation naturelle du système.", colorHex: '#ef4444' }, 
+             bas: { level: 'Basse Fréquence', commentary: "Le signal présente une faible cohérence, souvent associée à un état de préoccupation mentale ou de tension corporelle. Des pratiques de relaxation, comme la respiration consciente ou une marche dans la nature, peuvent aider à améliorer la stabilité du signal.", colorHex: '#f97316' }, 
+             equilibre: { level: 'Fréquence d\'Équilibre', commentary: "Le signal est stable et modérément cohérent, ce qui reflète un état d'homéostasie général. C'est le signe d'un équilibre fonctionnel entre l'activité mentale et la relaxation physique. Maintenir des habitudes de vie saines soutiendra cette stabilité.", colorHex: '#22c55e' }, 
+             eleve: { level: 'Haute Fréquence', commentary: "Une forte cohérence et une haute luminance caractérisent le signal. Cela correspond typiquement à un état de clarté mentale, de concentration focalisée ou de bien-être physique notable. Le système nerveux autonome montre des signes de régulation optimale.", colorHex: '#38bdf8' }, 
+             optimal: { level: 'Fréquence Optimale', commentary: "Le signal atteint un pic de cohérence et de luminance, une signature observée lors d'états de paix intérieure profonde ou de grande créativité. Cet état reflète une harmonie exceptionnelle entre les systèmes physiologique et psychologique.", colorHex: '#8b5cf6' }
+        };
+        
         let animationFrameId;
         let isRecording = false;
         let recordingStartTime = null;
         let recordIntervalId = null;
         let recordedData = [];
         const MAX_RECORD_TIME = 45 * 60;
+
+        // --- UI MANAGEMENT ---
+        function showResults(title) {
+            analysisTitle.textContent = title;
+            resultsContainer.classList.remove('hidden');
+            resultsPlaceholder.classList.add('hidden');
+        }
+
+        function hideResults() {
+            analysisTitle.textContent = '';
+            resultsContainer.classList.add('hidden');
+            resultsPlaceholder.classList.remove('hidden');
+
+            // Expert addition: Reset all UI fields to their default state for a clean user experience.
+            const defaultInterpretation = "L'analyse débutera lorsque la caméra sera active ou qu'une photo sera chargée.";
+            const defaultVibrationalCommentary = "L'analyse vibratoire débutera pour quantifier la cohérence et la luminance du signal bio-photonique capté.";
+
+            dominantColorPreview.style.backgroundColor = 'transparent';
+            dominantColorName.textContent = 'En attente...';
+            dominantColorWavelength.textContent = `~ ... nm`;
+            dominantColorKeywords.innerHTML = '';
+            interpretationText.innerHTML = defaultInterpretation;
+
+            vibrationalGaugeBar.style.strokeDasharray = `0, 100`;
+            vibrationalGaugeBar.style.stroke = `#38bdf8`; // A neutral, default color
+            vibrationalRateValue.textContent = '...';
+            vibrationalLevelText.textContent = 'En attente...';
+            vibrationalCommentary.textContent = defaultVibrationalCommentary;
+        }
 
         // --- CAMERA & LIVE ANALYSIS ---
         async function setupCamera() {
@@ -367,8 +455,8 @@
                     video.play();
                     startMessage.classList.add('hidden');
                     loadingSpinner.classList.add('hidden');
-                    resultsContainer.classList.remove('hidden');
-                    resultsPlaceholder.classList.add('hidden');
+                    stopButton.classList.remove('hidden');
+                    showResults('Analyse en direct');
                     recordButton.disabled = false;
                     recordStatus.textContent = "Prêt pour l'enregistrement.";
 
@@ -398,9 +486,9 @@
             }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             startMessage.classList.remove('hidden');
+            stopButton.classList.add('hidden');
             loadingSpinner.classList.add('hidden');
-            resultsContainer.classList.add('hidden');
-            resultsPlaceholder.classList.remove('hidden');
+            hideResults();
             if(isRecording) toggleRecording();
             recordButton.disabled = true;
             recordStatus.textContent = "Activez la caméra pour pouvoir enregistrer.";
@@ -408,6 +496,7 @@
         }
 
         function tick() {
+            if (!video.srcObject) return;
             const { width, height } = canvas;
             ctx.save();
             ctx.clearRect(0, 0, width, height);
@@ -445,8 +534,7 @@
         // --- PHOTO ANALYSIS ---
         function analyzeImage(img) {
             photoLoadingSpinner.classList.add('hidden');
-            resultsContainer.classList.remove('hidden');
-            resultsPlaceholder.classList.add('hidden');
+            showResults('Analyse de la Photo');
             
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
@@ -476,6 +564,16 @@
             }
         }
         
+        function clearPhoto() {
+            photoPreview.classList.add('hidden');
+            photoPreview.src = '';
+            clearPhotoButton.classList.add('hidden');
+            photoCtx.clearRect(0, 0, photoCanvas.width, photoCanvas.height);
+            photoInput.value = null;
+            photoStartMessage.classList.remove('hidden');
+            hideResults();
+        }
+
         // --- CORE LOGIC & UTILITIES ---
         function calculateAverageColorFromPeriphery(imageData) {
             const { data, width, height } = imageData;
@@ -502,44 +600,205 @@
             return { avgR: 0, avgG: 0, avgB: 0, count: 0 };
         }
 
-        function calculateVibrationalRate(r, g, b) { /* ... (same as original) ... */ 
-            const [h, s, v] = rgbToHsv(r, g, b); // v: brightness, s: saturation
+        function calculateVibrationalRate(r, g, b) {
+            const [h, s, v] = rgbToHsv(r, g, b);
             const maxRate = 20000;
             let rate = maxRate * (v * 0.7 + s * 0.3);
-            const fluctuation = (Math.random() - 0.5) * 50; // Simulate minor flux
+            const fluctuation = (Math.random() - 0.5) * 50;
             return Math.max(0, Math.floor(rate + fluctuation));
         }
-        function getVibrationalTier(rate) { /* ... (same as original) ... */ 
-            if (rate <= 4000) return VIBRATIONAL_DATA.tres_bas; if (rate <= 7500) return VIBRATIONAL_DATA.bas; if (rate <= 11000) return VIBRATIONAL_DATA.equilibre; if (rate <= 15000) return VIBRATIONAL_DATA.eleve; return VIBRATIONAL_DATA.optimal;
+        
+        function getVibrationalTier(rate) { 
+            if (rate <= 4000) return VIBRATIONAL_DATA.tres_bas; 
+            if (rate <= 7500) return VIBRATIONAL_DATA.bas; 
+            if (rate <= 11000) return VIBRATIONAL_DATA.equilibre; 
+            if (rate <= 15000) return VIBRATIONAL_DATA.eleve; 
+            return VIBRATIONAL_DATA.optimal;
         }
-        function getColorName(r, g, b) { /* ... (same as original) ... */ 
-            const hsv = rgbToHsv(r, g, b); const h = hsv[0] * 360; const s = hsv[1]; const v = hsv[2]; if (s < 0.2 || v < 0.2) return 'Blanc'; if (h >= 330 || h < 15) return 'Rouge'; if (h >= 15 && h < 45) return 'Orange'; if (h >= 45 && h < 75) return 'Jaune'; if (h >= 75 && h < 165) return 'Vert'; if (h >= 165 && h < 255) return 'Bleu'; if (h >= 255 && h < 285) return 'Indigo'; if (h >= 285 && h < 330) return 'Violet'; return 'Inconnu';
+
+        function getColorName(r, g, b) { 
+            const hsv = rgbToHsv(r, g, b); 
+            const h = hsv[0] * 360; 
+            const s = hsv[1]; 
+            const v = hsv[2]; 
+            if (s < 0.2 || v < 0.3) return 'Blanc'; 
+            if (h >= 330 || h < 15) return 'Rouge'; 
+            if (h >= 15 && h < 45) return 'Orange'; 
+            if (h >= 45 && h < 75) return 'Jaune'; 
+            if (h >= 75 && h < 165) return 'Vert'; 
+            if (h >= 165 && h < 255) return 'Bleu'; 
+            if (h >= 255 && h < 285) return 'Indigo'; 
+            if (h >= 285 && h < 330) return 'Violet'; 
+            return 'Inconnu';
         }
-        function rgbToHsv(r, g, b) { /* ... (same as original) ... */ 
-            r /= 255, g /= 255, b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, v = max; let d = max - min; s = max == 0 ? 0 : d / max; if (max == min) { h = 0; } else { switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } return [h, s, v];
+
+        function getInterpretation(colorName, s, v) {
+            const interpretations = INTERPRETATIONS[colorName];
+            if (!interpretations) return "Analyse des données en cours...";
+            
+            let intensityKey = 'equilibre';
+            let intensityLabel = 'Expression Harmonieuse';
+
+            // EXPERT REFACTOR: Replaced rigid thresholds with a more robust intensity scoring system.
+            // This new logic combines saturation (s) and brightness (v) to get a more accurate
+            // measure of a color's perceived intensity, handling real-world lighting variance better.
+            const intensityScore = (s + v) / 2;
+
+            if (intensityScore < 0.45) { // A low combined score indicates a pale or dark, muted color.
+                intensityKey = 'pale';
+                intensityLabel = 'Expression Subtile / Pâle';
+            } else if (intensityScore > 0.8) { // A high combined score indicates a bright, vivid color.
+                intensityKey = 'intense';
+                if (colorName === 'Blanc') {
+                    intensityLabel = 'Expression Pure / Immaculée';
+                } else if (colorName === 'Violet' || colorName === 'Indigo') {
+                    intensityLabel = 'Expression Transcendente / Intense';
+                } else {
+                    intensityLabel = 'Expression Puissante / Intense';
+                }
+            }
+            // All other cases are considered balanced.
+            
+            return `<strong class="block mb-1 text-slate-100">${intensityLabel}</strong> ${interpretations[intensityKey]}`;
         }
-        function formatTime(seconds) { /* ... (same as original) ... */ 
-             const m = Math.floor(seconds / 60).toString().padStart(2, '0'); const s = (seconds % 60).toString().padStart(2, '0'); return `${m}:${s}`;
+
+        function rgbToHsv(r, g, b) {
+            r /= 255, g /= 255, b /= 255; 
+            let max = Math.max(r, g, b), min = Math.min(r, g, b); 
+            let h, s, v = max; 
+            let d = max - min; 
+            s = max == 0 ? 0 : d / max; 
+            if (max == min) { h = 0; } 
+            else { 
+                switch (max) { 
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break; 
+                    case g: h = (b - r) / d + 2; break; 
+                    case b: h = (r - g) / d + 4; break; 
+                } 
+                h /= 6; 
+            } 
+            return [h, s, v];
+        }
+        
+        function formatTime(seconds) {
+             const m = Math.floor(seconds / 60).toString().padStart(2, '0'); 
+             const s = (seconds % 60).toString().padStart(2, '0'); 
+             return `${m}:${s}`;
         }
 
         // --- UI UPDATES ---
-        function updateAuraUI(r, g, b) { /* ... (same as original) ... */
-             const color = `rgb(${r}, ${g}, ${b})`; const colorName = getColorName(r, g, b); dominantColorPreview.style.backgroundColor = color; dominantColorName.textContent = colorName; interpretationText.textContent = INTERPRETATIONS[colorName] || "Analyse des données en cours..."; const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] }; dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`; dominantColorKeywords.innerHTML = ''; colorData.keywords.forEach(keyword => { const keywordElement = document.createElement('span'); keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full'; keywordElement.textContent = keyword; dominantColorKeywords.appendChild(keywordElement); });
+        function updateAuraUI(r, g, b) {
+             const color = `rgb(${r}, ${g}, ${b})`; 
+             const colorName = getColorName(r, g, b);
+             const [h, s, v] = rgbToHsv(r, g, b);
+             
+             dominantColorPreview.style.backgroundColor = color; 
+             dominantColorName.textContent = colorName; 
+             interpretationText.innerHTML = getInterpretation(colorName, s, v);
+
+             const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] }; 
+             dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`; 
+             
+             dominantColorKeywords.innerHTML = ''; 
+             colorData.keywords.forEach(keyword => { 
+                const keywordElement = document.createElement('span'); 
+                keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full'; 
+                keywordElement.textContent = keyword; 
+                dominantColorKeywords.appendChild(keywordElement); 
+             });
         }
-        function updateVibrationalUI(rate) { /* ... (same as original) ... */ 
-            vibrationalRateValue.textContent = rate.toLocaleString('fr-FR'); const maxRate = 20000; const percentage = Math.min(100, (rate / maxRate) * 100); vibrationalGaugeBar.style.strokeDasharray = `${percentage}, 100`; const tier = getVibrationalTier(rate); vibrationalGaugeBar.style.stroke = tier.colorHex; vibrationalLevelText.textContent = tier.level; vibrationalCommentary.textContent = tier.commentary;
+        
+        function updateVibrationalUI(rate) { 
+            vibrationalRateValue.textContent = rate.toLocaleString('fr-FR'); 
+            const maxRate = 20000; 
+            const percentage = Math.min(100, (rate / maxRate) * 100); 
+            vibrationalGaugeBar.style.strokeDasharray = `${percentage}, 100`; 
+            const tier = getVibrationalTier(rate); 
+            vibrationalGaugeBar.style.stroke = tier.colorHex; 
+            vibrationalLevelText.textContent = tier.level; 
+            vibrationalCommentary.textContent = tier.commentary;
         }
 
         // --- RECORDING & REPORTING ---
-        function toggleRecording() { /* ... (same as original) ... */
-             isRecording = !isRecording; if(isRecording) { recordedData = []; recordingStartTime = Date.now(); recordButton.textContent = "Arrêter"; recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500'); recordStatus.textContent = "Enregistrement en cours..."; recordIntervalId = setInterval(updateTimer, 1000); } else { clearInterval(recordIntervalId); recordButton.textContent = "Démarrer"; recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500'); recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`; analyzeAndShowReport(recordedData); }
+        function toggleRecording() {
+             isRecording = !isRecording; 
+             if(isRecording) { 
+                recordedData = []; 
+                recordingStartTime = Date.now(); 
+                recordButton.textContent = "Arrêter"; 
+                recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); 
+                recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500'); 
+                recordStatus.textContent = "Enregistrement en cours..."; 
+                recordIntervalId = setInterval(updateTimer, 1000); 
+             } else { 
+                clearInterval(recordIntervalId); 
+                recordButton.textContent = "Démarrer"; 
+                recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); 
+                recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500'); 
+                recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`; 
+                analyzeAndShowReport(recordedData); 
+             }
         }
-        function updateTimer() { /* ... (same as original) ... */ 
-             const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000); recordTimer.textContent = formatTime(elapsedSeconds); if(elapsedSeconds >= MAX_RECORD_TIME) { toggleRecording(); }
+        
+        function updateTimer() { 
+             const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000); 
+             recordTimer.textContent = formatTime(elapsedSeconds); 
+             if(elapsedSeconds >= MAX_RECORD_TIME) { 
+                toggleRecording(); 
+             }
         }
-        function analyzeAndShowReport(data) { /* ... (same as original) ... */ 
-            if (data.length < 2) return; const colorCounts = {}; data.forEach(d => { const colorName = getColorName(d.r, d.g, d.b); colorCounts[colorName] = (colorCounts[colorName] || 0) + 1; }); const sortedColors = Object.entries(colorCounts).sort(([,a],[,b]) => b-a); const vRates = data.map(d => d.vRate); const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length); const maxVRate = Math.round(Math.max(...vRates)); const minVRate = Math.round(Math.min(...vRates)); const avgTier = getVibrationalTier(avgVRate); let reportHTML = ` <div> <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle de l'Aura</h3> <div class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden"> ${data.map(d => `<div style="flex-grow: 1; background-color: rgb(${d.r}, ${d.g}, ${d.b});"></div>`).join('')} </div> </div> <div> <h3 class="font-semibold text-sky-400 mb-2">Analyse de l'Aura</h3> <div class="text-sm space-y-3 text-slate-300"> <p><strong class="text-white">Couleur Principale : ${sortedColors[0][0]} (${((sortedColors[0][1] / data.length) * 100).toFixed(0)}%)</strong><br>${INTERPRETATIONS[sortedColors[0][0]]}</p> ${sortedColors.length > 1 ? ` <p class="mt-4"><strong class="text-white">Influences Secondaires :</strong></p> <ul class="list-disc list-inside space-y-2"> ${sortedColors.slice(1, 3).map(([color, count]) => `<li><strong>${color} (${((count / data.length) * 100).toFixed(0)}%):</strong> ${INTERPRETATIONS[color]}</li>`).join('')} </ul>` : ''} </div> </div> <div> <h3 class="font-semibold text-sky-400 mb-2">Synthèse Vibratoire (UBQ)</h3> <div class="text-sm space-y-3 text-slate-300"> <div class="grid grid-cols-3 gap-4 text-center"> <div><span class="text-xs text-slate-400">MINIMUM</span><p class="text-lg font-mono font-bold">${minVRate.toLocaleString('fr-FR')}</p></div> <div><span class="text-xs text-slate-400">MOYENNE</span><p class="text-2xl font-mono font-bold text-white">${avgVRate.toLocaleString('fr-FR')}</p></div> <div><span class="text-xs text-slate-400">MAXIMUM</span><p class="text-lg font-mono font-bold">${maxVRate.toLocaleString('fr-FR')}</p></div> </div> <p class="mt-4"><strong class="text-white">Analyse de la Fréquence Moyenne (${avgTier.level}) :</strong><br>${avgTier.commentary}</p> </div> </div> `; reportContent.innerHTML = reportHTML; reportModal.classList.remove('hidden');
+        
+        function analyzeAndShowReport(data) { 
+            if (data.length < 2) return; 
+            const colorCounts = {}; 
+            data.forEach(d => { 
+                const colorName = getColorName(d.r, d.g, d.b); 
+                colorCounts[colorName] = (colorCounts[colorName] || 0) + 1; 
+            }); 
+            const sortedColors = Object.entries(colorCounts).sort(([,a],[,b]) => b-a); 
+            const vRates = data.map(d => d.vRate); 
+            const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length); 
+            const maxVRate = Math.round(Math.max(...vRates)); 
+            const minVRate = Math.round(Math.min(...vRates)); 
+            const avgTier = getVibrationalTier(avgVRate); 
+            
+            let reportHTML = ` 
+                <div> 
+                    <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle de l'Aura</h3> 
+                    <div class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden"> 
+                        ${data.map(d => `<div style="flex-grow: 1; background-color: rgb(${d.r}, ${d.g}, ${d.b});"></div>`).join('')} 
+                    </div> 
+                </div> 
+                <div> 
+                    <h3 class="font-semibold text-sky-400 mb-2">Analyse de l'Aura</h3> 
+                    <div class="text-sm space-y-3 text-slate-300"> 
+                        <p>
+                            <strong class="text-white">Couleur Principale : ${sortedColors[0][0]} (${((sortedColors[0][1] / data.length) * 100).toFixed(0)}%)</strong>
+                            <br>${INTERPRETATIONS[sortedColors[0][0]].equilibre}
+                        </p> 
+                        ${sortedColors.length > 1 ? ` 
+                            <p class="mt-4"><strong class="text-white">Influences Secondaires :</strong></p> 
+                            <ul class="list-disc list-inside space-y-2"> 
+                                ${sortedColors.slice(1, 3).map(([color, count]) => `<li><strong>${color} (${((count / data.length) * 100).toFixed(0)}%):</strong> ${INTERPRETATIONS[color].equilibre}</li>`).join('')} 
+                            </ul>
+                        ` : ''} 
+                    </div> 
+                </div> 
+                <div> 
+                    <h3 class="font-semibold text-sky-400 mb-2">Synthèse Vibratoire (UBQ)</h3> 
+                    <div class="text-sm space-y-3 text-slate-300"> 
+                        <div class="grid grid-cols-3 gap-4 text-center"> 
+                            <div><span class="text-xs text-slate-400">MINIMUM</span><p class="text-lg font-mono font-bold">${minVRate.toLocaleString('fr-FR')}</p></div> 
+                            <div><span class="text-xs text-slate-400">MOYENNE</span><p class="text-2xl font-mono font-bold text-white">${avgVRate.toLocaleString('fr-FR')}</p></div> 
+                            <div><span class="text-xs text-slate-400">MAXIMUM</span><p class="text-lg font-mono font-bold">${maxVRate.toLocaleString('fr-FR')}</p></div> 
+                        </div> 
+                        <p class="mt-4"><strong class="text-white">Analyse de la Fréquence Moyenne (${avgTier.level}) :</strong><br>${avgTier.commentary}</p> 
+                    </div> 
+                </div>`; 
+            reportContent.innerHTML = reportHTML; 
+            reportModal.classList.remove('hidden');
         }
+
         function closeModal() { reportModal.classList.add('hidden'); }
 
         // --- EVENT LISTENERS ---
@@ -549,6 +808,8 @@
             setupCamera();
         });
 
+        stopButton.addEventListener('click', stopCamera);
+
         photoInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file && file.type.startsWith('image/')) {
@@ -557,18 +818,19 @@
                 photoPreview.classList.add('hidden');
                 photoCtx.clearRect(0,0, photoCanvas.width, photoCanvas.height);
 
-
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const imageUrl = e.target.result;
                     photoPreview.src = imageUrl;
                     photoPreview.classList.remove('hidden');
+                    clearPhotoButton.classList.remove('hidden');
                     
                     const img = new Image();
                     img.onload = () => analyzeImage(img);
                     img.onerror = () => {
                         photoLoadingSpinner.classList.add('hidden');
                         photoStartMessage.classList.remove('hidden');
+                        clearPhotoButton.classList.add('hidden');
                         photoStartMessage.querySelector('p').textContent = "Erreur lors du chargement de l'image.";
                     };
                     img.src = imageUrl;
@@ -587,6 +849,9 @@
             
             recordButton.disabled = video.srcObject ? false : true;
             recordStatus.textContent = video.srcObject ? "Prêt pour l'enregistrement." : "Activez la caméra pour pouvoir enregistrer.";
+            if (!video.srcObject) {
+                hideResults();
+            }
         });
 
         photoTabButton.addEventListener('click', () => {
@@ -600,8 +865,12 @@
             stopCamera();
             recordButton.disabled = true;
             recordStatus.textContent = "L'enregistrement n'est pas disponible pour les photos.";
+            if (!photoPreview.src) {
+                hideResults();
+            }
         });
         
+        clearPhotoButton.addEventListener('click', clearPhoto);
         recordButton.addEventListener('click', toggleRecording);
         closeModalButton.addEventListener('click', closeModal);
         closeModalButton2.addEventListener('click', closeModal);
@@ -614,6 +883,10 @@
                canvas.height = containerHeight;
             }
         });
+
+        // Initial setup
+        hideResults();
     </script>
 </body>
 </html>
+
