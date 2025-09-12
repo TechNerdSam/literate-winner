@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyseur de Bio-Résonance Temporelle</title>
+    <title>Analyseur d'aura de RTN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,7 +75,7 @@
     <!-- Header -->
     <header class="py-4 px-6 md:px-12 border-b border-slate-800 backdrop-blur-sm sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold gradient-text">Bio-Résonance TX-1</h1>
+            <h1 class="text-xl font-bold gradient-text">Analyseur d'aura de RTN</h1>
             <nav class="hidden md:flex space-x-6 text-sm">
                 <a href="#analyzer" class="hover:text-sky-400 transition-colors">Analyseur</a>
                 <a href="#how-it-works" class="hover:text-sky-400 transition-colors">Principe</a>
@@ -210,12 +210,12 @@
                                 </div>
 
                                  <div class="bg-slate-900/70 p-4 rounded-lg">
-                                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Enregistrement de Session</h4>
-                                     <div class="flex items-center justify-between gap-4 mt-2">
-                                         <button id="recordButton" class="bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-sky-500 transition-all duration-300 btn-glow w-full disabled:bg-slate-600 disabled:cursor-not-allowed" disabled>Démarrer</button>
-                                         <p id="recordTimer" class="font-mono text-lg text-slate-300">00:00</p>
-                                     </div>
-                                     <p id="recordStatus" class="text-xs text-slate-500 mt-2 text-center">Activez la caméra pour pouvoir enregistrer.</p>
+                                      <h4 class="text-sm font-semibold text-slate-400 mb-2">Enregistrement de Session</h4>
+                                      <div class="flex items-center justify-between gap-4 mt-2">
+                                           <button id="recordButton" class="bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-sky-500 transition-all duration-300 btn-glow w-full disabled:bg-slate-600 disabled:cursor-not-allowed" disabled>Démarrer</button>
+                                           <p id="recordTimer" class="font-mono text-lg text-slate-300">00:00</p>
+                                      </div>
+                                      <p id="recordStatus" class="text-xs text-slate-500 mt-2 text-center">Activez la caméra pour pouvoir enregistrer.</p>
                                  </div>
 
                             </div>
@@ -352,46 +352,71 @@
             'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Clarté', 'Potentiel'] }
         };
 
+        // --- [NEW] EXPANDED INTERPRETATIONS FOR REPORT ANALYSIS ---
         const INTERPRETATIONS = {
             'Rouge': {
                 pale: "Un rouge pâle ou rosé signale une énergie vitale en phase de réveil. C'est le dégel après l'hiver : la force de vie revient doucement, la passion s'éveille sans bruit. Peut indiquer une convalescence, un nouveau départ prudent ou un amour naissant. C'est une force tranquille, pleine de potentiel.",
                 equilibre: "Un rouge rubis, équilibré, est la signature d'une vitalité saine et d'un ancrage solide. L'énergie est abondante mais maîtrisée. C'est la force de l'athlète, la passion de l'artiste engagé, le courage du leader. Il y a une harmonie entre le corps, la volonté et l'action.",
-                intense: "Un rouge profond ou écarlate révèle une énergie vitale intense, presque volcanique. C'est une force brute qui peut se traduire par une grande ambition ou une colère explosive. Souvent lié à des questions de survie, de territoire ou de stress intense. Cette puissance demande à être canalisée avec conscience pour ne pas devenir destructrice."
+                intense: "Un rouge profond ou écarlate révèle une énergie vitale intense, presque volcanique. C'est une force brute qui peut se traduire par une grande ambition ou une colère explosive. Souvent lié à des questions de survie, de territoire ou de stress intense. Cette puissance demande à être canalisée avec conscience pour ne pas devenir destructrice.",
+                pale_equilibre: "Une vitalité en phase de construction. L'énergie de base se stabilise, passant d'un état de convalescence à une force tranquille et assurée. C'est le chemin de l'ancrage retrouvé et de la confiance qui s'installe.",
+                equilibre_intense: "Une force de vie maîtrisée, mais traversée par des pics de passion et de volonté. L'énergie est globalement stable, mais capable de puissantes accélérations pour surmonter les défis ou poursuivre un but concret.",
+                pale_intense: "Une dynamique de contraste, où des sursauts d'énergie intense émergent d'un fond de fatigue ou de réserve. Cela peut indiquer une lutte pour l'action ou des passions qui s'éveillent malgré un manque de ressources vitales."
             },
             'Orange': {
                 pale: "L'orange pâle, couleur pêche, évoque une sensualité et une créativité qui s'éveillent en douceur. Les émotions sont présentes mais feutrées. C'est le début d'une ouverture aux autres, une socialisation timide mais sincère. L'optimisme est là, en germe.",
                 equilibre: "Un orange mandarine, stable et joyeux, est le signe d'un équilibre émotionnel sain. La créativité est fluide, les relations sont nourrissantes. C'est l'énergie de l'enthousiasme, de l'aventure partagée et du plaisir de vivre. Le rapport aux autres est sain et constructif.",
-                intense: "L'orange vif, presque fluorescent, traduit une forte charge émotionnelle ou un désir intense d'expériences. La créativité est explosive, mais peut mener à la recherche de sensations fortes ou à une dépendance affective. C'est une énergie d'expansion qui a besoin de cadre pour ne pas s'éparpiller."
+                intense: "L'orange vif, presque fluorescent, traduit une forte charge émotionnelle ou un désir intense d'expériences. La créativité est explosive, mais peut mener à la recherche de sensations fortes ou à une dépendance affective. C'est une énergie d'expansion qui a besoin de cadre pour ne pas s'éparpiller.",
+                pale_equilibre: "La créativité et la joie s'épanouissent doucement. Une ouverture progressive aux autres se met en place, passant d'une timidité initiale à des interactions sociales plus fluides et nourrissantes.",
+                equilibre_intense: "Un équilibre émotionnel dynamique, où une joie de vivre stable est amplifiée par des moments d'enthousiasme et de créativité débordante. Les relations sont à la fois saines et passionnées.",
+                pale_intense: "Une sensibilité émotionnelle fluctuante. Des élans de créativité ou de socialisation intense alternent avec des moments de retrait, suggérant un besoin de recharger ses batteries émotionnelles."
             },
             'Jaune': {
                 pale: "Le jaune pâle est la lueur de l'intellect qui s'éveille. C'est la curiosité, l'émergence de nouvelles idées, la joie d'apprendre. La confiance en soi se construit, l'esprit est flexible et optimiste. C'est l'étudiant, le chercheur en début de parcours.",
                 equilibre: "Le jaune d'or, solaire et rayonnant, est le signe d'un intellect clair et d'une personnalité affirmée. La confiance en soi est bien établie, la joie est naturelle. C'est le pouvoir personnel utilisé avec sagesse et discernement. L'esprit est vif, organisé et efficace.",
-                intense: "Un jaune acide ou moutarde signale une surchauffe mentale. L'intellect est sur-sollicité, menant à la critique, au cynisme ou à un besoin de tout contrôler. C'est une énergie nerveuse, qui a grand besoin de se reconnecter au corps et à l'intuition pour retrouver la paix."
+                intense: "Un jaune acide ou moutarde signale une surchauffe mentale. L'intellect est sur-sollicité, menant à la critique, au cynisme ou à un besoin de tout contrôler. C'est une énergie nerveuse, qui a grand besoin de se reconnecter au corps et à l'intuition pour retrouver la paix.",
+                pale_equilibre: "L'intellect s'éclaircit et gagne en confiance. Les idées sont explorées avec un optimisme croissant, passant de la simple curiosité à une application plus structurée et affirmée des connaissances.",
+                equilibre_intense: "Un mental vif et organisé, capable de périodes d'hyper-concentration. La clarté intellectuelle est la norme, mais elle peut s'intensifier pour résoudre des problèmes complexes, au risque d'une certaine fatigue nerveuse.",
+                pale_intense: "Des fulgurances intellectuelles sur fond de doute. Des idées géniales peuvent émerger, mais leur expression est entravée par une confiance en soi fragile, créant une tension entre la vision et la réalisation."
             },
             'Vert': {
                 pale: "Un vert pâle, mentholé, indique une phase de guérison. Le cœur, peut-être blessé, apprend à se rouvrir. C'est une énergie de renouveau fragile, un besoin de paix, d'espace et de compassion envers soi-même. Un nouveau cycle de croissance commence.",
                 equilibre: "Le vert émeraude, riche et profond, est la couleur du cœur ouvert et en paix. C'est l'amour inconditionnel en action : la compassion, l'harmonie, l'équilibre. Une forte connexion à la nature et aux autres. C'est le point central où toutes les énergies s'équilibrent.",
-                intense: "Un vert olive ou trop sombre peut signaler un cœur qui se ferme. Cela peut être le signe de jalousie, de ressentiment, ou d'un attachement rigide au passé. La stabilité devient stagnation. C'est une invitation à pardonner et à laisser aller pour que l'énergie puisse à nouveau circuler."
+                intense: "Un vert olive ou trop sombre peut signaler un cœur qui se ferme. Cela peut être le signe de jalousie, de ressentiment, ou d'un attachement rigide au passé. La stabilité devient stagnation. C'est une invitation à pardonner et à laisser aller pour que l'énergie puisse à nouveau circuler.",
+                pale_equilibre: "Un processus de guérison du cœur est en bonne voie. La paix intérieure s'installe progressivement, permettant une connexion plus stable et harmonieuse avec soi-même et avec les autres.",
+                equilibre_intense: "Un amour profond et stable, qui peut parfois se muer en attachement excessif ou en possessivité. Le besoin d'harmonie est si fort qu'il peut conduire à une résistance au changement, par peur de perdre l'équilibre.",
+                pale_intense: "Le cœur oscille entre le besoin de se protéger et le désir de se connecter. Des moments de grande compassion peuvent alterner avec des phases de retrait, indiquant une blessure émotionnelle qui demande encore de l'attention."
             },
             'Bleu': {
                 pale: "Le bleu ciel, léger et aérien, est le souffle de la paix. Il indique une communication douce, une pensée calme et une nature sincère. C'est l'énergie de l'inspiration, de la dévotion. Un esprit tranquille qui aspire à la sérénité et à l'expression de sa vérité intérieure.",
                 equilibre: "Le bleu roi, stable et affirmé, est le signe d'une communication claire et honnête. La parole est juste, l'écoute est attentive. C'est la force tranquille de celui qui connaît sa vérité et l'exprime avec intégrité. Parfait pour enseigner, conseiller ou diriger.",
-                intense: "Un bleu marine ou nuit, très dense, indique une plongée dans l'introspection. L'esprit est tourné vers l'intérieur, cherchant la vérité dans les profondeurs de l'être. Peut mener à un sentiment de solitude ou de mélancolie si la communication avec l'extérieur est coupée."
+                intense: "Un bleu marine ou nuit, très dense, indique une plongée dans l'introspection. L'esprit est tourné vers l'intérieur, cherchant la vérité dans les profondeurs de l'être. Peut mener à un sentiment de solitude ou de mélancolie si la communication avec l'extérieur est coupée.",
+                pale_equilibre: "La communication gagne en assurance. Une expression initialement timide ou douce se transforme en une parole plus claire et affirmée, signe d'une confiance grandissante en sa propre vérité.",
+                equilibre_intense: "Une communication habituellement claire et posée, qui tend vers une introspection profonde. La recherche de vérité intérieure est prédominante, ce qui peut parfois réduire les échanges avec l'extérieur au profit de la réflexion.",
+                pale_intense: "Une dualité entre le désir de s'exprimer et la peur de le faire. Des moments de communication inspirée peuvent être suivis de périodes de silence ou d'introspection, reflétant une quête de légitimité pour sa propre parole."
             },
             'Indigo': {
                 pale: "L'indigo pâle est le murmure de l'intuition. Les perceptions subtiles s'éveillent, les rêves deviennent plus vifs. C'est l'ouverture du 'troisième œil', une invitation à regarder au-delà du visible et à faire confiance à ses ressentis profonds.",
                 equilibre: "L'indigo, riche et vibrant, est la marque d'une intuition claire et d'une grande sagesse intérieure. La personne perçoit les schémas, les symboles, et comprend les situations avec une profondeur remarquable. C'est l'énergie de la clairvoyance et de la vision juste.",
-                intense: "Un indigo très sombre ou électrique peut signaler un mental surchargé d'informations subtiles. Le risque est de se perdre dans des mondes imaginaires ou des théories complexes, et de se déconnecter de la réalité pratique. L'ancrage est essentiel."
+                intense: "Un indigo très sombre ou électrique peut signaler un mental surchargé d'informations subtiles. Le risque est de se perdre dans des mondes imaginaires ou des théories complexes, et de se déconnecter de la réalité pratique. L'ancrage est essentiel.",
+                pale_equilibre: "L'intuition se structure et devient un guide fiable. Les perceptions subtiles, d'abord fugaces, s'intègrent dans une compréhension plus large et sage des événements, menant à une vision plus claire.",
+                equilibre_intense: "Une sagesse intérieure profonde qui risque de se déconnecter du réel. L'intuition est forte, mais une surabondance d'informations subtiles peut conduire à un repli dans des mondes intérieurs complexes, au détriment de l'action concrète.",
+                pale_intense: "Des flashs intuitifs puissants mais déstabilisants. L'ouverture des perceptions est réelle mais peut être difficile à intégrer, créant un décalage entre les visions intérieures et la vie de tous les jours."
             },
             'Violet': {
                 pale: "Le lavande ou le lilas est la porte d'entrée vers la spiritualité. C'est une énergie de grande sensibilité, d'imagination, de connexion avec le monde des rêves et de l'art. Une nature douce, altruiste, qui aspire à la beauté et à l'harmonie universelle.",
                 equilibre: "Le violet améthyste est la couleur de la maîtrise spirituelle. La conscience est élevée, connectée à un but supérieur, mais parfaitement intégrée dans la réalité. C'est l'énergie du guide, du sage, qui allie connaissance universelle et action juste dans le monde.",
-                intense: "Le violet pourpre, intense, indique une conscience cosmique, une fusion avec le Tout. C'est une vibration très élevée qui peut rendre difficile l'incarnation dans les aspects pratiques de la vie. L'enjeu est de ramener cette sagesse 'd'en haut' pour la rendre accessible ici-bas."
+                intense: "Le violet pourpre, intense, indique une conscience cosmique, une fusion avec le Tout. C'est une vibration très élevée qui peut rendre difficile l'incarnation dans les aspects pratiques de la vie. L'enjeu est de ramener cette sagesse 'd'en haut' pour la rendre accessible ici-bas.",
+                pale_equilibre: "La spiritualité s'incarne. Une sensibilité artistique et onirique se transforme en une sagesse pratique et applicable au quotidien, créant un pont entre l'inspiration et l'action.",
+                equilibre_intense: "Une conscience spirituelle très élevée qui cherche sa place dans le monde matériel. La connexion au 'Tout' est forte, mais l'enjeu principal est de traduire cette sagesse universelle en actions concrètes sans se sentir déconnecté.",
+                pale_intense: "Une imagination et une sensibilité exacerbées qui peuvent être difficiles à canaliser. La connexion à des plans subtils est forte mais peut manquer d'ancrage, rendant la vie pratique et matérielle plus complexe à gérer."
             },
-            'Blanc': {
+             'Blanc': {
                 pale: "Un blanc cassé ou brumeux indique une phase de transition. Le champ énergétique est en cours de nettoyage, ce qui peut créer un sentiment de confusion ou de vide. C'est le silence avant la création, un potentiel immense qui n'a pas encore pris forme.",
                 equilibre: "Le blanc cristallin, pur, est une aura de haute fréquence. Il indique une grande pureté d'intention et agit comme un bouclier protecteur. Contenant toutes les couleurs, il est le signe d'un équilibre parfait et d'une connexion claire à la conscience supérieure.",
-                intense: "Le blanc immaculé, presque aveuglant, est extrêmement rare. C'est l'énergie de la conscience pure, de la transcendance. Une connexion directe avec la Source. Cette vibration est si élevée qu'elle est au-delà de la personnalité, agissant comme un canal pur de lumière et de guérison."
+                intense: "Le blanc immaculé, presque aveuglant, est extrêmement rare. C'est l'énergie de la conscience pure, de la transcendance. Une connexion directe avec la Source. Cette vibration est si élevée qu'elle est au-delà de la personnalité, agissant comme un canal pur de lumière et de guérison.",
+                pale_equilibre: "Un potentiel en cours de clarification. L'énergie se purifie, passant d'un état de transition un peu confus à un champ aurique clair, stable et protecteur. C'est la fin d'un cycle de nettoyage et le début d'une nouvelle clarté.",
+                equilibre_intense: "Une pureté et une connexion spirituelle exceptionnelles. L'aura est non seulement équilibrée et protectrice, mais elle atteint également des pics de conscience transcendante, agissant comme un phare spirituel.",
+                pale_intense: "Une phase de transition intense et potentiellement déroutante. Le champ énergétique subit un nettoyage profond, oscillant entre le vide du renouveau et des éclairs de conscience pure, ce qui peut être très déstabilisant avant de trouver un nouvel équilibre."
             }
         };
 
@@ -422,7 +447,6 @@
             resultsContainer.classList.add('hidden');
             resultsPlaceholder.classList.remove('hidden');
 
-            // Expert addition: Reset all UI fields to their default state for a clean user experience.
             const defaultInterpretation = "L'analyse débutera lorsque la caméra sera active ou qu'une photo sera chargée.";
             const defaultVibrationalCommentary = "L'analyse vibratoire débutera pour quantifier la cohérence et la luminance du signal bio-photonique capté.";
 
@@ -433,7 +457,7 @@
             interpretationText.innerHTML = defaultInterpretation;
 
             vibrationalGaugeBar.style.strokeDasharray = `0, 100`;
-            vibrationalGaugeBar.style.stroke = `#38bdf8`; // A neutral, default color
+            vibrationalGaugeBar.style.stroke = `#38bdf8`;
             vibrationalRateValue.textContent = '...';
             vibrationalLevelText.textContent = 'En attente...';
             vibrationalCommentary.textContent = defaultVibrationalCommentary;
@@ -514,7 +538,8 @@
                 if(isRecording) {
                     const now = Date.now();
                     if (!recordedData.length || now - recordedData[recordedData.length - 1].t > 1000) {
-                        recordedData.push({ t: now, r: avgR, g: avgG, b: avgB, vRate: vibrationalRate });
+                        const [h,s,v] = rgbToHsv(avgR, avgG, avgB);
+                        recordedData.push({ t: now, r: avgR, g: avgG, b: avgB, s:s, v:v, vRate: vibrationalRate });
                     }
                 }
 
@@ -632,34 +657,39 @@
             return 'Inconnu';
         }
 
+        // --- [NEW HELPER FUNCTION] ---
+        function getIntensityLabel(s, v) {
+            const intensityScore = (s + v) / 2;
+            const percent = Math.round(intensityScore * 100);
+            let label = '';
+            if (percent <= 20) label = 'Très Faible';
+            else if (percent <= 40) label = 'Faible';
+            else if (percent <= 60) label = 'Modérée';
+            else if (percent <= 80) label = 'Forte';
+            else label = 'Très Forte';
+            return { label: label, percent: percent };
+        }
+
         function getInterpretation(colorName, s, v) {
             const interpretations = INTERPRETATIONS[colorName];
             if (!interpretations) return "Analyse des données en cours...";
             
-            let intensityKey = 'equilibre';
-            let intensityLabel = 'Expression Harmonieuse';
-
-            // EXPERT REFACTOR: Replaced rigid thresholds with a more robust intensity scoring system.
-            // This new logic combines saturation (s) and brightness (v) to get a more accurate
-            // measure of a color's perceived intensity, handling real-world lighting variance better.
-            const intensityScore = (s + v) / 2;
-
-            if (intensityScore < 0.45) { // A low combined score indicates a pale or dark, muted color.
-                intensityKey = 'pale';
-                intensityLabel = 'Expression Subtile / Pâle';
-            } else if (intensityScore > 0.8) { // A high combined score indicates a bright, vivid color.
-                intensityKey = 'intense';
-                if (colorName === 'Blanc') {
-                    intensityLabel = 'Expression Pure / Immaculée';
-                } else if (colorName === 'Violet' || colorName === 'Indigo') {
-                    intensityLabel = 'Expression Transcendente / Intense';
-                } else {
-                    intensityLabel = 'Expression Puissante / Intense';
-                }
-            }
-            // All other cases are considered balanced.
+            // intensityKey is still used to select the correct descriptive text below.
+            const intensityKey = getIntensityKey(s, v); 
             
-            return `<strong class="block mb-1 text-slate-100">${intensityLabel}</strong> ${interpretations[intensityKey]}`;
+            const { label, percent } = getIntensityLabel(s, v);
+
+            const title = `Intensité de l'Aura : ${label} (${percent}%)`;
+            
+            // The descriptive text from INTERPRETATIONS remains the same.
+            return `<strong class="block mb-1 text-slate-100">${title}</strong> ${interpretations[intensityKey]}`;
+        }
+
+        function getIntensityKey(s, v) {
+            const intensityScore = (s + v) / 2;
+            if (intensityScore < 0.45) return 'pale';
+            if (intensityScore > 0.8) return 'intense';
+            return 'equilibre';
         }
 
         function rgbToHsv(r, g, b) {
@@ -701,10 +731,10 @@
              
              dominantColorKeywords.innerHTML = ''; 
              colorData.keywords.forEach(keyword => { 
-                const keywordElement = document.createElement('span'); 
-                keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full'; 
-                keywordElement.textContent = keyword; 
-                dominantColorKeywords.appendChild(keywordElement); 
+                 const keywordElement = document.createElement('span'); 
+                 keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full'; 
+                 keywordElement.textContent = keyword; 
+                 dominantColorKeywords.appendChild(keywordElement); 
              });
         }
         
@@ -723,20 +753,20 @@
         function toggleRecording() {
              isRecording = !isRecording; 
              if(isRecording) { 
-                recordedData = []; 
-                recordingStartTime = Date.now(); 
-                recordButton.textContent = "Arrêter"; 
-                recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); 
-                recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500'); 
-                recordStatus.textContent = "Enregistrement en cours..."; 
-                recordIntervalId = setInterval(updateTimer, 1000); 
+                 recordedData = []; 
+                 recordingStartTime = Date.now(); 
+                 recordButton.textContent = "Arrêter"; 
+                 recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); 
+                 recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500'); 
+                 recordStatus.textContent = "Enregistrement en cours..."; 
+                 recordIntervalId = setInterval(updateTimer, 1000); 
              } else { 
-                clearInterval(recordIntervalId); 
-                recordButton.textContent = "Démarrer"; 
-                recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); 
-                recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500'); 
-                recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`; 
-                analyzeAndShowReport(recordedData); 
+                 clearInterval(recordIntervalId); 
+                 recordButton.textContent = "Démarrer"; 
+                 recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); 
+                 recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500'); 
+                 recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`; 
+                 analyzeAndShowReport(recordedData); 
              }
         }
         
@@ -744,58 +774,120 @@
              const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000); 
              recordTimer.textContent = formatTime(elapsedSeconds); 
              if(elapsedSeconds >= MAX_RECORD_TIME) { 
-                toggleRecording(); 
+                 toggleRecording(); 
              }
         }
         
-        function analyzeAndShowReport(data) { 
-            if (data.length < 2) return; 
-            const colorCounts = {}; 
-            data.forEach(d => { 
-                const colorName = getColorName(d.r, d.g, d.b); 
-                colorCounts[colorName] = (colorCounts[colorName] || 0) + 1; 
-            }); 
-            const sortedColors = Object.entries(colorCounts).sort(([,a],[,b]) => b-a); 
-            const vRates = data.map(d => d.vRate); 
-            const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length); 
-            const maxVRate = Math.round(Math.max(...vRates)); 
-            const minVRate = Math.round(Math.min(...vRates)); 
-            const avgTier = getVibrationalTier(avgVRate); 
+        // --- [CORRECTED AND REWRITTEN FUNCTION] ---
+        function analyzeAndShowReport(data) {
+            if (data.length < 2) {
+                reportContent.innerHTML = `<p class="text-center text-slate-400">Pas assez de données pour générer un rapport fiable.</p>`;
+                reportModal.classList.remove('hidden');
+                return;
+            };
+
+            const colorAggregates = {};
+            data.forEach(d => {
+                const colorName = getColorName(d.r, d.g, d.b);
+                if (!colorAggregates[colorName]) {
+                    colorAggregates[colorName] = { count: 0, pale: 0, equilibre: 0, intense: 0 };
+                }
+                colorAggregates[colorName].count++;
+                const intensityKey = getIntensityKey(d.s, d.v);
+                colorAggregates[colorName][intensityKey]++;
+            });
+
+            const sortedColors = Object.entries(colorAggregates).sort(([,a],[,b]) => b.count - a.count);
+
+            const getReportInterpretation = (colorName, aggregate) => {
+                const total = aggregate.count;
+                const percentages = {
+                    pale: (aggregate.pale / total) * 100,
+                    equilibre: (aggregate.equilibre / total) * 100,
+                    intense: (aggregate.intense / total) * 100
+                };
+
+                const sortedIntensities = Object.entries(percentages)
+                    .filter(([,percent]) => percent > 10) // On ne considère que les influences significatives (>10%)
+                    .sort(([,a],[,b]) => b - a);
+
+                let interpretationKey = 'equilibre'; // Clé par défaut
+                
+                if (sortedIntensities.length > 0) {
+                    const dominantState = sortedIntensities[0][0];
+                    interpretationKey = dominantState; // Commence avec l'état dominant
+
+                    if (sortedIntensities.length > 1) {
+                        const secondaryState = sortedIntensities[1][0];
+                        // Crée une clé combinée prédictible (ex: 'equilibre_intense')
+                        const combinedKey = `${dominantState}_${secondaryState}`;
+                        const reversedCombinedKey = `${secondaryState}_${dominantState}`;
+
+                        // Vérifie si une interprétation pour cette dynamique existe
+                        if (INTERPRETATIONS[colorName][combinedKey]) {
+                            interpretationKey = combinedKey;
+                        } else if (INTERPRETATIONS[colorName][reversedCombinedKey]) {
+                            interpretationKey = reversedCombinedKey;
+                        }
+                    }
+                }
+                
+                const percentageStrings = Object.entries(percentages)
+                    .filter(([,p]) => p > 0)
+                    .map(([key, p]) => {
+                        let label = '';
+                        if(key === 'equilibre') label = 'Intensité Modérée';
+                        else if(key === 'pale') label = 'Basse Intensité';
+                        else if(key === 'intense') label = 'Haute Intensité';
+                        return `<strong>${label}</strong> (${p.toFixed(0)}%)`
+                    }).join(', ');
+
+                const qualityLabel = `Dynamique de l'Aura : ${percentageStrings}.`;
+                const interpretationText = INTERPRETATIONS[colorName][interpretationKey] || INTERPRETATIONS[colorName]['equilibre']; // Fallback
+
+                return `<strong class="block mb-1 text-slate-100">${qualityLabel}</strong> ${interpretationText}<br><small class="text-slate-400">L'interprétation ci-dessus est basée sur la dynamique la plus représentative de votre session.</small>`;
+            };
             
-            let reportHTML = ` 
-                <div> 
-                    <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle de l'Aura</h3> 
-                    <div class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden"> 
-                        ${data.map(d => `<div style="flex-grow: 1; background-color: rgb(${d.r}, ${d.g}, ${d.b});"></div>`).join('')} 
-                    </div> 
-                </div> 
-                <div> 
-                    <h3 class="font-semibold text-sky-400 mb-2">Analyse de l'Aura</h3> 
-                    <div class="text-sm space-y-3 text-slate-300"> 
+            const vRates = data.map(d => d.vRate);
+            const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length);
+            const maxVRate = Math.round(Math.max(...vRates));
+            const minVRate = Math.round(Math.min(...vRates));
+            const avgTier = getVibrationalTier(avgVRate);
+            
+            let reportHTML = `
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle de l'Aura</h3>
+                    <div class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden" title="Chaque segment représente une seconde de l'enregistrement.">
+                        ${data.map(d => `<div style="flex-grow: 1; background-color: rgb(${d.r}, ${d.g}, ${d.b});"></div>`).join('')}
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-2">Analyse Détaillée de l'Aura</h3>
+                    <div class="text-sm space-y-3 text-slate-300">
                         <p>
-                            <strong class="text-white">Couleur Principale : ${sortedColors[0][0]} (${((sortedColors[0][1] / data.length) * 100).toFixed(0)}%)</strong>
-                            <br>${INTERPRETATIONS[sortedColors[0][0]].equilibre}
-                        </p> 
-                        ${sortedColors.length > 1 ? ` 
-                            <p class="mt-4"><strong class="text-white">Influences Secondaires :</strong></p> 
-                            <ul class="list-disc list-inside space-y-2"> 
-                                ${sortedColors.slice(1, 3).map(([color, count]) => `<li><strong>${color} (${((count / data.length) * 100).toFixed(0)}%):</strong> ${INTERPRETATIONS[color].equilibre}</li>`).join('')} 
+                            <strong>Couleur Principale : ${sortedColors[0][0]} (${((sortedColors[0][1].count / data.length) * 100).toFixed(0)}%)</strong>
+                            <br>${getReportInterpretation(sortedColors[0][0], sortedColors[0][1])}
+                        </p>
+                        ${sortedColors.length > 1 ? `
+                            <p class="mt-4"><strong>Influences Secondaires :</strong></p>
+                            <ul class="list-disc list-inside space-y-2">
+                                ${sortedColors.slice(1, 2).map(([color, aggregate]) => `<li><strong>${color} (${((aggregate.count / data.length) * 100).toFixed(0)}%):</strong> ${getReportInterpretation(color, aggregate)}</li>`).join('')}
                             </ul>
-                        ` : ''} 
-                    </div> 
-                </div> 
-                <div> 
-                    <h3 class="font-semibold text-sky-400 mb-2">Synthèse Vibratoire (UBQ)</h3> 
-                    <div class="text-sm space-y-3 text-slate-300"> 
-                        <div class="grid grid-cols-3 gap-4 text-center"> 
-                            <div><span class="text-xs text-slate-400">MINIMUM</span><p class="text-lg font-mono font-bold">${minVRate.toLocaleString('fr-FR')}</p></div> 
-                            <div><span class="text-xs text-slate-400">MOYENNE</span><p class="text-2xl font-mono font-bold text-white">${avgVRate.toLocaleString('fr-FR')}</p></div> 
-                            <div><span class="text-xs text-slate-400">MAXIMUM</span><p class="text-lg font-mono font-bold">${maxVRate.toLocaleString('fr-FR')}</p></div> 
-                        </div> 
-                        <p class="mt-4"><strong class="text-white">Analyse de la Fréquence Moyenne (${avgTier.level}) :</strong><br>${avgTier.commentary}</p> 
-                    </div> 
-                </div>`; 
-            reportContent.innerHTML = reportHTML; 
+                        ` : ''}
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-2">Synthèse Vibratoire (UBQ)</h3>
+                    <div class="text-sm space-y-3 text-slate-300">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div><span class="text-xs text-slate-400">MINIMUM</span><p class="text-lg font-mono font-bold">${minVRate.toLocaleString('fr-FR')}</p></div>
+                            <div><span class="text-xs text-slate-400">MOYENNE</span><p class="text-2xl font-mono font-bold text-white">${avgVRate.toLocaleString('fr-FR')}</p></div>
+                            <div><span class="text-xs text-slate-400">MAXIMUM</span><p class="text-lg font-mono font-bold">${maxVRate.toLocaleString('fr-FR')}</p></div>
+                        </div>
+                        <p class="mt-4"><strong>Analyse de la Fréquence Moyenne (${avgTier.level}) :</strong><br>${avgTier.commentary}</p>
+                    </div>
+                </div>`;
+            reportContent.innerHTML = reportHTML;
             reportModal.classList.remove('hidden');
         }
 
@@ -877,10 +969,10 @@
 
         window.addEventListener('resize', () => {
             if (video.srcObject) {
-               const containerWidth = videoContainer.clientWidth;
-               const containerHeight = videoContainer.clientHeight;
-               canvas.width = containerWidth;
-               canvas.height = containerHeight;
+              const containerWidth = videoContainer.clientWidth;
+              const containerHeight = videoContainer.clientHeight;
+              canvas.width = containerWidth;
+              canvas.height = containerHeight;
             }
         });
 
