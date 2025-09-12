@@ -24,7 +24,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1;
+            pointer-events: none;
         }
         .video-feed {
             position: absolute;
@@ -91,8 +91,8 @@
         <section id="hero" class="text-center my-12 md:my-20">
             <h2 class="text-4xl md:text-6xl font-extrabold text-slate-100 mb-4">Visualisez Votre Signature Énergétique</h2>
             <p class="max-w-3xl mx-auto text-lg text-slate-400 mb-8">
-                Une exploration technologique des micro-variations lumineuses capturées par votre webcam.
-                Cette application utilise des algorithmes de vision par ordinateur pour interpréter en temps réel les données de votre flux vidéo.
+                Une exploration technologique des micro-variations lumineuses capturées par votre webcam ou une photo.
+                Cette application utilise des algorithmes de vision par ordinateur pour interpréter les données de votre flux vidéo ou image.
             </p>
             <a href="#analyzer" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow inline-block">
                 Démarrer l'analyse
@@ -104,20 +104,50 @@
             <div class="bg-slate-800/50 rounded-2xl p-6 md:p-8 card-glow backdrop-blur-lg">
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
                     
-                    <!-- Video Feed Column -->
+                    <!-- Analysis Interface Column -->
                     <div class="lg:col-span-3">
-                        <div id="video-container" class="relative aspect-video bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center">
-                            <video id="video" class="video-feed" playsinline autoplay muted></video>
-                            <canvas id="canvas" class="aura-canvas"></canvas>
-                            <div id="loading-spinner" class="absolute z-10 text-white">
-                                <svg class="animate-spin h-10 w-10 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                         <!-- Tab Buttons -->
+                        <div class="flex border-b border-slate-700 mb-4">
+                            <button id="liveTabButton" class="px-4 py-2 text-sm font-semibold border-b-2 border-indigo-500 text-white transition-colors duration-200">Analyse en direct</button>
+                            <button id="photoTabButton" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white transition-colors duration-200">Analyse Photo</button>
+                        </div>
+
+                        <!-- Live Analysis Tab -->
+                        <div id="liveTabContent">
+                            <div id="video-container" class="relative aspect-video bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center">
+                                <video id="video" class="video-feed" playsinline autoplay muted style="z-index: 0;"></video>
+                                <canvas id="canvas" class="aura-canvas" style="z-index: 1;"></canvas>
+                                <div id="loading-spinner" class="absolute z-10 text-white hidden">
+                                    <svg class="animate-spin h-10 w-10 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+                                <div id="start-message" class="absolute z-20 text-center p-4">
+                                    <p class="text-slate-300 mb-4">Cliquez pour activer la caméra et commencer l'analyse.</p>
+                                    <button id="startButton" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow">Activer la caméra</button>
+                                </div>
                             </div>
-                            <div id="start-message" class="absolute z-20 text-center p-4">
-                                <p class="text-slate-300 mb-4">Cliquez pour activer la caméra et commencer l'analyse.</p>
-                                <button id="startButton" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow">Activer la caméra</button>
+                        </div>
+
+                        <!-- Photo Analysis Tab -->
+                        <div id="photoTabContent" class="hidden">
+                            <div id="photo-container" class="relative aspect-video bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center">
+                                <img id="photo-preview" class="hidden absolute top-0 left-0 w-full h-full object-contain" style="z-index: 0;" />
+                                <canvas id="photo-canvas" class="aura-canvas" style="object-fit: contain; z-index: 1;"></canvas>
+                                <div id="photo-start-message" class="absolute z-20 text-center p-4">
+                                    <p class="text-slate-300 mb-4">Chargez une photo pour analyser sa signature énergétique.</p>
+                                    <input type="file" id="photoInput" class="hidden" accept="image/png, image/jpeg">
+                                    <label for="photoInput" class="cursor-pointer bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow">
+                                        Charger une Photo
+                                    </label>
+                                </div>
+                                 <div id="photo-loading-spinner" class="absolute z-10 text-white hidden">
+                                    <svg class="animate-spin h-10 w-10 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -172,13 +202,13 @@
                                 </div>
 
                                  <div class="bg-slate-900/70 p-4 rounded-lg">
-                                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Enregistrement de Session</h4>
-                                    <div class="flex items-center justify-between gap-4 mt-2">
-                                        <button id="recordButton" class="bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-sky-500 transition-all duration-300 btn-glow w-full disabled:bg-slate-600 disabled:cursor-not-allowed" disabled>Démarrer</button>
-                                        <p id="recordTimer" class="font-mono text-lg text-slate-300">00:00</p>
-                                    </div>
-                                    <p id="recordStatus" class="text-xs text-slate-500 mt-2 text-center">Activez la caméra pour pouvoir enregistrer.</p>
-                                </div>
+                                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Enregistrement de Session</h4>
+                                     <div class="flex items-center justify-between gap-4 mt-2">
+                                         <button id="recordButton" class="bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-sky-500 transition-all duration-300 btn-glow w-full disabled:bg-slate-600 disabled:cursor-not-allowed" disabled>Démarrer</button>
+                                         <p id="recordTimer" class="font-mono text-lg text-slate-300">00:00</p>
+                                     </div>
+                                     <p id="recordStatus" class="text-xs text-slate-500 mt-2 text-center">Activez la caméra pour pouvoir enregistrer.</p>
+                                 </div>
 
                             </div>
                             <div id="results-placeholder" class="text-center text-slate-500 pt-16">
@@ -198,8 +228,8 @@
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-slate-800 p-6 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-2">1. Capture Vidéo</h3>
-                    <p class="text-sm">L'application accède au flux vidéo de votre webcam en temps réel, image par image, via votre navigateur.</p>
+                    <h3 class="font-bold text-sky-400 mb-2">1. Capture Vidéo / Photo</h3>
+                    <p class="text-sm">L'application accède au flux vidéo de votre webcam ou analyse une photo que vous chargez via votre navigateur.</p>
                 </div>
                 <div class="bg-slate-800 p-6 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-2">2. Analyse Algorithmique</h3>
@@ -220,7 +250,7 @@
                 Les interprétations symboliques des couleurs sont basées sur des concepts issus de la psychologie des couleurs et de diverses approches holistiques. Elles sont fournies à titre informatif et exploratoire uniquement.
                  <br><br>
                 L'analyse du "taux vibratoire" est une métrique algorithmique dérivée de la cohérence et de la luminance du signal vidéo. Elle ne représente aucune mesure spirituelle ou ésotérique. Les termes employés (ex: UBQ - Unités Bovis Quantiques) sont des unités conceptuelles propres à cet outil pour quantifier la qualité du signal. Cette fonctionnalité est proposée comme un indicateur de l'état de calme ou de stress physiologique, dans un cadre purement technologique et informationnel.
-                <br><br>
+                 <br><br>
                 Ce projet a été développé dans le respect de toutes les convictions. Il ne promeut aucune croyance, idéologie ou pratique contraire aux principes fondamentaux des diverses confessions, y compris l'Islam. Il se distance explicitement de toute forme de divination, de voyance ou de pratiques associées au surnaturel, qui sont des concepts étrangers à sa nature purement technique.
             </p>
         </section>
@@ -250,6 +280,7 @@
     </footer>
 
     <script>
+        // --- DOM ELEMENTS ---
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -259,6 +290,20 @@
         const resultsContainer = document.getElementById('results');
         const resultsPlaceholder = document.getElementById('results-placeholder');
         const videoContainer = document.getElementById('video-container');
+
+        // Tabs elements
+        const liveTabButton = document.getElementById('liveTabButton');
+        const photoTabButton = document.getElementById('photoTabButton');
+        const liveTabContent = document.getElementById('liveTabContent');
+        const photoTabContent = document.getElementById('photoTabContent');
+        
+        // Photo elements
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photo-preview');
+        const photoStartMessage = document.getElementById('photo-start-message');
+        const photoLoadingSpinner = document.getElementById('photo-loading-spinner');
+        const photoCanvas = document.getElementById('photo-canvas');
+        const photoCtx = photoCanvas.getContext('2d', { willReadFrequently: true });
 
         // Aura elements
         const dominantColorPreview = document.getElementById('dominant-color-preview');
@@ -283,56 +328,21 @@
         const closeModalButton = document.getElementById('close-modal-button');
         const closeModalButton2 = document.getElementById('close-modal-button-2');
         const reportContent = document.getElementById('report-content');
-
-        const COLOR_DATA = {
-            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Force', 'Action'] },
-            'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Joie', 'Sociabilité'] },
-            'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Confiance', 'Optimisme'] },
-            'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Harmonie', 'Nature'] },
-            'Bleu': { wavelength: '435-520', keywords: ['Calme', 'Communication', 'Sérénité'] },
-            'Indigo': { wavelength: '400-435', keywords: ['Intuition', 'Sagesse', 'Perception'] },
-            'Violet': { wavelength: '380-400', keywords: ['Conscience', 'Transformation', 'Imagination'] },
-            'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Clarté', 'Potentiel'] }
-        };
-
-        const INTERPRETATIONS = {
-            'Rouge': "Associée à la force vitale, à l'énergie physique et à la volonté. Une prédominance de cette fréquence peut symboliser une période d'action, de courage et de connexion avec le monde matériel.",
-            'Orange': "Cette couleur est souvent liée à la créativité, aux émotions et aux relations. Sa présence peut indiquer une ouverture aux autres, un enthousiasme et une expression de la joie de vivre.",
-            'Jaune': "Symbolise l'intellect, la clarté mentale et le pouvoir personnel. Une forte présence de jaune peut suggérer une période de grande activité mentale, d'apprentissage et de confiance en soi.",
-            'Vert': "Représente l'équilibre, l'harmonie et la croissance. Cette fréquence est souvent associée au calme, à la compassion et à la capacité de régénération.",
-            'Bleu': "Liée à la communication, à la paix et à l'expression. Une aura à dominante bleue peut indiquer un état de relaxation, de sérénité et une communication fluide.",
-            'Indigo': "Associée à l'intuition et à la sagesse intérieure. Cette couleur profonde suggère une connexion avec une compréhension plus profonde des choses et une forte introspection.",
-            'Violet': "Symbolise la conscience élevée et l'imagination. Sa présence est souvent interprétée comme un signe de transformation et de sensibilité.",
-            'Blanc': "Considérée comme une couleur de protection et de pureté, contenant toutes les autres. Elle peut indiquer une grande clarté, un équilibre énergétique ou une phase de nouveau départ.",
-        };
-
-        const VIBRATIONAL_DATA = {
-            tres_bas: {
-                level: 'Très Basse Fréquence',
-                commentary: "L'analyse indique une dispersion significative du signal bio-photonique. Cela peut correspondre à un état de fatigue physique profonde ou de stress mental important. Il est recommandé de privilégier le repos, l'hydratation et des activités calmes pour favoriser la régulation naturelle du système.",
-                colorHex: '#ef4444'
-            },
-            bas: {
-                level: 'Basse Fréquence',
-                commentary: "Le signal présente une faible cohérence, souvent associée à un état de préoccupation mentale ou de tension corporelle. Des pratiques de relaxation, comme la respiration consciente ou une marche dans la nature, peuvent aider à améliorer la stabilité du signal.",
-                colorHex: '#f97316'
-            },
-            equilibre: {
-                level: 'Fréquence d\'Équilibre',
-                commentary: "Le signal est stable et modérément cohérent, ce qui reflète un état d'homéostasie général. C'est le signe d'un équilibre fonctionnel entre l'activité mentale et la relaxation physique. Maintenir des habitudes de vie saines soutiendra cette stabilité.",
-                colorHex: '#22c55e'
-            },
-            eleve: {
-                level: 'Haute Fréquence',
-                commentary: "Une forte cohérence et une haute luminance caractérisent le signal. Cela correspond typiquement à un état de clarté mentale, de concentration focalisée ou de bien-être physique notable. Le système nerveux autonome montre des signes de régulation optimale.",
-                colorHex: '#38bdf8'
-            },
-            optimal: {
-                level: 'Fréquence Optimale',
-                commentary: "Le signal atteint un pic de cohérence et de luminance, une signature observée lors d'états de paix intérieure profonde ou de grande créativité. Cet état reflète une harmonie exceptionnelle entre les systèmes physiologique et psychologique.",
-                colorHex: '#8b5cf6'
-            }
-        };
+        
+        // --- CONSTANTS & STATE ---
+        const COLOR_DATA = { /* ... (same as original) ... */ };
+        const INTERPRETATIONS = { /* ... (same as original) ... */ };
+        const VIBRATIONAL_DATA = { /* ... (same as original) ... */ };
+        // Populate constants from original code
+        Object.assign(COLOR_DATA, {
+            'Rouge': { wavelength: '625-740', keywords: ['Vitalité', 'Force', 'Action'] }, 'Orange': { wavelength: '590-625', keywords: ['Créativité', 'Joie', 'Sociabilité'] }, 'Jaune': { wavelength: '565-590', keywords: ['Intellect', 'Confiance', 'Optimisme'] }, 'Vert': { wavelength: '520-565', keywords: ['Équilibre', 'Harmonie', 'Nature'] }, 'Bleu': { wavelength: '435-520', keywords: ['Calme', 'Communication', 'Sérénité'] }, 'Indigo': { wavelength: '400-435', keywords: ['Intuition', 'Sagesse', 'Perception'] }, 'Violet': { wavelength: '380-400', keywords: ['Conscience', 'Transformation', 'Imagination'] }, 'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Clarté', 'Potentiel'] }
+        });
+        Object.assign(INTERPRETATIONS, {
+            'Rouge': "Associée à la force vitale, à l'énergie physique et à la volonté. Une prédominance de cette fréquence peut symboliser une période d'action, de courage et de connexion avec le monde matériel.", 'Orange': "Cette couleur est souvent liée à la créativité, aux émotions et aux relations. Sa présence peut indiquer une ouverture aux autres, un enthousiasme et une expression de la joie de vivre.", 'Jaune': "Symbolise l'intellect, la clarté mentale et le pouvoir personnel. Une forte présence de jaune peut suggérer une période de grande activité mentale, d'apprentissage et de confiance en soi.", 'Vert': "Représente l'équilibre, l'harmonie et la croissance. Cette fréquence est souvent associée au calme, à la compassion et à la capacité de régénération.", 'Bleu': "Liée à la communication, à la paix et à l'expression. Une aura à dominante bleue peut indiquer un état de relaxation, de sérénité et une communication fluide.", 'Indigo': "Associée à l'intuition et à la sagesse intérieure. Cette couleur profonde suggère une connexion avec une compréhension plus profonde des choses et une forte introspection.", 'Violet': "Symbolise la conscience élevée et l'imagination. Sa présence est souvent interprétée comme un signe de transformation et de sensibilité.", 'Blanc': "Considérée comme une couleur de protection et de pureté, contenant toutes les autres. Elle peut indiquer une grande clarté, un équilibre énergétique ou une phase de nouveau départ.",
+        });
+        Object.assign(VIBRATIONAL_DATA, {
+             tres_bas: { level: 'Très Basse Fréquence', commentary: "L'analyse indique une dispersion significative du signal bio-photonique. Cela peut correspondre à un état de fatigue physique profonde ou de stress mental important. Il est recommandé de privilégier le repos, l'hydratation et des activités calmes pour favoriser la régulation naturelle du système.", colorHex: '#ef4444' }, bas: { level: 'Basse Fréquence', commentary: "Le signal présente une faible cohérence, souvent associée à un état de préoccupation mentale ou de tension corporelle. Des pratiques de relaxation, comme la respiration consciente ou une marche dans la nature, peuvent aider à améliorer la stabilité du signal.", colorHex: '#f97316' }, equilibre: { level: 'Fréquence d\'Équilibre', commentary: "Le signal est stable et modérément cohérent, ce qui reflète un état d'homéostasie général. C'est le signe d'un équilibre fonctionnel entre l'activité mentale et la relaxation physique. Maintenir des habitudes de vie saines soutiendra cette stabilité.", colorHex: '#22c55e' }, eleve: { level: 'Haute Fréquence', commentary: "Une forte cohérence et une haute luminance caractérisent le signal. Cela correspond typiquement à un état de clarté mentale, de concentration focalisée ou de bien-être physique notable. Le système nerveux autonome montre des signes de régulation optimale.", colorHex: '#38bdf8' }, optimal: { level: 'Fréquence Optimale', commentary: "Le signal atteint un pic de cohérence et de luminance, une signature observée lors d'états de paix intérieure profonde ou de grande créativité. Cet état reflète une harmonie exceptionnelle entre les systèmes physiologique et psychologique.", colorHex: '#8b5cf6' }
+        });
 
         let animationFrameId;
         let isRecording = false;
@@ -341,6 +351,7 @@
         let recordedData = [];
         const MAX_RECORD_TIME = 45 * 60;
 
+        // --- CAMERA & LIVE ANALYSIS ---
         async function setupCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -376,40 +387,24 @@
             }
         }
 
-        function getColorName(r, g, b) {
-            const hsv = rgbToHsv(r, g, b);
-            const h = hsv[0] * 360;
-            const s = hsv[1];
-            const v = hsv[2];
-
-            if (s < 0.2 || v < 0.2) return 'Blanc';
-            if (h >= 330 || h < 15) return 'Rouge';
-            if (h >= 15 && h < 45) return 'Orange';
-            if (h >= 45 && h < 75) return 'Jaune';
-            if (h >= 75 && h < 165) return 'Vert';
-            if (h >= 165 && h < 255) return 'Bleu';
-            if (h >= 255 && h < 285) return 'Indigo';
-            if (h >= 285 && h < 330) return 'Violet';
-            return 'Inconnu';
-        }
-
-        function rgbToHsv(r, g, b) {
-            r /= 255, g /= 255, b /= 255;
-            let max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, v = max;
-            let d = max - min;
-            s = max == 0 ? 0 : d / max;
-            if (max == min) {
-                h = 0;
-            } else {
-                switch (max) {
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                    case g: h = (b - r) / d + 2; break;
-                    case b: h = (r - g) / d + 4; break;
-                }
-                h /= 6;
+        function stopCamera() {
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
             }
-            return [h, s, v];
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            startMessage.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
+            resultsContainer.classList.add('hidden');
+            resultsPlaceholder.classList.remove('hidden');
+            if(isRecording) toggleRecording();
+            recordButton.disabled = true;
+            recordStatus.textContent = "Activez la caméra pour pouvoir enregistrer.";
+            recordTimer.textContent = '00:00';
         }
 
         function tick() {
@@ -422,31 +417,9 @@
             ctx.restore();
 
             const imageData = ctx.getImageData(0, 0, width, height);
-            const data = imageData.data;
-
-            let r = 0, g = 0, b = 0, count = 0;
-            const blurRadius = Math.min(width, height) * 0.25;
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            for (let y = 0; y < height; y += 4) {
-                for (let x = 0; x < width; x += 4) {
-                    const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-                    if (dist > blurRadius * 0.5 && dist < blurRadius) {
-                        const index = (y * width + x) * 4;
-                        r += data[index];
-                        g += data[index + 1];
-                        b += data[index + 2];
-                        count++;
-                    }
-                }
-            }
+            const { avgR, avgG, avgB, count } = calculateAverageColorFromPeriphery(imageData);
 
             if (count > 0) {
-                const avgR = Math.floor(r / count);
-                const avgG = Math.floor(g / count);
-                const avgB = Math.floor(b / count);
-
                 const vibrationalRate = calculateVibrationalRate(avgR, avgG, avgB);
                 
                 if(isRecording) {
@@ -456,7 +429,7 @@
                     }
                 }
 
-                const gradient = ctx.createRadialGradient(centerX, centerY, blurRadius * 0.6, centerX, centerY, blurRadius * 1.2);
+                const gradient = ctx.createRadialGradient(width/2, height/2, width * 0.3, width/2, height/2, width * 0.6);
                 gradient.addColorStop(0, `rgba(${avgR}, ${avgG}, ${avgB}, 0.5)`);
                 gradient.addColorStop(1, `rgba(${avgR}, ${avgG}, ${avgB}, 0)`);
                 ctx.fillStyle = gradient;
@@ -468,154 +441,167 @@
 
             animationFrameId = requestAnimationFrame(tick);
         }
+
+        // --- PHOTO ANALYSIS ---
+        function analyzeImage(img) {
+            photoLoadingSpinner.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            resultsPlaceholder.classList.add('hidden');
+            
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+            tempCanvas.width = img.width;
+            tempCanvas.height = img.height;
+            tempCtx.drawImage(img, 0, 0);
+            const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+            
+            const { avgR, avgG, avgB, count } = calculateAverageColorFromPeriphery(imageData);
+
+            if (count > 0) {
+                 const vibrationalRate = calculateVibrationalRate(avgR, avgG, avgB);
+                 updateAuraUI(avgR, avgG, avgB);
+                 updateVibrationalUI(vibrationalRate);
+
+                 const container = document.getElementById('photo-container');
+                 const { clientWidth: width, clientHeight: height } = container;
+                 photoCanvas.width = width;
+                 photoCanvas.height = height;
+                 photoCtx.clearRect(0, 0, width, height);
+
+                 const gradient = photoCtx.createRadialGradient(width/2, height/2, width * 0.35, width/2, height/2, width * 0.7);
+                 gradient.addColorStop(0, `rgba(${avgR}, ${avgG}, ${avgB}, 0.5)`);
+                 gradient.addColorStop(1, `rgba(${avgR}, ${avgG}, ${avgB}, 0)`);
+                 photoCtx.fillStyle = gradient;
+                 photoCtx.fillRect(0, 0, width, height);
+            }
+        }
         
-        function calculateVibrationalRate(r, g, b) {
+        // --- CORE LOGIC & UTILITIES ---
+        function calculateAverageColorFromPeriphery(imageData) {
+            const { data, width, height } = imageData;
+            let r = 0, g = 0, b = 0, count = 0;
+            const radius = Math.min(width, height) * 0.25;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            for (let y = 0; y < height; y += 4) {
+                for (let x = 0; x < width; x += 4) {
+                    const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+                    if (dist > radius * 0.5 && dist < radius) {
+                        const index = (y * width + x) * 4;
+                        r += data[index];
+                        g += data[index + 1];
+                        b += data[index + 2];
+                        count++;
+                    }
+                }
+            }
+            if (count > 0) {
+                return { avgR: Math.floor(r / count), avgG: Math.floor(g / count), avgB: Math.floor(b / count), count };
+            }
+            return { avgR: 0, avgG: 0, avgB: 0, count: 0 };
+        }
+
+        function calculateVibrationalRate(r, g, b) { /* ... (same as original) ... */ 
             const [h, s, v] = rgbToHsv(r, g, b); // v: brightness, s: saturation
             const maxRate = 20000;
-            // Weighted formula: brightness is key, saturation (purity) refines it
             let rate = maxRate * (v * 0.7 + s * 0.3);
             const fluctuation = (Math.random() - 0.5) * 50; // Simulate minor flux
             return Math.max(0, Math.floor(rate + fluctuation));
         }
-        
-        function getVibrationalTier(rate) {
-            if (rate <= 4000) return VIBRATIONAL_DATA.tres_bas;
-            if (rate <= 7500) return VIBRATIONAL_DATA.bas;
-            if (rate <= 11000) return VIBRATIONAL_DATA.equilibre;
-            if (rate <= 15000) return VIBRATIONAL_DATA.eleve;
-            return VIBRATIONAL_DATA.optimal;
+        function getVibrationalTier(rate) { /* ... (same as original) ... */ 
+            if (rate <= 4000) return VIBRATIONAL_DATA.tres_bas; if (rate <= 7500) return VIBRATIONAL_DATA.bas; if (rate <= 11000) return VIBRATIONAL_DATA.equilibre; if (rate <= 15000) return VIBRATIONAL_DATA.eleve; return VIBRATIONAL_DATA.optimal;
+        }
+        function getColorName(r, g, b) { /* ... (same as original) ... */ 
+            const hsv = rgbToHsv(r, g, b); const h = hsv[0] * 360; const s = hsv[1]; const v = hsv[2]; if (s < 0.2 || v < 0.2) return 'Blanc'; if (h >= 330 || h < 15) return 'Rouge'; if (h >= 15 && h < 45) return 'Orange'; if (h >= 45 && h < 75) return 'Jaune'; if (h >= 75 && h < 165) return 'Vert'; if (h >= 165 && h < 255) return 'Bleu'; if (h >= 255 && h < 285) return 'Indigo'; if (h >= 285 && h < 330) return 'Violet'; return 'Inconnu';
+        }
+        function rgbToHsv(r, g, b) { /* ... (same as original) ... */ 
+            r /= 255, g /= 255, b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, v = max; let d = max - min; s = max == 0 ? 0 : d / max; if (max == min) { h = 0; } else { switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } return [h, s, v];
+        }
+        function formatTime(seconds) { /* ... (same as original) ... */ 
+             const m = Math.floor(seconds / 60).toString().padStart(2, '0'); const s = (seconds % 60).toString().padStart(2, '0'); return `${m}:${s}`;
         }
 
-        function updateVibrationalUI(rate) {
-            vibrationalRateValue.textContent = rate.toLocaleString('fr-FR');
-            const maxRate = 20000;
-            const percentage = Math.min(100, (rate / maxRate) * 100);
-            vibrationalGaugeBar.style.strokeDasharray = `${percentage}, 100`;
-
-            const tier = getVibrationalTier(rate);
-            vibrationalGaugeBar.style.stroke = tier.colorHex;
-            vibrationalLevelText.textContent = tier.level;
-            vibrationalCommentary.textContent = tier.commentary;
+        // --- UI UPDATES ---
+        function updateAuraUI(r, g, b) { /* ... (same as original) ... */
+             const color = `rgb(${r}, ${g}, ${b})`; const colorName = getColorName(r, g, b); dominantColorPreview.style.backgroundColor = color; dominantColorName.textContent = colorName; interpretationText.textContent = INTERPRETATIONS[colorName] || "Analyse des données en cours..."; const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] }; dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`; dominantColorKeywords.innerHTML = ''; colorData.keywords.forEach(keyword => { const keywordElement = document.createElement('span'); keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full'; keywordElement.textContent = keyword; dominantColorKeywords.appendChild(keywordElement); });
+        }
+        function updateVibrationalUI(rate) { /* ... (same as original) ... */ 
+            vibrationalRateValue.textContent = rate.toLocaleString('fr-FR'); const maxRate = 20000; const percentage = Math.min(100, (rate / maxRate) * 100); vibrationalGaugeBar.style.strokeDasharray = `${percentage}, 100`; const tier = getVibrationalTier(rate); vibrationalGaugeBar.style.stroke = tier.colorHex; vibrationalLevelText.textContent = tier.level; vibrationalCommentary.textContent = tier.commentary;
         }
 
-        function updateAuraUI(r, g, b) {
-            const color = `rgb(${r}, ${g}, ${b})`;
-            const colorName = getColorName(r, g, b);
-            
-            dominantColorPreview.style.backgroundColor = color;
-            dominantColorName.textContent = colorName;
-            interpretationText.textContent = INTERPRETATIONS[colorName] || "Analyse des données en cours...";
-
-            const colorData = COLOR_DATA[colorName] || { wavelength: 'N/A', keywords: [] };
-            dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`;
-
-            dominantColorKeywords.innerHTML = '';
-            colorData.keywords.forEach(keyword => {
-                const keywordElement = document.createElement('span');
-                keywordElement.className = 'text-xs bg-slate-700/50 text-sky-300 px-2 py-0.5 rounded-full';
-                keywordElement.textContent = keyword;
-                dominantColorKeywords.appendChild(keywordElement);
-            });
+        // --- RECORDING & REPORTING ---
+        function toggleRecording() { /* ... (same as original) ... */
+             isRecording = !isRecording; if(isRecording) { recordedData = []; recordingStartTime = Date.now(); recordButton.textContent = "Arrêter"; recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500'); recordStatus.textContent = "Enregistrement en cours..."; recordIntervalId = setInterval(updateTimer, 1000); } else { clearInterval(recordIntervalId); recordButton.textContent = "Démarrer"; recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse'); recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500'); recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`; analyzeAndShowReport(recordedData); }
         }
-
-        function toggleRecording() {
-            isRecording = !isRecording;
-            if(isRecording) {
-                recordedData = [];
-                recordingStartTime = Date.now();
-                recordButton.textContent = "Arrêter";
-                recordButton.classList.add('bg-red-600', 'hover:bg-red-500', 'recording-pulse');
-                recordButton.classList.remove('bg-sky-600', 'hover:bg-sky-500');
-                recordStatus.textContent = "Enregistrement en cours...";
-                recordIntervalId = setInterval(updateTimer, 1000);
-            } else {
-                clearInterval(recordIntervalId);
-                recordButton.textContent = "Démarrer";
-                recordButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'recording-pulse');
-                recordButton.classList.add('bg-sky-600', 'hover:bg-sky-500');
-                recordStatus.textContent = `Enregistrement de ${formatTime(Math.floor((Date.now() - recordingStartTime)/1000))} terminé.`;
-                analyzeAndShowReport(recordedData);
-            }
+        function updateTimer() { /* ... (same as original) ... */ 
+             const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000); recordTimer.textContent = formatTime(elapsedSeconds); if(elapsedSeconds >= MAX_RECORD_TIME) { toggleRecording(); }
         }
-        
-        function updateTimer() {
-            const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
-            recordTimer.textContent = formatTime(elapsedSeconds);
-            if(elapsedSeconds >= MAX_RECORD_TIME) {
-                toggleRecording();
-            }
+        function analyzeAndShowReport(data) { /* ... (same as original) ... */ 
+            if (data.length < 2) return; const colorCounts = {}; data.forEach(d => { const colorName = getColorName(d.r, d.g, d.b); colorCounts[colorName] = (colorCounts[colorName] || 0) + 1; }); const sortedColors = Object.entries(colorCounts).sort(([,a],[,b]) => b-a); const vRates = data.map(d => d.vRate); const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length); const maxVRate = Math.round(Math.max(...vRates)); const minVRate = Math.round(Math.min(...vRates)); const avgTier = getVibrationalTier(avgVRate); let reportHTML = ` <div> <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle de l'Aura</h3> <div class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden"> ${data.map(d => `<div style="flex-grow: 1; background-color: rgb(${d.r}, ${d.g}, ${d.b});"></div>`).join('')} </div> </div> <div> <h3 class="font-semibold text-sky-400 mb-2">Analyse de l'Aura</h3> <div class="text-sm space-y-3 text-slate-300"> <p><strong class="text-white">Couleur Principale : ${sortedColors[0][0]} (${((sortedColors[0][1] / data.length) * 100).toFixed(0)}%)</strong><br>${INTERPRETATIONS[sortedColors[0][0]]}</p> ${sortedColors.length > 1 ? ` <p class="mt-4"><strong class="text-white">Influences Secondaires :</strong></p> <ul class="list-disc list-inside space-y-2"> ${sortedColors.slice(1, 3).map(([color, count]) => `<li><strong>${color} (${((count / data.length) * 100).toFixed(0)}%):</strong> ${INTERPRETATIONS[color]}</li>`).join('')} </ul>` : ''} </div> </div> <div> <h3 class="font-semibold text-sky-400 mb-2">Synthèse Vibratoire (UBQ)</h3> <div class="text-sm space-y-3 text-slate-300"> <div class="grid grid-cols-3 gap-4 text-center"> <div><span class="text-xs text-slate-400">MINIMUM</span><p class="text-lg font-mono font-bold">${minVRate.toLocaleString('fr-FR')}</p></div> <div><span class="text-xs text-slate-400">MOYENNE</span><p class="text-2xl font-mono font-bold text-white">${avgVRate.toLocaleString('fr-FR')}</p></div> <div><span class="text-xs text-slate-400">MAXIMUM</span><p class="text-lg font-mono font-bold">${maxVRate.toLocaleString('fr-FR')}</p></div> </div> <p class="mt-4"><strong class="text-white">Analyse de la Fréquence Moyenne (${avgTier.level}) :</strong><br>${avgTier.commentary}</p> </div> </div> `; reportContent.innerHTML = reportHTML; reportModal.classList.remove('hidden');
         }
+        function closeModal() { reportModal.classList.add('hidden'); }
 
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-            const s = (seconds % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
-        function analyzeAndShowReport(data) {
-            if (data.length < 2) return;
-
-            // Aura Analysis
-            const colorCounts = {};
-            data.forEach(d => {
-                const colorName = getColorName(d.r, d.g, d.b);
-                colorCounts[colorName] = (colorCounts[colorName] || 0) + 1;
-            });
-            const sortedColors = Object.entries(colorCounts).sort(([,a],[,b]) => b-a);
-            
-            // Vibrational Analysis
-            const vRates = data.map(d => d.vRate);
-            const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length);
-            const maxVRate = Math.round(Math.max(...vRates));
-            const minVRate = Math.round(Math.min(...vRates));
-            const avgTier = getVibrationalTier(avgVRate);
-
-            // Generate report HTML
-            let reportHTML = `
-                <div>
-                    <h3 class="font-semibold text-sky-400 mb-2">Visualisation Temporelle de l'Aura</h3>
-                    <div class="w-full h-10 bg-slate-900 rounded-lg flex overflow-hidden">
-                        ${data.map(d => `<div style="flex-grow: 1; background-color: rgb(${d.r}, ${d.g}, ${d.b});"></div>`).join('')}
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-sky-400 mb-2">Analyse de l'Aura</h3>
-                    <div class="text-sm space-y-3 text-slate-300">
-                        <p><strong class="text-white">Couleur Principale : ${sortedColors[0][0]} (${((sortedColors[0][1] / data.length) * 100).toFixed(0)}%)</strong><br>${INTERPRETATIONS[sortedColors[0][0]]}</p>
-                        ${sortedColors.length > 1 ? `
-                        <p class="mt-4"><strong class="text-white">Influences Secondaires :</strong></p>
-                        <ul class="list-disc list-inside space-y-2">
-                            ${sortedColors.slice(1, 3).map(([color, count]) => `<li><strong>${color} (${((count / data.length) * 100).toFixed(0)}%):</strong> ${INTERPRETATIONS[color]}</li>`).join('')}
-                        </ul>` : ''}
-                    </div>
-                </div>
-                 <div>
-                    <h3 class="font-semibold text-sky-400 mb-2">Synthèse Vibratoire (UBQ)</h3>
-                     <div class="text-sm space-y-3 text-slate-300">
-                         <div class="grid grid-cols-3 gap-4 text-center">
-                            <div><span class="text-xs text-slate-400">MINIMUM</span><p class="text-lg font-mono font-bold">${minVRate.toLocaleString('fr-FR')}</p></div>
-                            <div><span class="text-xs text-slate-400">MOYENNE</span><p class="text-2xl font-mono font-bold text-white">${avgVRate.toLocaleString('fr-FR')}</p></div>
-                            <div><span class="text-xs text-slate-400">MAXIMUM</span><p class="text-lg font-mono font-bold">${maxVRate.toLocaleString('fr-FR')}</p></div>
-                         </div>
-                        <p class="mt-4"><strong class="text-white">Analyse de la Fréquence Moyenne (${avgTier.level}) :</strong><br>${avgTier.commentary}</p>
-                    </div>
-                </div>
-            `;
-
-            reportContent.innerHTML = reportHTML;
-            reportModal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            reportModal.classList.add('hidden');
-        }
-
+        // --- EVENT LISTENERS ---
         startButton.addEventListener('click', () => {
             startMessage.classList.add('hidden');
             loadingSpinner.classList.remove('hidden');
             setupCamera();
         });
 
+        photoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                photoStartMessage.classList.add('hidden');
+                photoLoadingSpinner.classList.remove('hidden');
+                photoPreview.classList.add('hidden');
+                photoCtx.clearRect(0,0, photoCanvas.width, photoCanvas.height);
+
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    photoPreview.src = imageUrl;
+                    photoPreview.classList.remove('hidden');
+                    
+                    const img = new Image();
+                    img.onload = () => analyzeImage(img);
+                    img.onerror = () => {
+                        photoLoadingSpinner.classList.add('hidden');
+                        photoStartMessage.classList.remove('hidden');
+                        photoStartMessage.querySelector('p').textContent = "Erreur lors du chargement de l'image.";
+                    };
+                    img.src = imageUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        liveTabButton.addEventListener('click', () => {
+            photoTabContent.classList.add('hidden');
+            liveTabContent.classList.remove('hidden');
+            liveTabButton.classList.add('border-indigo-500', 'text-white');
+            liveTabButton.classList.remove('border-transparent', 'text-slate-400');
+            photoTabButton.classList.add('border-transparent', 'text-slate-400');
+            photoTabButton.classList.remove('border-indigo-500', 'text-white');
+            
+            recordButton.disabled = video.srcObject ? false : true;
+            recordStatus.textContent = video.srcObject ? "Prêt pour l'enregistrement." : "Activez la caméra pour pouvoir enregistrer.";
+        });
+
+        photoTabButton.addEventListener('click', () => {
+            liveTabContent.classList.add('hidden');
+            photoTabContent.classList.remove('hidden');
+            photoTabButton.classList.add('border-indigo-500', 'text-white');
+            photoTabButton.classList.remove('border-transparent', 'text-slate-400');
+            liveTabButton.classList.add('border-transparent', 'text-slate-400');
+            liveTabButton.classList.remove('border-indigo-500', 'text-white');
+
+            stopCamera();
+            recordButton.disabled = true;
+            recordStatus.textContent = "L'enregistrement n'est pas disponible pour les photos.";
+        });
+        
         recordButton.addEventListener('click', toggleRecording);
         closeModalButton.addEventListener('click', closeModal);
         closeModalButton2.addEventListener('click', closeModal);
