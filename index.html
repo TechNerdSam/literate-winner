@@ -179,7 +179,7 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Analyse Vibratoire Section -->
+                                <!-- Vibrational Analysis Section -->
                                 <div class="bg-slate-900/70 p-4 rounded-lg">
                                     <h4 class="text-sm font-semibold text-slate-400 mb-4">Analyse du Taux Vibratoire</h4>
                                     <div class="flex flex-col items-center gap-4">
@@ -207,6 +207,16 @@
                                 <div class="bg-slate-900/70 p-4 rounded-lg">
                                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Analyse Détaillée de l'Aura</h4>
                                     <div id="interpretation-text" class="text-slate-300 text-sm h-32 overflow-y-auto">L'analyse débutera lorsque la caméra sera active. Le système interprète les variations de chrominance et de luminance comme des indicateurs potentiels de l'état physiologique.</div>
+                                </div>
+                                
+                                <div class="bg-slate-900/70 p-4 rounded-lg">
+                                    <label for="showEnergeticBodies" class="flex items-center justify-between cursor-pointer">
+                                        <span class="text-sm font-semibold text-slate-400">Voir les 7 corps énergétiques</span>
+                                        <div class="relative">
+                                            <input type="checkbox" id="showEnergeticBodies" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                        </div>
+                                    </label>
                                 </div>
 
                                  <div class="bg-slate-900/70 p-4 rounded-lg">
@@ -322,6 +332,7 @@
         const dominantColorWavelength = document.getElementById('dominant-color-wavelength');
         const dominantColorKeywords = document.getElementById('dominant-color-keywords');
         const interpretationText = document.getElementById('interpretation-text');
+        const showEnergeticBodiesCheckbox = document.getElementById('showEnergeticBodies');
         
         // Vibrational elements
         const vibrationalGaugeBar = document.getElementById('vibrational-gauge-bar');
@@ -352,7 +363,6 @@
             'Blanc': { wavelength: 'Spectre large', keywords: ['Pureté', 'Clarté', 'Potentiel'] }
         };
 
-        // --- [NEW] EXPANDED INTERPRETATIONS FOR REPORT ANALYSIS ---
         const INTERPRETATIONS = {
             'Rouge': {
                 pale: "Un rouge pâle ou rosé signale une énergie vitale en phase de réveil. C'est le dégel après l'hiver : la force de vie revient doucement, la passion s'éveille sans bruit. Peut indiquer une convalescence, un nouveau départ prudent ou un amour naissant. C'est une force tranquille, pleine de potentiel.",
@@ -434,6 +444,9 @@
         let recordIntervalId = null;
         let recordedData = [];
         const MAX_RECORD_TIME = 45 * 60;
+        let particles = [];
+        const MAX_PARTICLES = 150;
+        let time = 0; // For animations
 
         // --- UI MANAGEMENT ---
         function showResults(title) {
@@ -509,6 +522,7 @@
                 animationFrameId = null;
             }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles = []; // Clear particles on stop
             startMessage.classList.remove('hidden');
             stopButton.classList.add('hidden');
             loadingSpinner.classList.add('hidden');
@@ -542,12 +556,14 @@
                         recordedData.push({ t: now, r: avgR, g: avgG, b: avgB, s:s, v:v, vRate: vibrationalRate });
                     }
                 }
-
-                const gradient = ctx.createRadialGradient(width/2, height/2, width * 0.3, width/2, height/2, width * 0.6);
-                gradient.addColorStop(0, `rgba(${avgR}, ${avgG}, ${avgB}, 0.5)`);
-                gradient.addColorStop(1, `rgba(${avgR}, ${avgG}, ${avgB}, 0)`);
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, width, height);
+                
+                if (showEnergeticBodiesCheckbox.checked) {
+                    drawEnergeticBodies(ctx, width, height, avgR, avgG, avgB);
+                } else {
+                    drawAuraLayer(ctx, width, height, [avgR, avgG, avgB], 0.6, 0.6);
+                }
+                
+                manageParticles(ctx, width, height, avgR, avgG, avgB, vibrationalRate);
 
                 updateAuraUI(avgR, avgG, avgB);
                 updateVibrationalUI(vibrationalRate);
@@ -580,12 +596,13 @@
                  photoCanvas.width = width;
                  photoCanvas.height = height;
                  photoCtx.clearRect(0, 0, width, height);
-
-                 const gradient = photoCtx.createRadialGradient(width/2, height/2, width * 0.35, width/2, height/2, width * 0.7);
-                 gradient.addColorStop(0, `rgba(${avgR}, ${avgG}, ${avgB}, 0.5)`);
-                 gradient.addColorStop(1, `rgba(${avgR}, ${avgG}, ${avgB}, 0)`);
-                 photoCtx.fillStyle = gradient;
-                 photoCtx.fillRect(0, 0, width, height);
+                
+                time = 0; // Reset time for static image pulse
+                if (showEnergeticBodiesCheckbox.checked) {
+                    drawEnergeticBodies(photoCtx, width, height, avgR, avgG, avgB);
+                } else {
+                    drawAuraLayer(photoCtx, width, height, [avgR, avgG, avgB], 0.7, 0.6);
+                }
             }
         }
         
@@ -656,8 +673,7 @@
             if (h >= 285 && h < 330) return 'Violet'; 
             return 'Inconnu';
         }
-
-        // --- [NEW HELPER FUNCTION] ---
+        
         function getIntensityLabel(s, v) {
             const intensityScore = (s + v) / 2;
             const percent = Math.round(intensityScore * 100);
@@ -674,14 +690,10 @@
             const interpretations = INTERPRETATIONS[colorName];
             if (!interpretations) return "Analyse des données en cours...";
             
-            // intensityKey is still used to select the correct descriptive text below.
             const intensityKey = getIntensityKey(s, v); 
-            
             const { label, percent } = getIntensityLabel(s, v);
-
             const title = `Intensité de l'Aura : ${label} (${percent}%)`;
             
-            // The descriptive text from INTERPRETATIONS remains the same.
             return `<strong class="block mb-1 text-slate-100">${title}</strong> ${interpretations[intensityKey]}`;
         }
 
@@ -714,6 +726,104 @@
              const m = Math.floor(seconds / 60).toString().padStart(2, '0'); 
              const s = (seconds % 60).toString().padStart(2, '0'); 
              return `${m}:${s}`;
+        }
+        
+        // --- VISUALIZATION FUNCTIONS ---
+        
+        function hsvToRgb(h, s, v) {
+            let r, g, b;
+            let i = Math.floor(h * 6);
+            let f = h * 6 - i;
+            let p = v * (1 - s);
+            let q = v * (1 - f * s);
+            let t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        function drawAuraLayer(currentCtx, width, height, rgb, radiusFactor, opacity) {
+            const gradient = currentCtx.createRadialGradient(
+                width / 2, height / 2, width * (radiusFactor * 0.6),
+                width / 2, height / 2, width * radiusFactor
+            );
+            gradient.addColorStop(0, `rgba(${Math.min(255, rgb[0]+50)}, ${Math.min(255, rgb[1]+50)}, ${Math.min(255, rgb[2]+50)}, ${opacity * 0.8})`);
+            gradient.addColorStop(0.7, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`);
+            gradient.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
+            
+            currentCtx.globalCompositeOperation = 'lighter';
+            currentCtx.fillStyle = gradient;
+            currentCtx.fillRect(0, 0, width, height);
+            currentCtx.globalCompositeOperation = 'source-over';
+        }
+
+        function drawEnergeticBodies(currentCtx, width, height, r, g, b) {
+            time += 0.02;
+            const [h, s, v] = rgbToHsv(r, g, b);
+            const pulse = Math.sin(time) * 0.01;
+
+            const bodies = [
+                { hueShift: 0,    satFactor: 0.8, valFactor: 1.2, radius: 0.42, opacity: 0.35 },
+                { hueShift: 0.01,  satFactor: 1,   valFactor: 1,   radius: 0.48, opacity: 0.5  },
+                { hueShift: -0.05, satFactor: 1.2, valFactor: 0.9, radius: 0.55, opacity: 0.3  },
+                { hueShift: 0.08,  satFactor: 0.7, valFactor: 1.3, radius: 0.63, opacity: 0.2  },
+                { hueShift: 0.12,  satFactor: 0.9, valFactor: 1.1, radius: 0.70, opacity: 0.15 },
+                { hueShift: 0.15,  satFactor: 0.6, valFactor: 1.5, radius: 0.78, opacity: 0.1  },
+                { hueShift: 0,     satFactor: 0.3, valFactor: 1.8, radius: 0.85, opacity: 0.08 }
+            ];
+
+            bodies.forEach(body => {
+                const bodyH = (h + body.hueShift + 1) % 1;
+                const bodyS = Math.max(0, Math.min(1, s * body.satFactor));
+                const bodyV = Math.max(0, Math.min(1, v * body.valFactor));
+                const bodyRgb = hsvToRgb(bodyH, bodyS, bodyV);
+                const bodyRadius = body.radius + pulse * (body.radius * 0.5);
+                drawAuraLayer(currentCtx, width, height, bodyRgb, bodyRadius, body.opacity);
+            });
+        }
+        
+        function manageParticles(currentCtx, width, height, r, g, b, vibrationalRate) {
+            const baseSpeed = Math.max(0.5, vibrationalRate / 10000);
+
+            if (particles.length < MAX_PARTICLES) {
+                for (let i = 0; i < 5; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = (width * 0.25) + Math.random() * (width * 0.4);
+                    const x = width / 2 + Math.cos(angle) * radius;
+                    const y = height / 2 + Math.sin(angle) * radius;
+                    const vx = (Math.random() - 0.5) * baseSpeed;
+                    const vy = (Math.random() - 0.5) * baseSpeed;
+                    particles.push({ x, y, vx, vy, life: 1, size: Math.random() * 2.5 + 1, baseR: r, baseG: g, baseB: b });
+                }
+            }
+
+            currentCtx.globalCompositeOperation = 'lighter';
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.015;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                const opacity = Math.sin(p.life * Math.PI);
+                currentCtx.beginPath();
+                const grad = currentCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${opacity})`);
+                grad.addColorStop(0.4, `rgba(${Math.min(255, p.baseR + 80)}, ${Math.min(255, p.baseG + 80)}, ${Math.min(255, p.baseB + 80)}, ${opacity * 0.9})`);
+                grad.addColorStop(1, `rgba(${p.baseR}, ${p.baseG}, ${p.baseB}, 0)`);
+                currentCtx.fillStyle = grad;
+                currentCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                currentCtx.fill();
+            }
+            currentCtx.globalCompositeOperation = 'source-over';
         }
 
         // --- UI UPDATES ---
@@ -778,7 +888,6 @@
              }
         }
         
-        // --- [CORRECTED AND REWRITTEN FUNCTION] ---
         function analyzeAndShowReport(data) {
             if (data.length < 2) {
                 reportContent.innerHTML = `<p class="text-center text-slate-400">Pas assez de données pour générer un rapport fiable.</p>`;
@@ -808,22 +917,20 @@
                 };
 
                 const sortedIntensities = Object.entries(percentages)
-                    .filter(([,percent]) => percent > 10) // On ne considère que les influences significatives (>10%)
+                    .filter(([,percent]) => percent > 10) 
                     .sort(([,a],[,b]) => b - a);
 
-                let interpretationKey = 'equilibre'; // Clé par défaut
+                let interpretationKey = 'equilibre';
                 
                 if (sortedIntensities.length > 0) {
                     const dominantState = sortedIntensities[0][0];
-                    interpretationKey = dominantState; // Commence avec l'état dominant
+                    interpretationKey = dominantState; 
 
                     if (sortedIntensities.length > 1) {
                         const secondaryState = sortedIntensities[1][0];
-                        // Crée une clé combinée prédictible (ex: 'equilibre_intense')
                         const combinedKey = `${dominantState}_${secondaryState}`;
                         const reversedCombinedKey = `${secondaryState}_${dominantState}`;
 
-                        // Vérifie si une interprétation pour cette dynamique existe
                         if (INTERPRETATIONS[colorName][combinedKey]) {
                             interpretationKey = combinedKey;
                         } else if (INTERPRETATIONS[colorName][reversedCombinedKey]) {
@@ -843,7 +950,7 @@
                     }).join(', ');
 
                 const qualityLabel = `Dynamique de l'Aura : ${percentageStrings}.`;
-                const interpretationText = INTERPRETATIONS[colorName][interpretationKey] || INTERPRETATIONS[colorName]['equilibre']; // Fallback
+                const interpretationText = INTERPRETATIONS[colorName][interpretationKey] || INTERPRETATIONS[colorName]['equilibre'];
 
                 return `<strong class="block mb-1 text-slate-100">${qualityLabel}</strong> ${interpretationText}<br><small class="text-slate-400">L'interprétation ci-dessus est basée sur la dynamique la plus représentative de votre session.</small>`;
             };
