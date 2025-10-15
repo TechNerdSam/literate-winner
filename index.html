@@ -104,12 +104,12 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto p-6 md:p-12">
+    <main class="container mx-auto px-6 py-12 md:px-12 md:py-16">
 
         <!-- Hero Section -->
-        <section id="hero" class="text-center my-12 md:my-20">
+        <section id="hero" class="text-center my-16 md:my-24">
             <h2 class="text-4xl md:text-6xl font-extrabold text-slate-100 mb-4">Explorez et Harmonisez Votre Énergie</h2>
-            <p class="max-w-3xl mx-auto text-lg text-slate-400 mb-8">
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-slate-400 mb-10 leading-relaxed">
                 Découvrez votre signature énergétique grâce à l'analyse en temps réel, et utilisez nos outils thérapeutiques interactifs pour équilibrer votre aura et vos chakras.
             </p>
             <a href="#analyzer" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow inline-block">
@@ -118,9 +118,9 @@
         </section>
 
         <!-- Analyzer Section -->
-        <section id="analyzer" class="mb-24">
+        <section id="analyzer" class="mb-28 md:mb-32">
             <div class="bg-slate-800/50 rounded-2xl p-6 md:p-8 card-glow backdrop-blur-lg">
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
                     
                     <!-- Analysis Interface Column -->
                     <div class="lg:col-span-3">
@@ -178,50 +178,71 @@
                         <div id="results-placeholder" class="text-center text-slate-500 pt-16 flex-grow flex items-center justify-center">
                             <p>Les résultats de l'analyse s'afficheront ici.</p>
                         </div>
-                        <div id="results" class="hidden space-y-3 overflow-y-auto" style="max-height: 70vh;">
+                        <div id="results" class="hidden space-y-4 overflow-y-auto" style="max-height: 70vh;">
                             
                             <!-- 1. Aura Dominante -->
-                            <div class="bg-slate-900/70 p-4 rounded-lg">
+                            <div class="bg-slate-900/70 p-5 rounded-lg">
                                 <h4 class="text-sm font-semibold text-slate-400 mb-2">Aura Dominante</h4>
                                 <div class="flex items-start space-x-4"><div id="dominant-color-preview" class="w-12 h-12 rounded-full border-2 border-slate-700 flex-shrink-0"></div>
                                     <div><p id="dominant-color-name" class="text-xl font-bold text-white">En attente...</p><p id="dominant-color-wavelength" class="text-xs text-sky-400 font-mono">~ ... nm</p></div>
                                 </div>
                             </div>
-                             <!-- 2. Daily Message -->
-                            <div class="bg-slate-900/70 p-4 rounded-lg">
+
+                             <!-- Message du Jour - RE-ADDED TO FIX ERROR -->
+                            <div class="bg-slate-900/70 p-5 rounded-lg">
                                 <h4 class="text-sm font-semibold text-slate-400 mb-2">Message du Jour</h4>
                                 <p id="daily-message" class="text-sm text-slate-300 italic"></p>
+                            </div>
+
+                            <div class="bg-slate-900/70 p-4 rounded-lg">
+                                <label for="showSubtleBodies" class="flex items-center justify-between cursor-pointer">
+                                    <span class="text-sm font-semibold text-slate-400">Voir les 7 corps subtils</span>
+                                    <div class="relative">
+                                        <input type="checkbox" id="showSubtleBodies" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    </div>
+                                </label>
                             </div>
                             
                             <!-- Accordion for details -->
                             <div class="space-y-2">
-                                <!-- 3. Aura Interpretation -->
+                                <!-- Aura Interpretation -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
-                                    <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
                                         <h4 class="text-sm font-semibold text-slate-400">Interprétation de l'Aura</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
-                                    <div class="accordion-content px-4 pb-4">
+                                    <div class="accordion-content px-5 pb-5 pt-2">
                                         <div id="interpretation-text" class="text-slate-300 text-sm"></div>
                                     </div>
                                 </div>
-                                <!-- 4. Chakra Analysis -->
+                                <!-- Subtle Bodies Analysis -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
-                                    <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
+                                        <h4 class="text-sm font-semibold text-slate-400">Analyse des Corps Subtils</h4>
+                                        <i class="lucide lucide-chevron-down transform transition-transform"></i>
+                                    </button>
+                                    <div class="accordion-content px-5 pb-5 pt-2">
+                                        <div id="subtle-bodies-content" class="space-y-3 text-sm"></div>
+                                    </div>
+                                </div>
+                                <!-- Chakra Analysis -->
+                                <div class="accordion-item bg-slate-900/70 rounded-lg">
+                                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
                                         <h4 class="text-sm font-semibold text-slate-400">Analyse des Chakras</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
-                                    <div class="accordion-content px-4 pb-4">
+                                    <div class="accordion-content px-5 pb-5 pt-2">
                                         <div id="chakra-analysis-content" class="space-y-2"></div>
                                     </div>
                                 </div>
-                                <!-- 5. Vibrational Rate -->
+                                <!-- Vibrational Rate -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
-                                    <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
                                         <h4 class="text-sm font-semibold text-slate-400">Taux Vibratoire (UBQ)</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
-                                    <div class="accordion-content px-4 pb-4">
+                                    <div class="accordion-content px-5 pb-5 pt-2">
                                         <div class="flex flex-col items-center gap-4">
                                             <div class="relative w-24 h-24"><svg class="w-full h-full -rotate-90" viewBox="0 0 36 36"><path class="stroke-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path><path id="vibrational-gauge-bar" class="stroke-sky-400 transition-all duration-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round"></path></svg>
                                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center"><span id="vibrational-rate-value" class="text-xl font-bold font-mono text-white">...</span><span class="text-xs text-slate-400">UBQ</span></div>
@@ -230,23 +251,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- 6. Aura Shape & Texture -->
+                                <!-- Aura Shape & Texture -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
-                                    <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
                                         <h4 class="text-sm font-semibold text-slate-400">Forme et Texture de l'Aura</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
-                                    <div class="accordion-content px-4 pb-4">
+                                    <div class="accordion-content px-5 pb-5 pt-2">
                                          <p id="aura-shape-texture" class="text-sm text-slate-300"></p>
                                     </div>
                                 </div>
-                                 <!-- 7. Energy Balance -->
+                                 <!-- Energy Balance -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
-                                    <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
                                         <h4 class="text-sm font-semibold text-slate-400">Équilibre Énergétique (Yin/Yang)</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
-                                    <div class="accordion-content px-4 pb-4">
+                                    <div class="accordion-content px-5 pb-5 pt-2">
                                         <div class="w-full bg-slate-700 rounded-full h-2.5">
                                           <div id="yin-yang-bar" class="bg-gradient-to-r from-indigo-400 to-sky-400 h-2.5 rounded-full" style="width: 50%"></div>
                                         </div>
@@ -259,8 +280,8 @@
                                 </div>
                             </div>
 
-                            <!-- 8. Recording and Report -->
-                            <div class="bg-slate-900/70 p-4 rounded-lg">
+                            <!-- Recording and Report -->
+                            <div class="bg-slate-900/70 p-5 rounded-lg">
                                 <h4 class="text-sm font-semibold text-slate-400 mb-2">Session d'Analyse</h4>
                                 <div class="flex items-center justify-between gap-4 mt-2">
                                      <button id="recordButton" class="bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-sky-500 transition-all duration-300 btn-glow w-full disabled:bg-slate-600 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled><i class="lucide lucide-circle"></i><span id="recordButtonText">Démarrer</span></button>
@@ -280,14 +301,14 @@
         </section>
 
         <!-- Therapeutic Tools Section -->
-        <section id="tools" class="mb-24 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-4">Outils Thérapeutiques</h2>
-            <p class="max-w-3xl mx-auto text-slate-400 mb-12">
+        <section id="tools" class="mb-28 md:mb-32 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-6">Outils Thérapeutiques</h2>
+            <p class="max-w-3xl mx-auto text-slate-400 mb-16 md:text-lg">
                 Utilisez ces outils pour harmoniser votre champ énergétique, basés sur les résultats de votre analyse.
             </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                 <!-- 9. Breathing Exercise -->
-                <div class="bg-slate-800 p-6 rounded-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                 <!-- Breathing Exercise -->
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-4">Exercice de Respiration</h3>
                     <div class="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
                         <div class="absolute inset-0 bg-indigo-500/30 rounded-full breathing-circle"></div>
@@ -296,8 +317,8 @@
                     <button id="startBreathingButton" class="bg-indigo-600 text-sm text-white font-bold py-2 px-5 rounded-full hover:bg-indigo-500 transition-all">Commencer</button>
                 </div>
 
-                <!-- 10. Sound Therapy -->
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <!-- Sound Therapy -->
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-4">Chromo-Sonothérapie</h3>
                     <p class="text-sm mb-4">Écoutez une fréquence sonore correspondant à votre aura pour l'équilibrer.</p>
                     <div id="sound-therapy-ui" class="opacity-50">
@@ -306,8 +327,8 @@
                     </div>
                 </div>
 
-                <!-- 11. Guided Meditation -->
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <!-- Guided Meditation -->
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-4">Méditation Guidée</h3>
                     <p class="text-sm mb-4">Lancez une méditation adaptée à votre état énergétique actuel.</p>
                      <div id="meditation-ui" class="opacity-50">
@@ -316,8 +337,8 @@
                     </div>
                 </div>
 
-                <!-- 12. Personalized Affirmations -->
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <!-- Personalized Affirmations -->
+                <div class="bg-slate-800 p-8 rounded-lg">
                      <h3 class="font-bold text-sky-400 mb-4">Affirmations Personnalisées</h3>
                      <div id="affirmations-ui" class="h-full flex flex-col justify-center items-center">
                          <p id="affirmation-text" class="text-lg italic text-slate-300">"..."</p>
@@ -325,8 +346,8 @@
                      </div>
                 </div>
                 
-                <!-- 13. Crystal Recommendations -->
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <!-- Crystal Recommendations -->
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-4">Cristaux Recommandés</h3>
                     <div id="crystals-ui" class="h-full flex flex-col justify-center items-center text-center">
                         <p id="crystal-name" class="font-bold text-white text-lg">...</p>
@@ -334,8 +355,8 @@
                     </div>
                 </div>
                 
-                <!-- 14. Aromatherapy Suggestions -->
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <!-- Aromatherapy Suggestions -->
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-4">Aromathérapie</h3>
                      <div id="aroma-ui" class="h-full flex flex-col justify-center items-center text-center">
                         <p id="aroma-name" class="font-bold text-white text-lg">...</p>
@@ -346,31 +367,31 @@
             </div>
         </section>
         
-        <!-- 15. Aura Color Meanings Section -->
-        <section id="color-meanings" class="mb-24">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-8 text-center">Symbolique des Couleurs de l'Aura</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Aura Color Meanings Section -->
+        <section id="color-meanings" class="mb-28 md:mb-32">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-12 text-center">Symbolique des Couleurs de l'Aura</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Color meanings will be injected here by JS -->
             </div>
         </section>
 
 
         <!-- How It Works Section -->
-        <section id="how-it-works" class="mb-24 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-4">Principe de Fonctionnement</h2>
-            <p class="max-w-3xl mx-auto text-slate-400 mb-12">
+        <section id="how-it-works" class="mb-28 md:mb-32 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-6">Principe de Fonctionnement</h2>
+            <p class="max-w-3xl mx-auto text-slate-400 mb-16 md:text-lg">
                 Cette application repose sur des principes de vision par ordinateur pour analyser les micro-variations de chrominance, de luminance et de cohérence du signal lumineux capté.
             </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-slate-800 p-6 rounded-lg">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-2">1. Capture & Analyse</h3>
                     <p class="text-sm">Un algorithme analyse la périphérie de la silhouette pour détecter les distributions de couleur et la cohérence du signal lumineux.</p>
                 </div>
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-2">2. Interprétation des Données</h3>
                     <p class="text-sm">Les données sont corrélées à des modèles symboliques (couleurs, chakras, etc.) pour générer des interprétations et des recommandations.</p>
                 </div>
-                <div class="bg-slate-800 p-6 rounded-lg">
+                <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-2">3. Harmonisation Interactive</h3>
                     <p class="text-sm">Des outils (sons, visuels, guides) sont proposés pour influencer positivement votre état, créant une boucle de biofeedback.</p>
                 </div>
@@ -378,9 +399,9 @@
         </section>
         
         <!-- Disclaimer Section -->
-        <section id="disclaimer" class="bg-amber-900/20 border border-amber-600/50 rounded-lg p-6 md:p-8 text-center">
+        <section id="disclaimer" class="bg-amber-900/20 border border-amber-600/50 rounded-lg p-8 md:p-10 text-center">
              <h2 class="text-2xl font-bold text-amber-300 mb-4">Avertissement Important</h2>
-            <p class="max-w-4xl mx-auto text-amber-300/80">
+            <p class="max-w-4xl mx-auto text-amber-300/80 leading-relaxed">
                 Cet outil est un projet technologique expérimental à des fins d'exploration et de divertissement. Il ne doit pas être utilisé pour un diagnostic médical, psychologique ou spirituel. Les résultats sont des interprétations algorithmiques de données visuelles et ne remplacent en aucun cas l'avis d'un professionnel qualifié. Les termes employés sont des concepts symboliques et non des mesures scientifiques.
             </p>
         </section>
@@ -388,7 +409,7 @@
     </main>
     
     <!-- Modals -->
-    <!-- 16. Report Modal -->
+    <!-- Report Modal -->
     <div id="report-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden modal-backdrop">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <header class="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
@@ -402,7 +423,7 @@
         </div>
     </div>
     
-    <!-- 17. History Modal -->
+    <!-- History Modal -->
     <div id="history-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden modal-backdrop">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
             <header class="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
@@ -418,7 +439,7 @@
 
 
     <!-- Footer -->
-    <footer class="text-center py-8 border-t border-slate-800 mt-16">
+    <footer class="text-center py-12 border-t border-slate-800 mt-24">
         <p class="text-sm text-slate-500">&copy; 2024 Projet d'exploration bio-énergétique. Tous droits réservés.</p>
     </footer>
 
@@ -467,6 +488,8 @@
         const auraShapeTexture = document.getElementById('aura-shape-texture');
         const yinYangBar = document.getElementById('yin-yang-bar');
         const yinYangText = document.getElementById('yin-yang-text');
+        const showSubtleBodies = document.getElementById('showSubtleBodies');
+        const subtleBodiesContent = document.getElementById('subtle-bodies-content');
 
         // Chakras
         const chakraDotsContainer = document.getElementById('chakra-dots-container');
@@ -525,6 +548,15 @@
             '3ème Œil': { color: 'Indigo', yPercent: 0.25 },
             'Couronne': { color: 'Violet', yPercent: 0.10 }
         };
+        const SUBTLE_BODIES_DATA = [
+            { name: 'Corps Éthérique', desc: 'Lié à la vitalité physique et à la santé.', radius: 0.42, opacity: 0.35, hueShift: 0, satFactor: 0.8, valFactor: 1.2 },
+            { name: 'Corps Émotionnel', desc: 'Gère les émotions, les sentiments et le caractère.', radius: 0.48, opacity: 0.5, hueShift: 0.05, satFactor: 1, valFactor: 1 },
+            { name: 'Corps Mental', desc: 'Centre des pensées, des idées et des processus cognitifs.', radius: 0.55, opacity: 0.3, hueShift: -0.05, satFactor: 1.2, valFactor: 0.9 },
+            { name: 'Corps Astral', desc: 'Pont entre le physique et le spirituel, actif dans les rêves.', radius: 0.63, opacity: 0.2, hueShift: 0.08, satFactor: 0.7, valFactor: 1.3 },
+            { name: 'Corps Éthérique Matrice', desc: 'Modèle énergétique pour le corps physique.', radius: 0.70, opacity: 0.15, hueShift: 0.12, satFactor: 0.9, valFactor: 1.1 },
+            { name: 'Corps Céleste', desc: 'Associé à l\'illumination spirituelle et à l\'amour inconditionnel.', radius: 0.78, opacity: 0.1, hueShift: 0.15, satFactor: 0.6, valFactor: 1.5 },
+            { name: 'Corps Kéthérique', desc: 'Connexion à la conscience universelle et au divin.', radius: 0.85, opacity: 0.08, hueShift: 0, satFactor: 0.3, valFactor: 1.8 }
+        ];
 
         let animationFrameId;
         let photoAnimationFrameId;
@@ -538,7 +570,7 @@
 
         let breathingInterval;
         let audioContext;
-        let oscillator;
+        let mainOscillator, harmonicOscillator, masterGain;
         let currentAnalysisData = {};
 
 
@@ -589,6 +621,7 @@
             vibrationalRateValue.textContent = '...';
             vibrationalLevelText.textContent = 'En attente...';
             chakraAnalysisContent.innerHTML = '';
+            subtleBodiesContent.innerHTML = '';
         }
         
         function switchTabs(e) {
@@ -643,7 +676,7 @@
             for (const color in AURA_DATA) {
                 const data = AURA_DATA[color];
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 p-4 rounded-lg";
+                card.className = "bg-slate-800 p-6 rounded-lg";
                 card.innerHTML = `
                     <div class="flex items-center gap-3 mb-2">
                         <div class="w-8 h-8 rounded-full" style="background-color: ${color.toLowerCase()};"></div>
@@ -735,7 +768,12 @@
             processFrame(imageData);
             
             const { avgR, avgG, avgB, vibrationalRate } = currentAnalysisData;
-            drawAuraLayer(ctx, width, height, [avgR, avgG, avgB], 0.6, 0.6);
+            
+            if (showSubtleBodies.checked) {
+                drawSubtleBodies(ctx, width, height, [avgR, avgG, avgB]);
+            } else {
+                drawAuraLayer(ctx, width, height, [avgR, avgG, avgB], 0.6, 0.6);
+            }
             manageParticles(ctx, width, height, avgR, avgG, avgB, vibrationalRate);
 
             animationFrameId = requestAnimationFrame(liveTick);
@@ -789,8 +827,13 @@
             const pulseOpacity = 0.6 + Math.sin(time) * 0.1;
 
             const { avgR, avgG, avgB, vibrationalRate } = currentAnalysisData;
-            drawAuraLayer(photoCtx, width, height, [avgR, avgG, avgB], 0.7, pulseOpacity);
-             manageParticles(photoCtx, width, height, avgR, avgG, avgB, vibrationalRate * 0.5); // Slower particles for static image
+
+            if (showSubtleBodies.checked) {
+                drawSubtleBodies(photoCtx, width, height, [avgR, avgG, avgB]);
+            } else {
+                drawAuraLayer(photoCtx, width, height, [avgR, avgG, avgB], 0.7, pulseOpacity);
+            }
+            manageParticles(photoCtx, width, height, avgR, avgG, avgB, vibrationalRate * 0.5); // Slower particles for static image
 
             photoAnimationFrameId = requestAnimationFrame(photoTick);
         }
@@ -826,7 +869,7 @@
             const chakras = analyzeChakras(imageData);
             const yinYang = calculateYinYang(avgR, avgG, avgB);
             
-            currentAnalysisData = { avgR, avgG, avgB, vibrationalRate, colorName, chakras, yinYang, stdDev };
+            currentAnalysisData = { avgR, avgG, avgB, h, s, v, vibrationalRate, colorName, chakras, yinYang, stdDev };
 
             if(isRecording) {
                  const now = Date.now();
@@ -954,8 +997,9 @@
             vibrationalLevelText.textContent = tier.level; 
             vibrationalCommentary.textContent = tier.commentary;
             
-            // Chakras
+            // Chakras & Subtle Bodies
             updateChakraUI(chakras);
+            updateSubtleBodiesUI();
             
             // Shape/Texture
             auraShapeTexture.textContent = getShapeTextureInterpretation(stdDev);
@@ -967,7 +1011,7 @@
             else yinYangText.textContent = "Équilibré";
             
             // Update tools only if they haven't been manually activated
-            if (!oscillator && !breathingInterval) {
+            if (!mainOscillator && !breathingInterval) {
                  updateTherapeuticTools();
             }
         }
@@ -1010,6 +1054,26 @@
                 chakraDotsContainer.innerHTML = '';
              }
         }
+        
+        function updateSubtleBodiesUI() {
+            const { h, s, v, stdDev } = currentAnalysisData;
+            let html = '';
+            
+            // Etheric body tied to brightness/vitality (v)
+            const ethericState = v > 0.7 ? 'Vibrant' : (v < 0.4 ? 'Faible' : 'Stable');
+            // Emotional body tied to saturation (s)
+            const emotionalState = s > 0.8 ? 'Intense' : (s < 0.4 ? 'Calme' : 'Équilibré');
+            // Mental body tied to coherence (stdDev)
+            const mentalState = stdDev < 15 ? 'Clair' : (stdDev > 40 ? 'Diffus' : 'Actif');
+
+            // Simplified analysis for the other bodies
+            html += `<div><strong>1. Corps Éthérique:</strong> ${ethericState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[0].desc}</small></div>`;
+            html += `<div><strong>2. Corps Émotionnel:</strong> ${emotionalState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[1].desc}</small></div>`;
+            html += `<div><strong>3. Corps Mental:</strong> ${mentalState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[2].desc}</small></div>`;
+
+            subtleBodiesContent.innerHTML = html;
+        }
+
 
         function getShapeTextureInterpretation(stdDev) {
             if (stdDev < 15) return "L'aura apparaît lisse et cohérente, signe d'un champ énergétique stable et bien défini. Cela indique un état de paix intérieure et de clarté.";
@@ -1044,20 +1108,24 @@
             // Aroma
             aromaName.textContent = data.aroma.name;
             aromaDescription.textContent = data.aroma.desc;
-
+            
             // Daily Message
-            dailyMessage.textContent = `Votre aura ${colorName.toLowerCase()} vous invite aujourd'hui à vous concentrer sur ${data.interpretation.split(',')[1].trim()}.`;
+            if (dailyMessage && data.interpretation.includes(',')) {
+                dailyMessage.textContent = `Votre aura ${colorName.toLowerCase()} vous invite aujourd'hui à vous concentrer sur ${data.interpretation.split(',')[1].trim()}.`;
+            } else if (dailyMessage) {
+                 dailyMessage.textContent = `Votre aura ${colorName.toLowerCase()} est un signe de ${AURA_DATA[colorName].interpretation.split('.')[0].toLowerCase()}.`;
+            }
         }
 
         function resetTherapeuticTools() {
              [soundTherapyUI, meditationUI, newAffirmationButton, document.getElementById('crystals-ui'), document.getElementById('aroma-ui')].forEach(el => el.classList.add('opacity-50'));
              [playSoundButton, playMeditationButton, newAffirmationButton].forEach(btn => btn.disabled = true);
-             soundFreqLabel.textContent = '... Hz';
-             meditationTitle.textContent = '...';
-             affirmationText.textContent = '"..."';
-             crystalName.textContent = '...';
-             aromaName.textContent = '...';
-             dailyMessage.textContent = '';
+             if(soundFreqLabel) soundFreqLabel.textContent = '... Hz';
+             if(meditationTitle) meditationTitle.textContent = '...';
+             if(affirmationText) affirmationText.textContent = '"..."';
+             if(crystalName) crystalName.textContent = '...';
+             if(aromaName) aromaName.textContent = '...';
+             if(dailyMessage) dailyMessage.textContent = '';
         }
 
         function toggleBreathingExercise() {
@@ -1093,24 +1161,49 @@
             if(!colorName) return;
             const data = AURA_DATA[colorName];
 
-            if (oscillator) {
-                oscillator.stop();
-                oscillator.disconnect();
-                oscillator = null;
+            if (mainOscillator) { // Check if sound is playing
+                const now = audioContext.currentTime;
+                masterGain.gain.cancelScheduledValues(now);
+                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                masterGain.gain.linearRampToValueAtTime(0, now + 0.5); // 0.5s release
+
+                setTimeout(() => {
+                    mainOscillator.stop();
+                    harmonicOscillator.stop();
+                    mainOscillator = null;
+                    harmonicOscillator = null;
+                }, 500);
+
                 playSoundButton.innerHTML = '<i class="lucide lucide-play"></i> Jouer';
             } else {
                 if (!audioContext) {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
 
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(data.freq, audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                oscillator.start();
+                masterGain = audioContext.createGain();
+                masterGain.connect(audioContext.destination);
+                
+                const now = audioContext.currentTime;
+                const maxGain = 0.2; 
+                masterGain.gain.setValueAtTime(0, now);
+                masterGain.gain.linearRampToValueAtTime(maxGain, now + 0.5); // 0.5s attack
+
+                mainOscillator = audioContext.createOscillator();
+                mainOscillator.type = 'sine';
+                mainOscillator.frequency.setValueAtTime(data.freq, now);
+                mainOscillator.connect(masterGain);
+
+                harmonicOscillator = audioContext.createOscillator();
+                harmonicOscillator.type = 'sine';
+                harmonicOscillator.frequency.setValueAtTime(data.freq * 2, now);
+                
+                const harmonicGain = audioContext.createGain();
+                harmonicGain.gain.setValueAtTime(maxGain * 0.4, now);
+                harmonicOscillator.connect(harmonicGain);
+                harmonicGain.connect(masterGain);
+
+                mainOscillator.start();
+                harmonicOscillator.start();
                 playSoundButton.innerHTML = '<i class="lucide lucide-stop-circle"></i> Arrêter';
             }
         }
@@ -1265,6 +1358,24 @@
             return [h, s, v];
         }
         
+        function hsvToRgb(h, s, v) {
+            let r, g, b;
+            let i = Math.floor(h * 6);
+            let f = h * 6 - i;
+            let p = v * (1 - s);
+            let q = v * (1 - f * s);
+            let t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+        
         // --- VISUALIZATION ---
         function drawAuraLayer(currentCtx, width, height, rgb, radiusFactor, opacity) {
             const gradient = currentCtx.createRadialGradient(
@@ -1278,6 +1389,21 @@
             currentCtx.fillStyle = gradient;
             currentCtx.fillRect(0, 0, width, height);
             currentCtx.globalCompositeOperation = 'source-over';
+        }
+        
+        function drawSubtleBodies(currentCtx, width, height, baseRgb) {
+            time += 0.02;
+            const [h, s, v] = rgbToHsv(baseRgb[0], baseRgb[1], baseRgb[2]);
+            const pulse = Math.sin(time) * 0.01;
+
+            SUBTLE_BODIES_DATA.forEach(body => {
+                const bodyH = (h + body.hueShift + 1) % 1;
+                const bodyS = Math.max(0, Math.min(1, s * body.satFactor));
+                const bodyV = Math.max(0, Math.min(1, v * body.valFactor));
+                const bodyRgb = hsvToRgb(bodyH, bodyS, bodyV);
+                const bodyRadius = body.radius + pulse * (body.radius * 0.5);
+                drawAuraLayer(currentCtx, width, height, bodyRgb, bodyRadius, body.opacity);
+            });
         }
 
         function manageParticles(currentCtx, width, height, r, g, b, vibrationalRate) {
