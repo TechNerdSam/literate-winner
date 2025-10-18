@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyseur d'Aura et Thérapie Énergétique</title>
+    <title>Analyseur de Lumière Spirituelle et Bien-être Islamique</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,10 +93,10 @@
     <!-- Header -->
     <header class="py-4 px-6 md:px-12 border-b border-slate-800 backdrop-blur-sm sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold gradient-text">Thérapie d'Aura IA</h1>
+            <h1 class="text-xl font-bold gradient-text">Harmonie Spirituelle IA</h1>
             <nav class="hidden md:flex space-x-6 text-sm">
                 <a href="#analyzer" class="hover:text-sky-400 transition-colors">Analyseur</a>
-                <a href="#tools" class="hover:text-sky-400 transition-colors">Outils Thérapeutiques</a>
+                <a href="#tools" class="hover:text-sky-400 transition-colors">Outils Spirituels</a>
                 <a href="#how-it-works" class="hover:text-sky-400 transition-colors">Principe</a>
                 <a href="#disclaimer" class="hover:text-sky-400 transition-colors">Avertissement</a>
             </nav>
@@ -108,9 +108,9 @@
 
         <!-- Hero Section -->
         <section id="hero" class="text-center my-16 md:my-24">
-            <h2 class="text-4xl md:text-6xl font-extrabold text-slate-100 mb-4">Explorez et Harmonisez Votre Énergie</h2>
+            <h2 class="text-4xl md:text-6xl font-extrabold text-slate-100 mb-4">Explorez Votre Lumière Intérieure</h2>
             <p class="max-w-3xl mx-auto text-lg md:text-xl text-slate-400 mb-10 leading-relaxed">
-                Découvrez votre signature énergétique grâce à l'analyse en temps réel, et utilisez nos outils thérapeutiques interactifs pour équilibrer votre aura et vos chakras.
+                Découvrez votre état spirituel grâce à notre analyseur et utilisez des outils conformes aux principes islamiques pour trouver la paix et l'équilibre.
             </p>
             <a href="#analyzer" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow inline-block">
                 Démarrer l'analyse
@@ -161,7 +161,7 @@
                                 <div id="photo-chakra-dots-container" class="absolute inset-0 z-20 pointer-events-none"></div>
                                 <button id="clearPhotoButton" class="hidden absolute top-3 right-3 z-30 bg-slate-900/60 hover:bg-slate-700/80 p-1.5 rounded-full text-slate-300 hover:text-white transition-colors" title="Effacer la photo"><i class="lucide lucide-x"></i></button>
                                 <div id="photo-start-message" class="absolute z-20 text-center p-4">
-                                    <p class="text-slate-300 mb-4">Chargez une photo pour analyser sa signature énergétique.</p>
+                                    <p class="text-slate-300 mb-4">Chargez une photo pour analyser sa signature spirituelle.</p>
                                     <input type="file" id="photoInput" class="hidden" accept="image/png, image/jpeg">
                                     <label for="photoInput" class="cursor-pointer bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition-all duration-300 btn-glow">Charger une Photo</label>
                                 </div>
@@ -182,7 +182,7 @@
                             
                             <!-- 1. Aura Dominante -->
                             <div class="bg-slate-900/70 p-5 rounded-lg">
-                                <h4 class="text-sm font-semibold text-slate-400 mb-2">Aura Dominante</h4>
+                                <h4 class="text-sm font-semibold text-slate-400 mb-2">Lumière Dominante</h4>
                                 <div class="flex items-start space-x-4"><div id="dominant-color-preview" class="w-12 h-12 rounded-full border-2 border-slate-700 flex-shrink-0"></div>
                                     <div><p id="dominant-color-name" class="text-xl font-bold text-white">En attente...</p><p id="dominant-color-wavelength" class="text-xs text-sky-400 font-mono">~ ... nm</p></div>
                                 </div>
@@ -190,13 +190,13 @@
 
                              <!-- Message du Jour - RE-ADDED TO FIX ERROR -->
                             <div class="bg-slate-900/70 p-5 rounded-lg">
-                                <h4 class="text-sm font-semibold text-slate-400 mb-2">Message du Jour</h4>
+                                <h4 class="text-sm font-semibold text-slate-400 mb-2">Rappel du Jour</h4>
                                 <p id="daily-message" class="text-sm text-slate-300 italic"></p>
                             </div>
 
                             <div class="bg-slate-900/70 p-4 rounded-lg">
                                 <label for="showSubtleBodies" class="flex items-center justify-between cursor-pointer">
-                                    <span class="text-sm font-semibold text-slate-400">Voir les 7 corps subtils</span>
+                                    <span class="text-sm font-semibold text-slate-400">Voir les 7 enveloppes subtiles (Lataif)</span>
                                     <div class="relative">
                                         <input type="checkbox" id="showSubtleBodies" class="sr-only peer">
                                         <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
@@ -209,7 +209,7 @@
                                 <!-- Aura Interpretation -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
                                     <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-400">Interprétation de l'Aura</h4>
+                                        <h4 class="text-sm font-semibold text-slate-400">Interprétation Spirituelle</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
                                     <div class="accordion-content px-5 pb-5 pt-2">
@@ -219,7 +219,7 @@
                                 <!-- Subtle Bodies Analysis -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
                                     <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-400">Analyse des Corps Subtils</h4>
+                                        <h4 class="text-sm font-semibold text-slate-400">Analyse des Enveloppes Subtiles (Lataif)</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
                                     <div class="accordion-content px-5 pb-5 pt-2">
@@ -229,7 +229,7 @@
                                 <!-- Chakra Analysis -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
                                     <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-400">Analyse des Chakras</h4>
+                                        <h4 class="text-sm font-semibold text-slate-400">Analyse des Centres Spirituels</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
                                     <div class="accordion-content px-5 pb-5 pt-2">
@@ -239,13 +239,13 @@
                                 <!-- Vibrational Rate -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
                                     <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-400">Taux Vibratoire (UBQ)</h4>
+                                        <h4 class="text-sm font-semibold text-slate-400">Niveau de Paix Intérieure (Sakînah)</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
                                     <div class="accordion-content px-5 pb-5 pt-2">
                                         <div class="flex flex-col items-center gap-4">
                                             <div class="relative w-24 h-24"><svg class="w-full h-full -rotate-90" viewBox="0 0 36 36"><path class="stroke-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path><path id="vibrational-gauge-bar" class="stroke-sky-400 transition-all duration-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round"></path></svg>
-                                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center"><span id="vibrational-rate-value" class="text-xl font-bold font-mono text-white">...</span><span class="text-xs text-slate-400">UBQ</span></div>
+                                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center"><span id="vibrational-rate-value" class="text-xl font-bold font-mono text-white">...</span><span class="text-xs text-slate-400">Niveau</span></div>
                                             </div>
                                             <div class="text-center w-full"><p id="vibrational-level-text" class="font-semibold text-md text-white">En attente...</p><p id="vibrational-commentary" class="text-slate-300 text-sm mt-2"></p></div>
                                         </div>
@@ -254,7 +254,7 @@
                                 <!-- Aura Shape & Texture -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
                                     <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-400">Forme et Texture de l'Aura</h4>
+                                        <h4 class="text-sm font-semibold text-slate-400">Clarté et Cohérence de l'Esprit</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
                                     <div class="accordion-content px-5 pb-5 pt-2">
@@ -264,7 +264,7 @@
                                  <!-- Energy Balance -->
                                 <div class="accordion-item bg-slate-900/70 rounded-lg">
                                     <button class="accordion-header w-full flex justify-between items-center p-5 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-400">Équilibre Énergétique (Yin/Yang)</h4>
+                                        <h4 class="text-sm font-semibold text-slate-400">Équilibre (Mîzân) Jalal/Jamal</h4>
                                         <i class="lucide lucide-chevron-down transform transition-transform"></i>
                                     </button>
                                     <div class="accordion-content px-5 pb-5 pt-2">
@@ -272,9 +272,9 @@
                                           <div id="yin-yang-bar" class="bg-gradient-to-r from-indigo-400 to-sky-400 h-2.5 rounded-full" style="width: 50%"></div>
                                         </div>
                                         <div class="flex justify-between text-xs mt-1">
-                                            <span>Yin (Réceptif)</span>
+                                            <span>Jamal (Beauté/Grâce)</span>
                                             <span id="yin-yang-text">Équilibré</span>
-                                            <span>Yang (Actif)</span>
+                                            <span>Jalal (Majesté/Rigueur)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -302,35 +302,35 @@
 
         <!-- Therapeutic Tools Section -->
         <section id="tools" class="mb-28 md:mb-32 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-6">Outils Thérapeutiques</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-6">Outils de Bien-être Spirituel</h2>
             <p class="max-w-3xl mx-auto text-slate-400 mb-16 md:text-lg">
-                Utilisez ces outils pour harmoniser votre champ énergétique, basés sur les résultats de votre analyse.
+                Utilisez ces outils permis pour harmoniser votre état spirituel, basés sur les résultats de votre analyse.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                  <!-- Breathing Exercise -->
                 <div class="bg-slate-800 p-8 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-4">Exercice de Respiration</h3>
+                    <h3 class="font-bold text-sky-400 mb-4">Respiration Consciente (Dhikr)</h3>
                     <div class="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
                         <div class="absolute inset-0 bg-indigo-500/30 rounded-full breathing-circle"></div>
-                        <p id="breathing-text" class="z-10 text-white font-semibold">Inspirez...</p>
+                        <p id="breathing-text" class="z-10 text-white font-semibold">Inspirez... (Ya Chafi)</p>
                     </div>
                     <button id="startBreathingButton" class="bg-indigo-600 text-sm text-white font-bold py-2 px-5 rounded-full hover:bg-indigo-500 transition-all">Commencer</button>
                 </div>
 
                 <!-- Sound Therapy -->
                 <div class="bg-slate-800 p-8 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-4">Chromo-Sonothérapie</h3>
-                    <p class="text-sm mb-4">Écoutez une fréquence sonore correspondant à votre aura pour l'équilibrer.</p>
+                    <h3 class="font-bold text-sky-400 mb-4">Lecture Apaisante (Coran)</h3>
+                    <p class="text-sm mb-4">Lancez une ambiance sonore relaxante inspirée par la récitation pour calmer le coeur.</p>
                     <div id="sound-therapy-ui" class="opacity-50">
-                        <p class="text-lg font-mono" id="sound-freq-label">... Hz</p>
-                        <button id="playSoundButton" class="mt-2 bg-indigo-600 text-sm text-white font-bold py-2 px-5 rounded-full hover:bg-indigo-500 transition-all disabled:bg-slate-600 disabled:cursor-not-allowed" disabled><i class="lucide lucide-play"></i> Jouer</button>
+                        <p class="text-lg font-mono" id="sound-freq-label">Sourate Recommandée ...</p>
+                        <button id="playSoundButton" class="mt-2 bg-indigo-600 text-sm text-white font-bold py-2 px-5 rounded-full hover:bg-indigo-500 transition-all disabled:bg-slate-600 disabled:cursor-not-allowed" disabled><i class="lucide lucide-play"></i> Lancer la Lecture</button>
                     </div>
                 </div>
 
                 <!-- Guided Meditation -->
                 <div class="bg-slate-800 p-8 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-4">Méditation Guidée</h3>
-                    <p class="text-sm mb-4">Lancez une méditation adaptée à votre état énergétique actuel.</p>
+                    <h3 class="font-bold text-sky-400 mb-4">Méditation sur la Création (Tafakkur)</h3>
+                    <p class="text-sm mb-4">Lancez une méditation guidée pour réfléchir aux signes d'Allah.</p>
                      <div id="meditation-ui" class="opacity-50">
                         <p class="text-lg" id="meditation-title">...</p>
                         <button id="playMeditationButton" class="mt-2 bg-indigo-600 text-sm text-white font-bold py-2 px-5 rounded-full hover:bg-indigo-500 transition-all disabled:bg-slate-600 disabled:cursor-not-allowed" disabled><i class="lucide lucide-play"></i> Lancer</button>
@@ -339,25 +339,25 @@
 
                 <!-- Personalized Affirmations -->
                 <div class="bg-slate-800 p-8 rounded-lg">
-                     <h3 class="font-bold text-sky-400 mb-4">Affirmations Personnalisées</h3>
+                     <h3 class="font-bold text-sky-400 mb-4">Invocations (Du'as) Personnalisées</h3>
                      <div id="affirmations-ui" class="h-full flex flex-col justify-center items-center">
                          <p id="affirmation-text" class="text-lg italic text-slate-300">"..."</p>
-                         <button id="newAffirmationButton" class="mt-4 text-xs text-slate-400 hover:text-white disabled:opacity-50" disabled>Nouvelle affirmation</button>
+                         <button id="newAffirmationButton" class="mt-4 text-xs text-slate-400 hover:text-white disabled:opacity-50" disabled>Nouvelle invocation</button>
                      </div>
                 </div>
                 
-                <!-- Crystal Recommendations -->
+                <!-- Prophetic Remedies -->
                 <div class="bg-slate-800 p-8 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-4">Cristaux Recommandés</h3>
-                    <div id="crystals-ui" class="h-full flex flex-col justify-center items-center text-center">
-                        <p id="crystal-name" class="font-bold text-white text-lg">...</p>
-                        <p id="crystal-description" class="text-sm text-slate-400 mt-1">...</p>
+                    <h3 class="font-bold text-sky-400 mb-4">Remèdes Prophétiques</h3>
+                    <div id="remedies-ui" class="h-full flex flex-col justify-center items-center text-center">
+                        <p id="remedy-name" class="font-bold text-white text-lg">...</p>
+                        <p id="remedy-description" class="text-sm text-slate-400 mt-1">...</p>
                     </div>
                 </div>
                 
-                <!-- Aromatherapy Suggestions -->
+                <!-- Prophetic Scents -->
                 <div class="bg-slate-800 p-8 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-4">Aromathérapie</h3>
+                    <h3 class="font-bold text-sky-400 mb-4">Senteurs Apaisantes (Sunnah)</h3>
                      <div id="aroma-ui" class="h-full flex flex-col justify-center items-center text-center">
                         <p id="aroma-name" class="font-bold text-white text-lg">...</p>
                         <p id="aroma-description" class="text-sm text-slate-400 mt-1">...</p>
@@ -366,10 +366,11 @@
 
             </div>
         </section>
+
         
         <!-- Aura Color Meanings Section -->
         <section id="color-meanings" class="mb-28 md:mb-32">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-12 text-center">Symbolique des Couleurs de l'Aura</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-12 text-center">Symbolique des Couleurs de l'Âme</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Color meanings will be injected here by JS -->
             </div>
@@ -380,20 +381,20 @@
         <section id="how-it-works" class="mb-28 md:mb-32 text-center">
             <h2 class="text-3xl md:text-4xl font-bold text-slate-100 mb-6">Principe de Fonctionnement</h2>
             <p class="max-w-3xl mx-auto text-slate-400 mb-16 md:text-lg">
-                Cette application repose sur des principes de vision par ordinateur pour analyser les micro-variations de chrominance, de luminance et de cohérence du signal lumineux capté.
+                Cette application repose sur des principes de vision par ordinateur pour analyser les micro-variations de chrominance et de luminance comme une métaphore visuelle de l'état spirituel.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-2">1. Capture & Analyse</h3>
-                    <p class="text-sm">Un algorithme analyse la périphérie de la silhouette pour détecter les distributions de couleur et la cohérence du signal lumineux.</p>
+                    <p class="text-sm">L'algorithme analyse la périphérie de la silhouette pour détecter les distributions de couleur et la cohérence du signal lumineux capté par la caméra.</p>
                 </div>
                 <div class="bg-slate-800 p-8 rounded-lg">
-                    <h3 class="font-bold text-sky-400 mb-2">2. Interprétation des Données</h3>
-                    <p class="text-sm">Les données sont corrélées à des modèles symboliques (couleurs, chakras, etc.) pour générer des interprétations et des recommandations.</p>
+                    <h3 class="font-bold text-sky-400 mb-2">2. Interprétation Symbolique</h3>
+                    <p class="text-sm">Les données visuelles sont corrélées à des modèles symboliques (couleurs, centres spirituels) pour générer des interprétations et des recommandations.</p>
                 </div>
                 <div class="bg-slate-800 p-8 rounded-lg">
                     <h3 class="font-bold text-sky-400 mb-2">3. Harmonisation Interactive</h3>
-                    <p class="text-sm">Des outils (sons, visuels, guides) sont proposés pour influencer positivement votre état, créant une boucle de biofeedback.</p>
+                    <p class="text-sm">Des outils basés sur la tradition (invocations, méditation, respiration) sont proposés pour aider à trouver la paix intérieure et la sérénité.</p>
                 </div>
             </div>
         </section>
@@ -402,7 +403,7 @@
         <section id="disclaimer" class="bg-amber-900/20 border border-amber-600/50 rounded-lg p-8 md:p-10 text-center">
              <h2 class="text-2xl font-bold text-amber-300 mb-4">Avertissement Important</h2>
             <p class="max-w-4xl mx-auto text-amber-300/80 leading-relaxed">
-                Cet outil est un projet technologique expérimental à des fins d'exploration et de divertissement. Il ne doit pas être utilisé pour un diagnostic médical, psychologique ou spirituel. Les résultats sont des interprétations algorithmiques de données visuelles et ne remplacent en aucun cas l'avis d'un professionnel qualifié. Les termes employés sont des concepts symboliques et non des mesures scientifiques.
+                Cet outil est un projet technologique expérimental à des fins d'exploration spirituelle personnelle et de divertissement. Il ne doit pas être utilisé pour un diagnostic médical ou psychologique. Les résultats sont des interprétations algorithmiques symboliques et ne remplacent en aucun cas l'avis d'un professionnel qualifié ou d'un savant religieux. Cet outil ne constitue pas une source de fatwa ou de jugement religieux. L'utilisation des outils proposés doit se faire dans le respect des préceptes de l'Islam.
             </p>
         </section>
 
@@ -436,12 +437,33 @@
              </footer>
         </div>
     </div>
+    
+    <!-- Meditation Modal -->
+    <div id="meditation-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden modal-backdrop">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <header class="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+                <h2 id="meditation-modal-title" class="text-xl font-bold text-slate-100">Méditation Guidée</h2>
+                <button class="close-modal-button text-slate-400 hover:text-white text-3xl leading-none">&times;</button>
+            </header>
+            <div class="p-6 overflow-y-auto">
+                <p id="meditation-modal-text" class="text-slate-300 leading-relaxed"></p>
+            </div>
+             <footer class="p-4 border-t border-slate-700 text-center flex-shrink-0">
+                 <button class="close-modal-button bg-indigo-600 text-white font-bold py-2 px-6 rounded-full hover:bg-indigo-500 transition-all">Fermer</button>
+             </footer>
+        </div>
+    </div>
 
 
     <!-- Footer -->
     <footer class="text-center py-12 border-t border-slate-800 mt-24">
-        <p class="text-sm text-slate-500">&copy; 2024 Projet d'exploration bio-énergétique. Tous droits réservés.</p>
+        <p class="text-sm text-slate-500">&copy; 2024 Projet d'exploration spirituelle. Tous droits réservés.</p>
     </footer>
+
+    <!-- Aura Color Bar -->
+    <div id="aura-color-bar" class="fixed bottom-0 left-0 w-full bg-slate-800 text-white text-center py-2 text-sm font-semibold transition-all duration-500 z-50 translate-y-full">
+        Couleur Dominante Détectée : <span id="aura-bar-color-name">...</span>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
@@ -490,6 +512,9 @@
         const yinYangText = document.getElementById('yin-yang-text');
         const showSubtleBodies = document.getElementById('showSubtleBodies');
         const subtleBodiesContent = document.getElementById('subtle-bodies-content');
+        const auraColorBar = document.getElementById('aura-color-bar');
+        const auraBarColorName = document.getElementById('aura-bar-color-name');
+
 
         // Chakras
         const chakraDotsContainer = document.getElementById('chakra-dots-container');
@@ -510,6 +535,10 @@
         const historyModal = document.getElementById('history-modal');
         const historyContent = document.getElementById('history-content');
         const clearHistoryButton = document.getElementById('clear-history-button');
+        const meditationModal = document.getElementById('meditation-modal');
+        const meditationModalTitle = document.getElementById('meditation-modal-title');
+        const meditationModalText = document.getElementById('meditation-modal-text');
+
 
         // Tools
         const breathingText = document.getElementById('breathing-text');
@@ -522,40 +551,67 @@
         const playMeditationButton = document.getElementById('playMeditationButton');
         const affirmationText = document.getElementById('affirmation-text');
         const newAffirmationButton = document.getElementById('newAffirmationButton');
-        const crystalName = document.getElementById('crystal-name');
-        const crystalDescription = document.getElementById('crystal-description');
+        const remedyName = document.getElementById('remedy-name');
+        const remedyDescription = document.getElementById('remedy-description');
         const aromaName = document.getElementById('aroma-name');
         const aromaDescription = document.getElementById('aroma-description');
         const colorMeaningsContainer = document.getElementById('color-meanings');
 
+        
+
+
         // --- DATA & STATE ---
+        // A short, calming vocal hum sound encoded in Base64
+        const QURAN_AUDIO_B64 = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+
         const AURA_DATA = {
-            'Rouge': { wavelength: '625-740', interpretation: "Énergie vitale, force, passion, ancrage. Un rouge équilibré indique une forte constitution et une volonté saine. En excès, il peut mener à la colère ou au stress.", freq: 288, meditation: "Méditation d'Ancrage", affirmation: "Je suis fort(e), enraciné(e) et plein(e) de vitalité.", crystal: {name: "Jaspe Rouge", desc: "Stabilité et endurance"}, aroma: {name: "Gingembre", desc: "Stimulant et énergisant"}},
-            'Orange': { wavelength: '590-625', interpretation: "Créativité, joie, émotions, relations. Un orange lumineux est signe de bonne humeur et de sociabilité. Pâle ou trouble, il peut indiquer une dépendance émotionnelle ou des blocages créatifs.", freq: 303, meditation: "Méditation de la Joie", affirmation: "J'embrasse la créativité et la joie dans ma vie.", crystal: {name: "Cornaline", desc: "Motivation et créativité"}, aroma: {name: "Orange douce", desc: "Joyeux et réconfortant"}},
-            'Jaune': { wavelength: '565-590', interpretation: "Intellect, pouvoir personnel, confiance. Un jaune solaire dénote un esprit clair et une bonne estime de soi. Un jaune moutarde peut signaler un surmenage mental ou un besoin de contrôle.", freq: 320, meditation: "Méditation du Soleil Intérieur", affirmation: "J'ai confiance en mon pouvoir personnel et en ma sagesse.", crystal: {name: "Citrine", desc: "Abondance et confiance en soi"}, aroma: {name: "Citron", desc: "Clarifiant et optimiste"}},
-            'Vert': { wavelength: '520-565', interpretation: "Guérison, équilibre, amour, nature. Le vert émeraude est la couleur du cœur ouvert et en paix. Un vert olive peut indiquer de la jalousie ou un ressentiment non guéri.", freq: 341, meditation: "Méditation du Cœur Ouvert", affirmation: "Mon cœur est ouvert à donner et recevoir l'amour inconditionnel.", crystal: {name: "Aventurine Verte", desc: "Harmonie et apaisement du cœur"}, aroma: {name: "Pin Sylvestre", desc: "Purifiant et régénérant"}},
-            'Bleu': { wavelength: '435-520', interpretation: "Communication, paix, vérité, sérénité. Un bleu clair et limpide est le signe d'une communication honnête et paisible. Un bleu foncé peut indiquer une introspection profonde ou de la mélancolie.", freq: 384, meditation: "Méditation de la Parole Juste", affirmation: "J'exprime ma vérité avec calme et clarté.", crystal: {name: "Lapis-lazuli", desc: "Communication et intuition"}, aroma: {name: "Camomille Romaine", desc: "Calmant et apaisant"}},
-            'Indigo': { wavelength: '400-435', interpretation: "Intuition, sagesse, perception, imagination. L'indigo est la couleur du troisième œil. Il indique une forte intuition et une bonne connexion à sa sagesse intérieure. En excès, il peut déconnecter de la réalité.", freq: 426, meditation: "Méditation de l'Intuition", affirmation: "Je fais confiance à mon intuition et à ma vision intérieure.", crystal: {name: "Sodalite", desc: "Clarté mentale et perception"}, aroma: {name: "Encens", desc: "Élévation spirituelle et méditatif"}},
-            'Violet': { wavelength: '380-400', interpretation: "Spiritualité, transformation, connexion au divin. Le violet est lié au chakra couronne, notre connexion à l'universel. Il dénote une conscience élevée et une nature altruiste.", freq: 448, meditation: "Méditation de Connexion Cosmique", affirmation: "Je suis connecté(e) à la sagesse et à la lumière de l'Univers.", crystal: {name: "Améthyste", desc: "Spiritualité et protection"}, aroma: {name: "Lavande", desc: "Équilibrant et purifiant"}},
-            'Blanc': { wavelength: 'Spectre large', interpretation: "Pureté, clarté, potentiel, protection spirituelle. Le blanc contient toutes les couleurs. C'est une aura de haute fréquence, souvent un bouclier protecteur. Peut indiquer une phase de transition et de nouveau potentiel.", freq: 480, meditation: "Méditation de la Lumière Pure", affirmation: "Je suis un canal pur de lumière et d'amour divin.", crystal: {name: "Cristal de Roche", desc: "Clarté et amplification d'énergie"}, aroma: {name: "Santal", desc: "Apaisant et unifiant"}}
+            'Rouge': { wavelength: '625-740', interpretation: "Force vitale, courage, patience, connexion à la terre. Un rouge équilibré indique une bonne constitution et une volonté saine au service du bien. En excès, il peut mener à la colère ou au stress, nécessitant un rappel à la patience (sabr).", sourate: "Al-Baqarah", meditation: "Méditation sur la Force d'Allah", affirmation: "Ô Allah, accorde-moi la force et la patience dans mes épreuves.", remede: {name: "Datte Ajwa", desc: "Source d'énergie et de protection"}, senteur: {name: "Ambre", desc: "Ancrant et fortifiant"}},
+            'Orange': { wavelength: '590-625', interpretation: "Joie, relations sociales, créativité. Un orange lumineux est signe de bonne humeur et de sociabilité saine. Pâle ou trouble, il peut indiquer un attachement excessif ou des blocages. Se rappeler de la modération.", sourate: "Ar-Rahman", meditation: "Méditation sur la Joie des Bienfaits", affirmation: "Alhamdulillah pour les liens et la joie que Tu m'accordes.", remede: {name: "Figue", desc: "Sucrée et nutritive"}, senteur: {name: "Orange", desc: "Apporte joie et positivité"}},
+            'Jaune': { wavelength: '565-590', interpretation: "Intellect, clarté, confiance. Un jaune solaire dénote un esprit clair et une confiance placée en Allah. Un jaune terne peut signaler un surmenage mental ou un besoin de contrôle. Il faut chercher la connaissance utile.", sourate: "Al-Imran", meditation: "Méditation sur la Lumière de la Sagesse", affirmation: "Ô Allah, augmente ma connaissance et ma confiance en Toi.", remede: {name: "Miel", desc: "Guérison et clarté pour l'esprit"}, senteur: {name: "Citron", desc: "Clarifiant et optimiste"}},
+            'Vert': { wavelength: '520-565', interpretation: "Équilibre, croissance, compassion, nature. Le vert est la couleur du cœur apaisé (qalb salim). Il indique un état d'équilibre et de miséricorde envers la création. Un vert olive peut indiquer de l'envie, à purifier par l'invocation.", sourate: "Ya-Sin", meditation: "Méditation sur le Cœur Apaisé", affirmation: "Ô Allah, purifie mon cœur et remplis-le de compassion.", remede: {name: "Huile d'Olive", desc: "Bénie et pleine de bienfaits"}, senteur: {name: "Menthe", desc: "Purifiant et rafraîchissant"}},
+            'Bleu': { wavelength: '435-520', interpretation: "Communication, paix, vérité, sérénité (sakînah). Un bleu clair et limpide est le signe d'une communication honnête et paisible. Un bleu foncé peut indiquer une introspection profonde ou de la mélancolie, cherchant le réconfort dans le dhikr.", sourate: "Al-Mulk", meditation: "Méditation sur la Paix Intérieure", affirmation: "C'est par l'évocation d'Allah que les cœurs se tranquillisent.", remede: {name: "Eau de Zamzam", desc: "Source de guérison et de paix"}, senteur: {name: "Camomille", desc: "Calmant et apaisant"}},
+            'Indigo': { wavelength: '400-435', interpretation: "Intuition, sagesse, perception (firasa). L'indigo est lié à la vision intérieure du croyant. Il indique une forte intuition et une bonne connexion à sa sagesse intérieure. En excès, il peut déconnecter de la réalité, un ancrage est nécessaire.", sourate: "Al-Kahf", meditation: "Méditation sur la Vision Intérieure", affirmation: "Ô Allah, guide-moi par Ta lumière et montre-moi la vérité.", remede: {name: "Graine de Nigelle", desc: "Remède pour tout sauf la mort"}, senteur: {name: "Encens (Oliban)", desc: "Élévation spirituelle et méditatif"}},
+            'Violet': { wavelength: '380-400', interpretation: "Spiritualité, connexion au Divin. Le violet est lié à la soumission et à la conscience de la Majesté d'Allah. Il dénote une conscience spirituelle élevée et un désir de proximité avec le Créateur.", sourate: "Al-Waqi'a", meditation: "Méditation de Connexion Divine", affirmation: "Je suis à Allah et c'est à Lui que je retournerai.", remede: {name: "Grenade", desc: "Fruit du Paradis, purifiant"}, senteur: {name: "Lavande", desc: "Équilibrant et purifiant"}},
+            'Blanc': { wavelength: 'Spectre large', interpretation: "Pureté, clarté, protection spirituelle. Le blanc est la couleur de la pureté (tahara) et de la lumière divine (Nur). C'est une aura de haute fréquence, souvent un bouclier protecteur contre le mal.", sourate: "An-Nur", meditation: "Méditation de la Lumière Pure", affirmation: "Allah est la Lumière des cieux et de la terre.", remede: {name: "Lait", desc: "Symbole de pureté et de nourriture saine"}, senteur: {name: "Musc Blanc (Misk)", desc: "Pureté et élévation"}},
+            'Rose': { wavelength: 'Combinaison', interpretation: "Amour inconditionnel, compassion (rahma), tendresse. Le rose indique un cœur rempli d'amour pour Allah et Sa création. C'est la couleur de l'affection et du pardon.", sourate: "Al-Fatiha", meditation: "Méditation sur la Miséricorde", affirmation: "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux.", remede: {name: "Pétale de Rose", desc: "Apaise le cœur et l'esprit"}, senteur: {name: "Rose", desc: "Amour et compassion"}},
+            'Turquoise': { wavelength: '490-520', interpretation: "Guérison, communication de l'âme, protection. Le turquoise est une couleur de protection contre le mauvais œil et de guérison émotionnelle. Il favorise une expression sincère venant du cœur.", sourate: "Al-Falaq", meditation: "Méditation sur la Protection Divine", affirmation: "Je cherche protection auprès du Seigneur de l'aube naissante.", remede: {name: "Miel et Citron", desc: "Purifiant et protecteur"}, senteur: {name: "Eucalyptus", desc: "Nettoyant et clarifiant"}},
+            'Or': { wavelength: 'Métallique', interpretation: "Sagesse divine, illumination, connexion spirituelle élevée. L'or symbolise la lumière de la foi (iman) et la certitude (yaqin). C'est une aura de grande sagesse et de guidance divine.", sourate: "Ayat al-Kursi", meditation: "Méditation sur le Trône Divin", affirmation: "Il n'y a de divinité qu'Allah, le Vivant, Celui qui subsiste par Lui-même.", remede: {name: "Safran", desc: "Précieux, apporte la joie"}, senteur: {name: "Oud", desc: "Royal, connexion spirituelle profonde"}},
+            'Argent': { wavelength: 'Métallique', interpretation: "Intuition, pureté, connexion aux cycles naturels. L'argent est lié à la lune, qui marque le temps dans le calendrier islamique. Il indique une intuition pure et une réceptivité à la guidance divine.", sourate: "Al-Qamar", meditation: "Méditation sur les Signes d'Allah", affirmation: "Ô Allah, illumine mon chemin et purifie mon intention.", remede: {name: "Siwak", desc: "Purifiant pour le corps et l'esprit"}, senteur: {name: "Santal", desc: "Apaisant et unifiant"}},
+            'Noir': { wavelength: 'Absorption', interpretation: "Protection, profondeur, phase de retrait spirituel. Le noir peut symboliser une protection divine impénétrable, comme la nuit qui couvre. C'est aussi un temps pour l'introspection profonde et le repentir.", sourate: "An-Nas", meditation: "Méditation sur le Repos en Allah", affirmation: "Je cherche protection auprès du Seigneur des hommes.", remede: {name: "Charbon végétal", desc: "Détoxifiant et purifiant"}, senteur: {name: "Patchouli", desc: "Ancrage et introspection"}},
         };
+        const TAFFAKUR_DATA = {
+            'Rouge': { title: "Méditation sur la Création et la Force", text: "Asseyez-vous confortablement et fermez les yeux. Respirez profondément. Pensez à la terre sous vos pieds, ferme et stable. Allah l'a créée comme un fondement pour nous. Méditez sur la force des montagnes, ancrées et immuables, un signe de Sa puissance. Ressentez cette force en vous, une force donnée par le Créateur pour faire face aux défis avec patience. (Coran 13:3)" },
+            'Orange': { title: "Méditation sur les Bienfaits et la Joie", text: "Asseyez-vous confortablement et fermez les yeux. Pensez aux fruits que nous mangeons, leurs couleurs vives, leurs goûts sucrés. Chaque fruit est un bienfait et un signe d'Allah. Méditez sur la chaleur du soleil, source de vie. C'est un don d'Ar-Rahman. Laissez la gratitude et la joie remplir votre cœur. (Coran 55:10-13)" },
+            'Jaune': { title: "Méditation sur la Lumière de la Sagesse", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à la lumière du soleil qui dissipe les ténèbres et révèle les choses clairement. De même, la connaissance d'Allah illumine l'esprit et le cœur. Cherchez la clarté dans votre esprit, comme la clarté du jour. (Coran 39:22)" },
+            'Vert': { title: "Méditation sur le Cœur Apaisé", text: "Asseyez-vous confortablement et fermez les yeux. Visualisez un jardin verdoyant, plein de vie. C'est un symbole de paix et de croissance. Votre cœur peut être comme ce jardin. Méditez sur la miséricorde d'Allah qui, comme la pluie, fait fleurir la foi dans le cœur et apporte la paix. (Coran 48:4)" },
+            'Bleu': { title: "Méditation sur la Paix Intérieure", text: "Asseyez-vous confortablement et fermez les yeux. Imaginez un ciel bleu et vaste, ou un océan calme et profond. C'est un symbole de sérénité. Laissez cette tranquillité entrer en vous. C'est par l'évocation d'Allah (dhikr) que les cœurs trouvent l'apaisement. (Coran 13:28)" },
+            'Indigo': { title: "Méditation sur la Vision Intérieure", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à l'immensité du ciel nocturne étoilé. Chaque étoile est un signe. Regardez au-delà des apparences et demandez à Allah de vous accorder la perspicacité (firasa) pour voir la vérité et la sagesse dans Sa création. (Coran 51:20-21)" },
+            'Violet': { title: "Méditation de Connexion Divine", text: "Asseyez-vous confortablement et fermez les yeux. Prenez conscience de votre existence ici et maintenant. Vous êtes une créature d'Allah. Méditez sur le fait que vous appartenez à Lui et que votre retour se fera vers Lui. Ressentez ce lien profond et la paix qui découle de cette soumission. (Coran 2:156)" },
+            'Blanc': { title: "Méditation de la Lumière Pure", text: "Asseyez-vous confortablement et fermez les yeux. Imaginez une lumière blanche pure et éclatante qui vous entoure et remplit votre cœur. C'est une métaphore de la Lumière d'Allah (Nur) qui guide et protège. Laissez cette lumière purifier vos pensées et vos intentions. (Coran 24:35)" },
+            'Rose': { title: "Méditation sur la Miséricorde", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à la miséricorde (rahma) d'Allah, qui englobe toute chose. Pensez à l'amour d'une mère pour son enfant. La miséricorde d'Allah est infiniment plus grande. Laissez votre cœur s'adoucir et s'ouvrir à la compassion pour vous-même et pour les autres. (Coran 7:156)" },
+            'Turquoise': { title: "Méditation sur la Protection Divine", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à l'océan, parfois agité en surface mais calme dans ses profondeurs. Cherchez ce calme en vous. Répétez les sourates protectrices et demandez à Allah de vous protéger de tout mal, visible et invisible, comme un bouclier impénétrable. (Coran 113:1-5)" },
+            'Or': { title: "Méditation sur le Trône Divin", text: "Asseyez-vous confortablement et fermez les yeux. Réfléchissez à la grandeur et à la majesté d'Allah. Le verset du Trône (Ayat al-Kursi) décrit Sa puissance infinie. Méditez sur Sa connaissance qui embrasse tout. Ressentez un profond respect et une confiance totale en Sa sagesse. (Coran 2:255)" },
+            'Argent': { title: "Méditation sur les Signes d'Allah", text: "Asseyez-vous confortablement et fermez les yeux. Pensez au cycle de la lune, qui apparaît comme un fin croissant puis grandit pour devenir pleine, avant de diminuer à nouveau. C'est un signe précis et magnifique du pouvoir d'Allah, qui rythme le temps. Demandez à Allah de vous aider à voir Ses signes en toute chose. (Coran 36:39)" },
+            'Noir': { title: "Méditation sur le Repos en Allah", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à la nuit, qui apporte le repos et le silence. C'est un moment d'intimité et de protection. C'est dans le calme de l'introspection que l'on peut se tourner vers Allah, reconnaître ses faiblesses et trouver refuge en Lui seul. (Coran 78:10-11)" }
+        };
+
         const CHAKRA_DATA = {
-            'Racine': { color: 'Rouge', yPercent: 0.95 },
-            'Sacré': { color: 'Orange', yPercent: 0.85 },
-            'Plexus Solaire': { color: 'Jaune', yPercent: 0.70 },
-            'Cœur': { color: 'Vert', yPercent: 0.55 },
-            'Gorge': { color: 'Bleu', yPercent: 0.40 },
-            '3ème Œil': { color: 'Indigo', yPercent: 0.25 },
-            'Couronne': { color: 'Violet', yPercent: 0.10 }
+            'Base (Asas)': { color: 'Rouge', yPercent: 0.95 },
+            'Sacré (Nafs)': { color: 'Orange', yPercent: 0.85 },
+            'Solaire (Qalb)': { color: 'Jaune', yPercent: 0.70 },
+            'Cœur (Sirr)': { color: 'Vert', yPercent: 0.55 },
+            'Gorge (Ruh)': { color: 'Bleu', yPercent: 0.40 },
+            '3ème Œil (Khafi)': { color: 'Indigo', yPercent: 0.25 },
+            'Couronne (Akhfa)': { color: 'Violet', yPercent: 0.10 }
         };
         const SUBTLE_BODIES_DATA = [
-            { name: 'Corps Éthérique', desc: 'Lié à la vitalité physique et à la santé.', radius: 0.42, opacity: 0.35, hueShift: 0, satFactor: 0.8, valFactor: 1.2 },
-            { name: 'Corps Émotionnel', desc: 'Gère les émotions, les sentiments et le caractère.', radius: 0.48, opacity: 0.5, hueShift: 0.05, satFactor: 1, valFactor: 1 },
-            { name: 'Corps Mental', desc: 'Centre des pensées, des idées et des processus cognitifs.', radius: 0.55, opacity: 0.3, hueShift: -0.05, satFactor: 1.2, valFactor: 0.9 },
-            { name: 'Corps Astral', desc: 'Pont entre le physique et le spirituel, actif dans les rêves.', radius: 0.63, opacity: 0.2, hueShift: 0.08, satFactor: 0.7, valFactor: 1.3 },
-            { name: 'Corps Éthérique Matrice', desc: 'Modèle énergétique pour le corps physique.', radius: 0.70, opacity: 0.15, hueShift: 0.12, satFactor: 0.9, valFactor: 1.1 },
-            { name: 'Corps Céleste', desc: 'Associé à l\'illumination spirituelle et à l\'amour inconditionnel.', radius: 0.78, opacity: 0.1, hueShift: 0.15, satFactor: 0.6, valFactor: 1.5 },
-            { name: 'Corps Kéthérique', desc: 'Connexion à la conscience universelle et au divin.', radius: 0.85, opacity: 0.08, hueShift: 0, satFactor: 0.3, valFactor: 1.8 }
+            { name: 'Corps Physique (Jism)', desc: 'Lié à la santé et aux actions dans ce monde.', radius: 0.42, opacity: 0.35, hueShift: 0, satFactor: 0.8, valFactor: 1.2 },
+            { name: 'L\'Âme (Nafs)', desc: 'Centre des désirs et des émotions, à purifier.', radius: 0.48, opacity: 0.5, hueShift: 0.05, satFactor: 1, valFactor: 1 },
+            { name: 'Le Cœur (Qalb)', desc: 'Centre de la foi et des pensées. Peut être sain ou malade.', radius: 0.55, opacity: 0.3, hueShift: -0.05, satFactor: 1.2, valFactor: 0.9 },
+            { name: 'Le Secret (Sirr)', desc: 'Lieu de la contemplation d\'Allah, pont vers le spirituel.', radius: 0.63, opacity: 0.2, hueShift: 0.08, satFactor: 0.7, valFactor: 1.3 },
+            { name: 'L\'Esprit (Ruh)', desc: 'Le souffle divin, source de vie et de conscience.', radius: 0.70, opacity: 0.15, hueShift: 0.12, satFactor: 0.9, valFactor: 1.1 },
+            { name: 'Le Caché (Khafi)', desc: 'Niveau de conscience spirituelle avancée.', radius: 0.78, opacity: 0.1, hueShift: 0.15, satFactor: 0.6, valFactor: 1.5 },
+            { name: 'Le Plus Caché (Akhfa)', desc: 'Point de l\'annihilation en Dieu, la conscience pure.', radius: 0.85, opacity: 0.08, hueShift: 0, satFactor: 0.3, valFactor: 1.8 }
         ];
 
         let animationFrameId;
@@ -570,9 +626,9 @@
 
         let breathingInterval;
         let audioContext;
-        let mainOscillator, harmonicOscillator, masterGain;
+        let recitationAudio, rainNoise, thunderTimeout, ambianceLfo;
         let currentAnalysisData = {};
-
+        
 
         // --- INITIALIZATION ---
         function initializeApp() {
@@ -595,7 +651,9 @@
             document.querySelectorAll('.close-modal-button').forEach(btn => btn.addEventListener('click', closeModal));
             startBreathingButton.addEventListener('click', toggleBreathingExercise);
             playSoundButton.addEventListener('click', toggleSoundTherapy);
+            playMeditationButton.addEventListener('click', startTafakkurMeditation);
             newAffirmationButton.addEventListener('click', updateTherapeuticTools);
+            
         }
 
         // --- UI MANAGEMENT & TABS ---
@@ -604,6 +662,7 @@
             resultsContainer.classList.remove('hidden');
             resultsPlaceholder.classList.add('hidden');
             exportButton.disabled = false;
+            auraColorBar.classList.remove('translate-y-full');
         }
 
         function hideResults() {
@@ -612,6 +671,7 @@
             resultsPlaceholder.classList.remove('hidden');
             exportButton.disabled = true;
             resetTherapeuticTools();
+            auraColorBar.classList.add('translate-y-full');
             // Reset other UI elements
             dominantColorPreview.style.backgroundColor = 'transparent';
             dominantColorName.textContent = 'En attente...';
@@ -673,17 +733,50 @@
         }
         
         function populateColorMeanings() {
+            colorMeaningsContainer.innerHTML = ''; // Clear previous
+
+            const lightBackgroundColors = ['Jaune', 'Blanc', 'Argent', 'Or', 'Turquoise', 'Rose'];
+
             for (const color in AURA_DATA) {
                 const data = AURA_DATA[color];
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 p-6 rounded-lg";
+                card.className = "rounded-lg p-6"; // Base classes
+
+                let colorValue = color.toLowerCase();
+                // Special hex codes for named colors that might not render well or for special cases
+                if (color === 'Rouge') colorValue = '#dc2626';
+                if (color === 'Jaune') colorValue = '#facc15';
+                if (color === 'Vert') colorValue = '#22c55e';
+                if (color === 'Bleu') colorValue = '#3b82f6';
+                if (color === 'Rose') colorValue = '#ec4899';
+                if (color === 'Noir') colorValue = '#1E293B'; // Darker slate
+                if (color === 'Blanc') colorValue = '#f1f5f9';
+                if (color === 'Or') colorValue = '#f59e0b'; // Amber color
+                if (color === 'Argent') colorValue = '#9ca3af'; // Gray color
+                if (color === 'Turquoise') colorValue = '#14b8a6';
+                if (color === 'Orange') colorValue = '#f97316';
+                if (color === 'Indigo') colorValue = '#4f46e5';
+                if (color === 'Violet') colorValue = '#8b5cf6';
+
+
+                // Apply background color to all cards
+                card.style.backgroundColor = colorValue;
+
+                // Determine text color based on background
+                let textColor = 'text-white';
+                if (lightBackgroundColors.includes(color)) {
+                    textColor = 'text-slate-900';
+                }
+                 if (color === 'Noir') {
+                    textColor = 'text-slate-300';
+                 }
+
+
                 card.innerHTML = `
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-8 h-8 rounded-full" style="background-color: ${color.toLowerCase()};"></div>
-                        <h3 class="font-bold text-lg text-white">${color}</h3>
-                    </div>
-                    <p class="text-sm text-slate-400">${data.interpretation.split('.')[0]}.</p>
+                    <h3 class="font-bold text-lg ${textColor}">${color}</h3>
+                    <p class="text-sm ${textColor} mt-2 opacity-90">${data.interpretation.split('.')[0]}.</p>
                 `;
+
                 colorMeaningsContainer.appendChild(card);
             }
         }
@@ -926,12 +1019,12 @@
         }
         
         function calculateYinYang(r, g, b) {
-            // Simplistic model: cooler colors (blue/green) are more Yin, warmer (red/yellow) more Yang.
-            const blueGreen = b + g;
-            const redYellow = r + (r+g)/2; // Approximating yellow
-            const total = blueGreen + redYellow;
+            // Simplistic model: cooler colors (blue/green) are more Jamal, warmer (red/yellow) more Jalal.
+            const jamal = b + g;
+            const jalal = r + (r+g)/2; // Approximating yellow
+            const total = jamal + jalal;
             if (total === 0) return 0.5;
-            return Math.max(0, Math.min(1, redYellow / total)); // a value from 0 (Yin) to 1 (Yang)
+            return Math.max(0, Math.min(1, jalal / total)); // a value from 0 (Jamal) to 1 (Jalal)
         }
         
         function analyzeChakras(imageData) {
@@ -964,16 +1057,20 @@
         }
 
         function getColorName(h, s, v) { 
-            if (s < 0.2 || v < 0.2) return 'Blanc'; 
-            const hue = h * 360;
-            if (hue >= 330 || hue < 15) return 'Rouge'; 
-            if (hue < 45) return 'Orange'; 
-            if (hue < 75) return 'Jaune'; 
-            if (hue < 165) return 'Vert'; 
-            if (hue < 255) return 'Bleu'; 
-            if (hue < 285) return 'Indigo'; 
-            return 'Violet'; 
+            if (s < 0.1 && v > 0.9) return 'Blanc'; 
+            if (v < 0.15) return 'Noir';
+            if ((h > 0.9 || h < 0.04) && s > 0.6) return 'Rouge';
+            if (h < 0.11) return 'Orange';
+            if (h < 0.18) return 'Jaune';
+            if (h < 0.45) return 'Vert';
+            if (h > 0.48 && h < 0.58) return 'Turquoise';
+            if (h < 0.70) return 'Bleu';
+            if (h < 0.80) return 'Indigo';
+            if (s > 0.5) return 'Violet';
+            if (s < 0.2 && v < 0.5) return 'Noir'; // Broader black/dark
+            return 'Blanc'; // Default fallback
         }
+
 
         // --- UI UPDATES ---
         function updateUI() {
@@ -982,6 +1079,14 @@
             // Aura
             dominantColorPreview.style.backgroundColor = `rgb(${avgR}, ${avgG}, ${avgB})`;
             dominantColorName.textContent = colorName;
+            auraBarColorName.textContent = colorName;
+            auraColorBar.style.backgroundColor = `rgb(${avgR}, ${avgG}, ${avgB})`;
+
+            // Make text readable on the bar
+            const brightness = (avgR * 299 + avgG * 587 + avgB * 114) / 1000;
+            auraColorBar.style.color = brightness > 128 ? 'black' : 'white';
+
+
             const colorData = AURA_DATA[colorName];
             if (colorData) {
                 dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`;
@@ -1006,12 +1111,12 @@
             
             // Yin/Yang
             yinYangBar.style.width = `${yinYang * 100}%`;
-            if(yinYang < 0.4) yinYangText.textContent = "Dominante Yin";
-            else if (yinYang > 0.6) yinYangText.textContent = "Dominante Yang";
+            if(yinYang < 0.4) yinYangText.textContent = "Dominante Jamal";
+            else if (yinYang > 0.6) yinYangText.textContent = "Dominante Jalal";
             else yinYangText.textContent = "Équilibré";
             
             // Update tools only if they haven't been manually activated
-            if (!mainOscillator && !breathingInterval) {
+            if (!recitationAudio && !breathingInterval) {
                  updateTherapeuticTools();
             }
         }
@@ -1024,7 +1129,7 @@
              for (const name in chakras) {
                  const chakra = chakras[name];
                  const chakraInfo = CHAKRA_DATA[name];
-                 const balance = chakra.activity > 30 && chakra.activity < 80 ? 'Équilibré' : (chakra.activity <= 30 ? 'Sous-actif' : 'Sur-actif');
+                 const balance = chakra.activity > 30 && chakra.activity < 80 ? 'Équilibré' : (chakra.activity <= 30 ? 'Bloqué' : 'Hyperactif');
                  
                  html += `
                      <div class="flex items-center text-sm">
@@ -1059,27 +1164,26 @@
             const { h, s, v, stdDev } = currentAnalysisData;
             let html = '';
             
-            // Etheric body tied to brightness/vitality (v)
-            const ethericState = v > 0.7 ? 'Vibrant' : (v < 0.4 ? 'Faible' : 'Stable');
-            // Emotional body tied to saturation (s)
-            const emotionalState = s > 0.8 ? 'Intense' : (s < 0.4 ? 'Calme' : 'Équilibré');
-            // Mental body tied to coherence (stdDev)
-            const mentalState = stdDev < 15 ? 'Clair' : (stdDev > 40 ? 'Diffus' : 'Actif');
+            // Physical body tied to brightness/vitality (v)
+            const physicalState = v > 0.7 ? 'Vibrant' : (v < 0.4 ? 'Faible' : 'Stable');
+            // Nafs tied to saturation (s)
+            const nafsState = s > 0.8 ? 'Agité' : (s < 0.4 ? 'Calme' : 'Équilibré');
+            // Qalb tied to coherence (stdDev)
+            const qalbState = stdDev < 15 ? 'Clair et Serein' : (stdDev > 40 ? 'Agité' : 'Actif');
 
-            // Simplified analysis for the other bodies
-            html += `<div><strong>1. Corps Éthérique:</strong> ${ethericState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[0].desc}</small></div>`;
-            html += `<div><strong>2. Corps Émotionnel:</strong> ${emotionalState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[1].desc}</small></div>`;
-            html += `<div><strong>3. Corps Mental:</strong> ${mentalState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[2].desc}</small></div>`;
+            html += `<div><strong>1. Corps Physique (Jism):</strong> ${physicalState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[0].desc}</small></div>`;
+            html += `<div><strong>2. L'Âme (Nafs):</strong> ${nafsState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[1].desc}</small></div>`;
+            html += `<div><strong>3. Le Cœur (Qalb):</strong> ${qalbState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[2].desc}</small></div>`;
 
             subtleBodiesContent.innerHTML = html;
         }
 
 
         function getShapeTextureInterpretation(stdDev) {
-            if (stdDev < 15) return "L'aura apparaît lisse et cohérente, signe d'un champ énergétique stable et bien défini. Cela indique un état de paix intérieure et de clarté.";
-            if (stdDev < 30) return "L'aura a une texture douce et fluide. L'énergie circule bien, avec de légères fluctuations. C'est un état d'équilibre dynamique et d'adaptabilité.";
-            if (stdDev < 50) return "L'aura semble quelque peu nébuleuse ou inégale. Cela peut indiquer des pensées confuses, un stress émotionnel ou des fuites d'énergie. Un besoin d'ancrage est suggéré.";
-            return "L'aura présente une texture 'hérissée' ou très diffuse. Cela peut être lié à un état de nervosité, d'hypersensibilité ou à une forte réaction à l'environnement. Un travail de protection énergétique est recommandé.";
+            if (stdDev < 15) return "L'esprit semble clair et cohérent, signe d'un état de paix intérieure et de concentration (khushu).";
+            if (stdDev < 30) return "L'esprit a une clarté douce et fluide. Les pensées circulent bien. C'est un état d'équilibre dynamique et de contentement (rida).";
+            if (stdDev < 50) return "L'esprit semble quelque peu confus ou agité. Cela peut indiquer des pensées dispersées (waswas) ou des préoccupations. Un besoin de se recentrer sur le dhikr est suggéré.";
+            return "L'esprit présente une grande dispersion. Cela peut être lié à un état d'anxiété, ou une forte réaction à l'environnement. Un travail de protection par les invocations est recommandé.";
         }
 
         // --- THERAPEUTIC TOOLS ---
@@ -1087,13 +1191,14 @@
             const { colorName } = currentAnalysisData;
             if (!colorName) return;
             const data = AURA_DATA[colorName];
+            if (!data) return; // Exit if color not in data
             
             // Unblock UI
-            [soundTherapyUI, meditationUI, newAffirmationButton, document.getElementById('crystals-ui'), document.getElementById('aroma-ui')].forEach(el => el.classList.remove('opacity-50'));
+            [soundTherapyUI, meditationUI, newAffirmationButton, document.getElementById('remedies-ui'), document.getElementById('aroma-ui')].forEach(el => el.classList.remove('opacity-50'));
             [playSoundButton, playMeditationButton, newAffirmationButton].forEach(btn => btn.disabled = false);
 
             // Sound Therapy
-            soundFreqLabel.textContent = `${data.freq} Hz (${colorName})`;
+            soundFreqLabel.textContent = `Sourate Recommandée : ${data.sourate}`;
             
             // Meditation
             meditationTitle.textContent = data.meditation;
@@ -1101,33 +1206,32 @@
             // Affirmations
             affirmationText.textContent = `"${data.affirmation}"`;
 
-            // Crystals
-            crystalName.textContent = data.crystal.name;
-            crystalDescription.textContent = data.crystal.desc;
+            // Remedies
+            remedyName.textContent = data.remede.name;
+            remedyDescription.textContent = data.remede.desc;
             
             // Aroma
-            aromaName.textContent = data.aroma.name;
-            aromaDescription.textContent = data.aroma.desc;
+            aromaName.textContent = data.senteur.name;
+            aromaDescription.textContent = data.senteur.desc;
             
             // Daily Message
-            if (dailyMessage && data.interpretation.includes(',')) {
-                dailyMessage.textContent = `Votre aura ${colorName.toLowerCase()} vous invite aujourd'hui à vous concentrer sur ${data.interpretation.split(',')[1].trim()}.`;
-            } else if (dailyMessage) {
-                 dailyMessage.textContent = `Votre aura ${colorName.toLowerCase()} est un signe de ${AURA_DATA[colorName].interpretation.split('.')[0].toLowerCase()}.`;
+            if (dailyMessage) {
+                dailyMessage.textContent = `Votre lumière ${colorName.toLowerCase()} vous invite aujourd'hui à vous concentrer sur la patience et la gratitude. ${data.affirmation}`;
             }
         }
 
         function resetTherapeuticTools() {
-             [soundTherapyUI, meditationUI, newAffirmationButton, document.getElementById('crystals-ui'), document.getElementById('aroma-ui')].forEach(el => el.classList.add('opacity-50'));
+             [soundTherapyUI, meditationUI, newAffirmationButton, document.getElementById('remedies-ui'), document.getElementById('aroma-ui')].forEach(el => el.classList.add('opacity-50'));
              [playSoundButton, playMeditationButton, newAffirmationButton].forEach(btn => btn.disabled = true);
-             if(soundFreqLabel) soundFreqLabel.textContent = '... Hz';
+             if(soundFreqLabel) soundFreqLabel.textContent = '...';
              if(meditationTitle) meditationTitle.textContent = '...';
              if(affirmationText) affirmationText.textContent = '"..."';
-             if(crystalName) crystalName.textContent = '...';
+             if(remedyName) remedyName.textContent = '...';
              if(aromaName) aromaName.textContent = '...';
              if(dailyMessage) dailyMessage.textContent = '';
         }
-
+        
+        
         function toggleBreathingExercise() {
             if (breathingInterval) {
                 clearInterval(breathingInterval);
@@ -1138,10 +1242,10 @@
                 startBreathingButton.textContent = "Arrêter";
                 let phase = 0;
                 const phases = [
-                    { text: "Inspirez...", duration: 4000 },
-                    { text: "Retenez", duration: 4000 },
-                    { text: "Expirez...", duration: 4000 },
-                    { text: "Pause", duration: 4000 }
+                    { text: "Inspirez... (Ya Rahman)", duration: 4000 },
+                    { text: "Retenez (Ya Quddus)", duration: 4000 },
+                    { text: "Expirez... (Ya Salam)", duration: 4000 },
+                    { text: "Pause (Alhamdulillah)", duration: 4000 }
                 ];
                 
                 const nextPhase = () => {
@@ -1157,55 +1261,122 @@
         }
         
         function toggleSoundTherapy() {
-            const { colorName } = currentAnalysisData;
-            if(!colorName) return;
-            const data = AURA_DATA[colorName];
+            if (recitationAudio && !recitationAudio.paused) { // Sound is playing, stop it
+                recitationAudio.pause();
+                recitationAudio.currentTime = 0;
+                recitationAudio = null;
 
-            if (mainOscillator) { // Check if sound is playing
-                const now = audioContext.currentTime;
-                masterGain.gain.cancelScheduledValues(now);
-                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-                masterGain.gain.linearRampToValueAtTime(0, now + 0.5); // 0.5s release
-
-                setTimeout(() => {
-                    mainOscillator.stop();
-                    harmonicOscillator.stop();
-                    mainOscillator = null;
-                    harmonicOscillator = null;
-                }, 500);
-
-                playSoundButton.innerHTML = '<i class="lucide lucide-play"></i> Jouer';
-            } else {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (rainNoise) rainNoise.stop();
+                if (ambianceLfo) ambianceLfo.stop();
+                if (thunderTimeout) clearTimeout(thunderTimeout);
+                
+                rainNoise = null;
+                ambianceLfo = null;
+                thunderTimeout = null;
+                
+                if (audioContext && audioContext.state !== 'closed') {
+                    audioContext.close().then(() => audioContext = null);
                 }
 
-                masterGain = audioContext.createGain();
-                masterGain.connect(audioContext.destination);
-                
+                playSoundButton.innerHTML = '<i class="lucide lucide-play"></i> Lancer la Lecture';
+
+            } else { // Sound is stopped, play it
+                if (!audioContext || audioContext.state === 'closed') {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
                 const now = audioContext.currentTime;
-                const maxGain = 0.2; 
-                masterGain.gain.setValueAtTime(0, now);
-                masterGain.gain.linearRampToValueAtTime(maxGain, now + 0.5); // 0.5s attack
 
-                mainOscillator = audioContext.createOscillator();
-                mainOscillator.type = 'sine';
-                mainOscillator.frequency.setValueAtTime(data.freq, now);
-                mainOscillator.connect(masterGain);
-
-                harmonicOscillator = audioContext.createOscillator();
-                harmonicOscillator.type = 'sine';
-                harmonicOscillator.frequency.setValueAtTime(data.freq * 2, now);
+                // --- Background Ambiance ---
                 
-                const harmonicGain = audioContext.createGain();
-                harmonicGain.gain.setValueAtTime(maxGain * 0.4, now);
-                harmonicOscillator.connect(harmonicGain);
-                harmonicGain.connect(masterGain);
+                // 1. Rain Sound with varying intensity
+                const rainBufferSize = 2 * audioContext.sampleRate;
+                const rainBuffer = audioContext.createBuffer(1, rainBufferSize, audioContext.sampleRate);
+                const rainOutput = rainBuffer.getChannelData(0);
+                let lastRainOut = 0.0;
+                for (let i = 0; i < rainBufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    rainOutput[i] = (lastRainOut + (0.02 * white)) / 1.02;
+                    lastRainOut = rainOutput[i];
+                    rainOutput[i] *= 3.5;
+                }
+                rainNoise = audioContext.createBufferSource();
+                rainNoise.buffer = rainBuffer;
+                rainNoise.loop = true;
+                
+                const rainGain = audioContext.createGain();
+                rainGain.gain.value = 0.04; // Base volume
 
-                mainOscillator.start();
-                harmonicOscillator.start();
+                // LFO for volume variation
+                ambianceLfo = audioContext.createOscillator();
+                ambianceLfo.type = 'sine';
+                ambianceLfo.frequency.value = 0.05; // Very slow fluctuation (1 cycle every 20 seconds)
+                const lfoGain = audioContext.createGain();
+                lfoGain.gain.value = 0.03; // Fluctuation depth
+
+                ambianceLfo.connect(lfoGain).connect(rainGain.gain);
+                rainNoise.connect(rainGain).connect(audioContext.destination);
+                
+                ambianceLfo.start();
+                rainNoise.start();
+
+                // 2. Thunder with varying intensity and timing
+                const createThunder = () => {
+                    if (!audioContext || audioContext.state === 'closed') return;
+                    const thunderTime = audioContext.currentTime;
+                    const thunderSource = audioContext.createBufferSource();
+                    const thunderBufferSize = audioContext.sampleRate * 2;
+                    const thunderBuffer = audioContext.createBuffer(1, thunderBufferSize, audioContext.sampleRate);
+                    const thunderOutput = thunderBuffer.getChannelData(0);
+                    for (let i = 0; i < thunderBufferSize; i++) {
+                        thunderOutput[i] = Math.random() * 2 - 1;
+                    }
+                    thunderSource.buffer = thunderBuffer;
+
+                    const biquadFilter = audioContext.createBiquadFilter();
+                    biquadFilter.type = 'lowpass';
+                    biquadFilter.frequency.setValueAtTime(400, thunderTime);
+                    biquadFilter.frequency.linearRampToValueAtTime(100, thunderTime + 1.5);
+                    
+                    const thunderGain = audioContext.createGain();
+                    thunderGain.gain.setValueAtTime(0, thunderTime);
+                    thunderGain.gain.linearRampToValueAtTime(0.15 + Math.random() * 0.2, thunderTime + 0.05); // Random intensity
+                    thunderGain.gain.exponentialRampToValueAtTime(0.01, thunderTime + 2.5);
+
+                    thunderSource.connect(biquadFilter).connect(thunderGain).connect(audioContext.destination);
+                    thunderSource.start(thunderTime);
+                };
+
+                const scheduleThunder = () => {
+                    const delay = 15000 + Math.random() * 20000; // Next thunder in 15-35 seconds
+                    thunderTimeout = setTimeout(() => {
+                        if (!audioContext || audioContext.state === 'closed') return;
+                        createThunder();
+                        scheduleThunder();
+                    }, delay);
+                };
+                scheduleThunder();
+
+                // --- Play Recitation Audio ---
+                recitationAudio = new Audio(QURAN_AUDIO_B64);
+                recitationAudio.loop = true;
+                recitationAudio.play();
+                
                 playSoundButton.innerHTML = '<i class="lucide lucide-stop-circle"></i> Arrêter';
             }
+        }
+        
+        function startTafakkurMeditation() {
+            const { colorName } = currentAnalysisData;
+            if (!colorName || !TAFFAKUR_DATA[colorName]) {
+                // Default message if no analysis is done
+                meditationModalTitle.textContent = "Méditation Guidée";
+                meditationModalText.textContent = "Veuillez d'abord lancer une analyse pour recevoir une méditation personnalisée.";
+            } else {
+                const meditationData = TAFFAKUR_DATA[colorName];
+                meditationModalTitle.textContent = meditationData.title;
+                meditationModalText.textContent = meditationData.text;
+            }
+            meditationModal.classList.remove('hidden');
         }
 
         // --- RECORDING, REPORTING, HISTORY ---
@@ -1248,7 +1419,6 @@
                 return;
             };
             
-            // Logic to analyze and create HTML for the report... (Simplified for brevity)
             const vRates = data.map(d => d.vRate);
             const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length);
             const avgTier = getVibrationalTier(avgVRate);
@@ -1278,7 +1448,7 @@
                 </div>
                 <div><h3 class="font-semibold text-sky-400 mb-2">Synthèse</h3>
                     <p><strong>Couleur Dominante:</strong> ${dominantColor}</p>
-                    <p><strong>Taux Vibratoire Moyen:</strong> ${avgVRate.toLocaleString('fr-FR')} UBQ (${avgTier.level})</p>
+                    <p><strong>Niveau de Paix Intérieure Moyen:</strong> ${avgVRate.toLocaleString('fr-FR')} (${avgTier.level})</p>
                 </div>`;
             reportModal.classList.remove('hidden');
         }
@@ -1298,7 +1468,7 @@
                 historyContent.innerHTML = history.map(session => `
                     <div class="bg-slate-900/50 p-4 rounded-lg mb-4">
                         <p class="font-bold">Session du ${new Date(session.date).toLocaleString('fr-FR')}</p>
-                        <p class="text-sm">Durée: ${session.duration}s | Couleur dom: ${session.dominantColor} | Taux moyen: ${session.avgVRate} UBQ</p>
+                        <p class="text-sm">Durée: ${session.duration}s | Couleur dom: ${session.dominantColor} | Paix moy: ${session.avgVRate}</p>
                          <div class="w-full h-6 bg-slate-900 rounded-lg flex overflow-hidden mt-2">
                             ${session.timeline.map(c => `<div style="flex-grow: 1; background-color: ${c};"></div>`).join('')}
                         </div>
@@ -1319,7 +1489,7 @@
             const resultsNode = document.getElementById('results');
             html2canvas(resultsNode, { backgroundColor: "#1e293b" }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `rapport-aura-${new Date().toISOString().slice(0,10)}.png`;
+                link.download = `rapport-spirituel-${new Date().toISOString().slice(0,10)}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
@@ -1328,11 +1498,12 @@
         function closeModal() {
             reportModal.classList.add('hidden');
             historyModal.classList.add('hidden');
+            meditationModal.classList.add('hidden');
         }
 
         // --- UTILITIES ---
         function getVibrationalTier(rate) { 
-            const tiers = { tres_bas: {level:'Très Bas', colorHex:'#ef4444', commentary:'Dispersion du signal, fatigue profonde ou stress.'}, bas: {level:'Bas', colorHex:'#f97316', commentary:'Faible cohérence, préoccupation ou tension.'}, equilibre: {level:'Équilibré', colorHex:'#22c55e', commentary:'Signal stable, état d\'homéostasie général.'}, eleve: {level:'Élevé', colorHex:'#38bdf8', commentary:'Forte cohérence, clarté mentale et bien-être.'}, optimal: {level:'Optimal', colorHex:'#8b5cf6', commentary:'Pic de cohérence, paix intérieure profonde.'}};
+            const tiers = { tres_bas: {level:'Très Bas', colorHex:'#ef4444', commentary:'Signal dispersé, ghaflah (insouciance) ou tristesse profonde.'}, bas: {level:'Bas', colorHex:'#f97316', commentary:'Faible cohérence, préoccupations mondaines ou tension.'}, equilibre: {level:'Équilibré', colorHex:'#22c55e', commentary:'Signal stable, état de contentement général (rida).'}, eleve: {level:'Élevé', colorHex:'#38bdf8', commentary:'Forte cohérence, clarté mentale et bien-être (ihsan).'}, optimal: {level:'Optimal', colorHex:'#8b5cf6', commentary:'Pic de cohérence, paix intérieure profonde (sakînah).'}};
             if (rate <= 4000) return tiers.tres_bas; 
             if (rate <= 7500) return tiers.bas; 
             if (rate <= 11000) return tiers.equilibre; 
