@@ -16,7 +16,7 @@
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-bg: rgba(15, 23, 42, 0.75);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
         
@@ -91,24 +91,35 @@
 
         /* --- Animations & Utilities --- */
         .spinner {
-            width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1);
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
             border-top-color: #667eea; border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .modal-backdrop {
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
             position: fixed; inset: 0; z-index: 100;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .modal-backdrop.active { opacity: 1; pointer-events: auto; }
 
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-        
         .recording-pulse { animation: pulse-red 2s infinite; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* Breathing Circle */
+        .breathing-circle {
+            width: 150px; height: 150px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(99,102,241,0.8) 0%, rgba(168,85,247,0.4) 100%);
+            box-shadow: 0 0 40px rgba(99,102,241,0.5);
+            transform: scale(0.8);
+        }
+        .breathe-anim { animation: breathe 8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes breathe {
+            0%, 100% { transform: scale(0.85); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
 
         /* Gauge */
         .gauge-bg { stroke: rgba(255,255,255,0.1); }
@@ -123,12 +134,11 @@
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">🔮</span>
-                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs font-normal text-slate-400 tracking-wider ml-2 border border-slate-600 px-2 py-0.5 rounded-full">BETA 2.0</span></h1>
+                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs font-normal text-slate-400 tracking-wider ml-2 border border-slate-600 px-2 py-0.5 rounded-full">BETA 2.1</span></h1>
             </div>
             <nav class="hidden md:flex space-x-6 text-sm font-medium">
                 <a href="#analyzer" class="hover:text-indigo-400 transition">Analyseur</a>
-                <a href="#tools" class="hover:text-indigo-400 transition">Remèdes</a>
-                <a href="#science" class="hover:text-indigo-400 transition">Science</a>
+                <a href="#tools" class="hover:text-indigo-400 transition">Pharmacie de l'Âme</a>
             </nav>
         </div>
     </header>
@@ -140,7 +150,7 @@
                 Révélez votre <span class="gradient-text">Lumière Intérieure</span>
             </h2>
             <p class="max-w-2xl mx-auto text-lg text-slate-300 mb-8 leading-relaxed">
-                La première interface de <strong>Bio-Feedback Spirituel</strong> qui transforme votre signal physiologique (rythme cardiaque, micro-expressions) en une analyse de l'âme conforme à l'éthique islamique.
+                La première interface de <strong>Bio-Feedback Spirituel</strong> qui transforme votre signal physiologique (rythme cardiaque, micro-expressions) en une analyse de l'âme conforme à l'éthique.
             </p>
             <div class="flex justify-center gap-4">
                 <a href="#analyzer" class="btn-primary flex items-center gap-2">
@@ -175,17 +185,18 @@
                                 <p class="text-xs text-slate-500 mt-4"><span class="text-green-400">🔒 100% Privé</span> : Aucune image n'est envoyée sur le cloud.</p>
                             </div>
 
-                            <div id="loader" class="absolute inset-0 z-40 bg-slate-900/80 flex-col items-center justify-center hidden">
-                                <div class="spinner mb-4"></div>
-                                <p class="animate-pulse text-indigo-300 font-mono">Calibrage des capteurs...</p>
+                            <div id="loader" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
+                                <div class="spinner mb-6"></div>
+                                <h3 class="text-xl font-bold text-white mb-2">Calibrage en cours</h3>
+                                <p class="text-indigo-300 font-mono animate-pulse" id="loader-text">Analyse du spectre lumineux...</p>
+                                <div class="w-64 h-1 bg-slate-800 rounded-full mt-6 overflow-hidden">
+                                    <div class="h-full bg-indigo-500 animate-[width_3s_ease-out_forwards]" style="width: 100%"></div>
+                                </div>
                             </div>
 
                             <div class="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                                 <button id="btn-stop" class="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm shadow-lg hidden">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                </button>
-                                <button id="btn-fullscreen" class="p-2 bg-slate-700/80 hover:bg-slate-600 text-white rounded-lg backdrop-blur-sm shadow-lg hidden">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                                    Arrêter
                                 </button>
                             </div>
                         </div>
@@ -268,7 +279,7 @@
                                 <span>⏺️</span> Enregistrer
                             </button>
                             <button id="btn-export" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50" disabled>
-                                💾 Rapport PDF
+                                💾 Rapport
                             </button>
                         </div>
                     </div>
@@ -279,23 +290,26 @@
         <section id="tools" class="mb-24">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">Pharmacie de l'Âme</h2>
-                <p class="text-slate-400">Outils interactifs adaptés à votre diagnostic</p>
+                <p class="text-slate-400">Outils interactifs adaptés à votre diagnostic actuel</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group" id="tool-breath">
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group relative overflow-hidden" id="tool-breath">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
                     <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">🌬️</div>
                     <h3 class="font-bold text-lg mb-2">Respiration "Nafas"</h3>
-                    <p class="text-sm text-slate-400">Cohérence cardiaque guidée pour augmenter votre niveau Sakînah.</p>
+                    <p class="text-sm text-slate-400">Cohérence cardiaque guidée pour apaiser le stress et augmenter le Sakînah.</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group" id="tool-dhikr">
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group relative overflow-hidden" id="tool-dhikr">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
                     <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">📿</div>
-                    <h3 class="font-bold text-lg mb-2">Dhikr Personnalisé</h3>
-                    <p class="text-sm text-slate-400">Invocation recommandée selon la couleur de votre aura.</p>
+                    <h3 class="font-bold text-lg mb-2">Dhikr & Méditation</h3>
+                    <p class="text-sm text-slate-400">Invocation et réflexion personnalisée selon la couleur de votre aura.</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group" id="tool-sound">
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group relative overflow-hidden" id="tool-sound">
+                    <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
                     <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">🔊</div>
                     <h3 class="font-bold text-lg mb-2">Thérapie Sonore</h3>
-                    <p class="text-sm text-slate-400">Fréquences et récitations apaisantes pour le cœur.</p>
+                    <p class="text-sm text-slate-400">Ambiance sonore "Pluie de Miséricorde" pour nettoyer l'esprit.</p>
                 </div>
             </div>
         </section>
@@ -303,50 +317,118 @@
     </main>
 
     <div id="consent-modal" class="modal-backdrop active">
-        <div class="glass-card max-w-lg w-full mx-4 rounded-3xl p-8 border border-white/20 shadow-2xl transform transition-all scale-100">
+        <div class="glass-card max-w-lg w-full mx-4 rounded-3xl p-8 border border-white/20 shadow-2xl">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4">🛡️</div>
                 <h2 class="text-2xl font-bold text-white">Confidentialité & Éthique</h2>
             </div>
-            
-            <div class="space-y-4 text-slate-300 text-sm mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                <p>Bienvenue sur <strong>Noor-AI</strong>. Avant de commencer, veuillez accepter nos conditions d'utilisation conformes au RGPD et à l'éthique du projet.</p>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li><strong>Analyse Locale :</strong> Toutes les analyses (vidéo, visage, pouls) sont effectuées 100% sur votre appareil. Aucune image de votre visage n'est envoyée vers un serveur externe.</li>
-                    <li><strong>Pas de Diagnostic Médical :</strong> Cet outil est destiné au bien-être spirituel et à la relaxation. Les mesures de BPM sont estimatives et ne remplacent pas un médecin.</li>
-                    <li><strong>Cookies :</strong> Nous utilisons le stockage local uniquement pour sauvegarder votre historique de session sur cet appareil.</li>
-                </ul>
-            </div>
+            <p class="text-slate-300 text-sm mb-6 text-center">
+                Toutes les analyses (visage, pouls) sont effectuées <strong>localement sur votre appareil</strong>. Aucune image n'est envoyée sur le cloud.
+            </p>
+            <button id="btn-accept-consent" class="btn-primary w-full py-4 text-lg">J'accepte et je commence</button>
+        </div>
+    </div>
 
-            <div class="flex flex-col gap-3">
-                <button id="btn-accept-consent" class="btn-primary w-full py-4 text-lg">
-                    J'accepte et je commence
-                </button>
-                <p class="text-xs text-center text-slate-500 mt-2">En continuant, vous confirmez avoir plus de 13 ans.</p>
+    <div id="modal-breath" class="modal-backdrop">
+        <div class="glass-card max-w-md w-full mx-4 rounded-3xl p-8 flex flex-col items-center relative">
+            <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-white">&times;</button>
+            <h3 class="text-2xl font-bold mb-8">Cohérence Cardiaque</h3>
+            <div class="breathing-circle mb-8"></div>
+            <p id="breath-text" class="text-xl font-medium text-indigo-300">Inspirez...</p>
+            <p class="text-sm text-slate-500 mt-4">Suivez le cercle pour synchroniser votre cœur.</p>
+        </div>
+    </div>
+
+    <div id="modal-info" class="modal-backdrop">
+        <div class="glass-card max-w-lg w-full mx-4 rounded-3xl p-8 relative">
+            <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-white text-2xl">&times;</button>
+            <h3 id="modal-title" class="text-2xl font-bold mb-4 text-indigo-400">Titre</h3>
+            <div id="modal-body" class="text-slate-200 leading-relaxed space-y-4"></div>
+            <div class="mt-8 text-center">
+                <button class="modal-close btn-primary py-2 px-6 text-sm">Fermer</button>
             </div>
         </div>
     </div>
 
     <script>
         /**
-         * NOOR-AI : CORE ENGINE
-         * Commercial Version 1.0
-         * Features: Blazeface Tracking, rPPG Simulation, Local Processing
+         * NOOR-AI : CORE ENGINE v2.1
+         * Features: Calibration Delay, Interactive Tools, rPPG Simulation
          */
 
-        // --- State Management ---
+        // --- Data Definitions ---
+        const COLORS_DATA = {
+            'Rouge': { 
+                desc: 'Besoin d\'ancrage et de force vitale.', 
+                remede: 'Marche pieds nus, Datte Ajwa.', 
+                dhikr: '"Ya Hayyu Ya Qayyum" (Ô Vivant, Ô Subsistant).',
+                meditation: "Visualisez des racines partant de vos pieds s'enfonçant profondément dans la terre, puisant la force et la stabilité d'Allah."
+            },
+            'Orange': { 
+                desc: 'Émotionnel, créativité, liens sociaux.', 
+                remede: 'Partage de nourriture, Figue.', 
+                dhikr: '"Alhamdulillah" pour les bienfaits de la vie.',
+                meditation: "Pensez aux liens qui vous unissent aux autres. Laissez la chaleur de la gratitude remplir votre ventre et votre cœur."
+            },
+            'Jaune': { 
+                desc: 'Intellect, volonté, digestion mentale.', 
+                remede: 'Miel, Lecture de textes sacrés.', 
+                dhikr: '"Hasbunallahu wa ni\'mal wakil" (Allah me suffit).',
+                meditation: "Imaginez un soleil doré irradiant depuis votre plexus solaire, dissipant le doute et apportant la clarté de la certitude (Yaqin)."
+            },
+            'Vert': { 
+                desc: 'Équilibre du cœur, guérison, nature.', 
+                remede: 'Huile d\'olive, Contemplation nature.', 
+                dhikr: '"Ya Salam" (Ô Source de Paix).',
+                meditation: "Visualisez une lumière émeraude apaisante enveloppant votre cœur, guérissant toute blessure et rancune."
+            },
+            'Bleu': { 
+                desc: 'Communication apaisée, vérité.', 
+                remede: 'Eau pure, Silence.', 
+                dhikr: '"SubhanAllah" (Gloire à Allah).',
+                meditation: "Imaginez un ciel bleu infini ou un océan calme. Sentez votre gorge se détendre, prête à ne dire que la vérité bienveillante."
+            },
+            'Indigo': { 
+                desc: 'Intuition profonde (Firasa).', 
+                remede: 'Jeûne, Prière nocturne.', 
+                dhikr: '"Ya Nur" (Ô Lumière).',
+                meditation: "Portez votre attention entre vos sourcils. Demandez à Allah d'illuminer votre vision intérieure pour voir au-delà des apparences."
+            },
+            'Violet': { 
+                desc: 'Connexion spirituelle élevée.', 
+                remede: 'Parfum (Musc/Oud), Isolement.', 
+                dhikr: '"La ilaha illa Allah".',
+                meditation: "Sentez une pluie de lumière violette descendre du ciel, vous connectant à la Présence Divine et dissolvant l'ego."
+            },
+            'Blanc': { 
+                desc: 'Pureté, Clarté totale (Nur).', 
+                remede: 'Ablutions fraîches.', 
+                dhikr: '"Allahu Akbar".',
+                meditation: "Baignez dans une lumière blanche pure et éclatante, symbole de la pureté originelle (Fitra)."
+            }
+        };
+
+        const CHAKRAS = [
+            { id: 'crown', name: 'Akhfa (Couronne)', color: [139, 92, 246] },
+            { id: 'third', name: 'Khafi (3ème Œil)', color: [79, 70, 229] },
+            { id: 'throat', name: 'Ruh (Gorge)', color: [59, 130, 246] },
+            { id: 'heart', name: 'Sirr (Cœur)', color: [34, 197, 94] },
+            { id: 'solar', name: 'Qalb (Solaire)', color: [234, 179, 8] },
+            { id: 'sacral', name: 'Nafs (Sacré)', color: [249, 115, 22] },
+            { id: 'root', name: 'Asas (Racine)', color: [239, 68, 68] }
+        ];
+
+        // --- State ---
         const state = {
             isStreaming: false,
-            isRecording: false,
             hasConsent: false,
             model: null,
             rafId: null,
-            faceCoords: null, // {x, y, w, h}
-            history: {
-                greenSignal: [], // For BPM
-                bpms: [],
-                colors: []
-            },
+            faceCoords: null,
+            currentColor: 'Blanc',
+            audioCtx: null,
+            whiteNoise: null,
+            history: { greenSignal: [], colors: [] },
             lastUpdate: 0
         };
 
@@ -359,7 +441,9 @@
                 start: document.getElementById('start-overlay'),
                 loader: document.getElementById('loader'),
                 chakra: document.getElementById('chakra-overlay'),
-                consent: document.getElementById('consent-modal')
+                consent: document.getElementById('consent-modal'),
+                breath: document.getElementById('modal-breath'),
+                info: document.getElementById('modal-info')
             },
             stats: {
                 bpm: document.getElementById('stat-bpm'),
@@ -375,66 +459,52 @@
                 stop: document.getElementById('btn-stop'),
                 accept: document.getElementById('btn-accept-consent')
             },
-            panels: {
-                empty: document.getElementById('empty-state'),
-                data: document.getElementById('analysis-data'),
-                list: document.getElementById('chakras-list')
+            tools: {
+                breath: document.getElementById('tool-breath'),
+                dhikr: document.getElementById('tool-dhikr'),
+                sound: document.getElementById('tool-sound')
             }
         };
 
-        // --- Data Definitions ---
-        const COLORS_DATA = {
-            'Rouge': { desc: 'Besoin d\'ancrage et de force vitale', remede: 'Marche, Datte Ajwa', freq: 'Basse' },
-            'Orange': { desc: 'Émotionnel, créativité, liens sociaux', remede: 'Partage, Figue', freq: 'Moyenne' },
-            'Jaune': { desc: 'Intellect, volonté, digestion mentale', remede: 'Miel, Lecture', freq: 'Moyenne-Haute' },
-            'Vert': { desc: 'Équilibre du cœur, guérison, nature', remede: 'Huile d\'olive, Nature', freq: 'Harmonique' },
-            'Bleu': { desc: 'Communication apaisée, vérité', remede: 'Eau, Silence', freq: 'Haute' },
-            'Indigo': { desc: 'Intuition profonde (Firasa)', remede: 'Jeûne, Nuit', freq: 'Très Haute' },
-            'Violet': { desc: 'Connexion spirituelle, Dhikr', remede: 'Méditation, Parfum', freq: 'Spirituelle' },
-            'Blanc': { desc: 'Pureté, Clarté totale (Nur)', remede: 'Ablutions, Prière', freq: 'Divine' }
-        };
-
-        const CHAKRAS = [
-            { id: 'crown', name: 'Akhfa (Couronne)', color: [139, 92, 246] }, // Violet
-            { id: 'third', name: 'Khafi (3ème Œil)', color: [79, 70, 229] }, // Indigo
-            { id: 'throat', name: 'Ruh (Gorge)', color: [59, 130, 246] }, // Bleu
-            { id: 'heart', name: 'Sirr (Cœur)', color: [34, 197, 94] }, // Vert
-            { id: 'solar', name: 'Qalb (Solaire)', color: [234, 179, 8] }, // Jaune
-            { id: 'sacral', name: 'Nafs (Sacré)', color: [249, 115, 22] }, // Orange
-            { id: 'root', name: 'Asas (Racine)', color: [239, 68, 68] } // Rouge
-        ];
-
-        // --- Initialization ---
+        // --- Init ---
         async function init() {
-            // Check HTTPS
             if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                alert("Sécurité : L'application nécessite HTTPS pour accéder à la caméra.");
+                alert("Sécurité : L'application nécessite HTTPS.");
             }
 
-            // Consent Logic
             els.btns.accept.addEventListener('click', () => {
                 els.overlays.consent.classList.remove('active');
                 state.hasConsent = true;
                 preloadModel();
             });
 
-            // Button Listeners
             els.btns.start.addEventListener('click', startCamera);
             els.btns.stop.addEventListener('click', stopCamera);
+            
+            // Tools Listeners
+            els.tools.breath.addEventListener('click', startBreathing);
+            els.tools.dhikr.addEventListener('click', openDhikrMeditation);
+            els.tools.sound.addEventListener('click', toggleSoundTherapy);
+            
+            // Modal Closers
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal-backdrop:not(#consent-modal)').forEach(m => m.classList.remove('active'));
+                    stopBreathing();
+                });
+            });
         }
 
         async function preloadModel() {
             try {
-                // Load Blazeface
                 state.model = await blazeface.load();
                 console.log("IA : Modèle facial chargé");
             } catch (e) {
-                console.error("Erreur chargement IA", e);
-                alert("Impossible de charger le modèle d'IA. Vérifiez votre connexion.");
+                console.error("Erreur IA", e);
             }
         }
 
-        // --- Core Functions ---
+        // --- Camera & Calibration ---
         async function startCamera() {
             if (!state.hasConsent) return;
             
@@ -450,20 +520,41 @@
                 
                 els.video.srcObject = stream;
                 
+                // Calibration Logic
                 els.video.onloadedmetadata = () => {
-                    els.overlays.loader.classList.add('hidden');
-                    els.btns.stop.classList.remove('hidden');
+                    els.video.play();
                     
-                    els.canvas.width = els.video.videoWidth;
-                    els.canvas.height = els.video.videoHeight;
+                    // Simulate Calibration time (4 seconds)
+                    let steps = ["Connexion au flux...", "Analyse biométrique...", "Calibrage du spectre..."];
+                    let stepIndex = 0;
                     
-                    state.isStreaming = true;
-                    showResultsUI();
-                    processFrame();
+                    const stepInterval = setInterval(() => {
+                        if(stepIndex < steps.length) {
+                            document.getElementById('loader-text').innerText = steps[stepIndex];
+                            stepIndex++;
+                        }
+                    }, 1000);
+
+                    setTimeout(() => {
+                        clearInterval(stepInterval);
+                        els.overlays.loader.classList.add('hidden');
+                        els.btns.stop.classList.remove('hidden');
+                        
+                        els.canvas.width = els.video.videoWidth;
+                        els.canvas.height = els.video.videoHeight;
+                        
+                        state.isStreaming = true;
+                        document.getElementById('empty-state').classList.add('hidden');
+                        document.getElementById('analysis-data').classList.remove('hidden');
+                        document.getElementById('btn-record').disabled = false;
+                        document.getElementById('btn-export').disabled = false;
+                        
+                        processFrame();
+                    }, 4000); // 4 seconds delay
                 };
             } catch (err) {
                 console.error(err);
-                alert("Erreur Caméra : Veuillez autoriser l'accès.");
+                alert("Erreur Caméra. Vérifiez les permissions.");
                 els.overlays.start.classList.remove('hidden');
                 els.overlays.loader.classList.add('hidden');
             }
@@ -472,63 +563,44 @@
         function stopCamera() {
             state.isStreaming = false;
             if (state.rafId) cancelAnimationFrame(state.rafId);
-            if (els.video.srcObject) {
-                els.video.srcObject.getTracks().forEach(track => track.stop());
-            }
+            if (els.video.srcObject) els.video.srcObject.getTracks().forEach(track => track.stop());
             
             els.ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
             els.overlays.chakra.innerHTML = '';
             els.overlays.start.classList.remove('hidden');
             els.btns.stop.classList.add('hidden');
-            hideResultsUI();
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('analysis-data').classList.add('hidden');
+            
+            if(state.audioCtx) state.audioCtx.close();
+            state.audioCtx = null;
         }
 
-        function showResultsUI() {
-            els.panels.empty.classList.add('hidden');
-            els.panels.data.classList.remove('hidden');
-            document.getElementById('btn-record').disabled = false;
-            document.getElementById('btn-export').disabled = false;
-        }
-        
-        function hideResultsUI() {
-            els.panels.empty.classList.remove('hidden');
-            els.panels.data.classList.add('hidden');
-        }
-
-        // --- Main Loop (The "Magic") ---
+        // --- Analysis Loop ---
         async function processFrame() {
             if (!state.isStreaming) return;
 
-            // 1. Draw Video to Canvas for processing (Mirrored)
+            // Draw Video
             els.ctx.save();
             els.ctx.scale(-1, 1);
             els.ctx.translate(-els.canvas.width, 0);
             els.ctx.drawImage(els.video, 0, 0, els.canvas.width, els.canvas.height);
             els.ctx.restore();
 
-            // 2. Face Detection & Tracking
+            // Face Detection (every ~100ms)
             if (state.model) {
-                // Estimate faces (non-blocking if possible, but JS is single threaded)
-                // To optimize, run face detection every 3rd frame
                 const now = Date.now();
-                if (now - state.lastUpdate > 100) { // Limit detection rate (~10fps)
+                if (now - state.lastUpdate > 100) {
                     const predictions = await state.model.estimateFaces(els.video, false);
                     if (predictions.length > 0) {
-                        const start = predictions[0].topLeft; // [x, y]
-                        const end = predictions[0].bottomRight; // [x, y]
-                        
-                        // Correct for mirroring
-                        const width = end[0] - start[0];
-                        const x = els.canvas.width - end[0]; // Mirror x
-                        
+                        const start = predictions[0].topLeft;
+                        const end = predictions[0].bottomRight;
                         state.faceCoords = {
-                            x: x,
+                            x: els.canvas.width - end[0], // Mirror correction
                             y: start[1],
-                            w: width,
+                            w: end[0] - start[0],
                             h: end[1] - start[1]
                         };
-                        
-                        // Extract Forehead ROI for rPPG (Green Channel)
                         processBiometrics(state.faceCoords);
                     } else {
                         state.faceCoords = null;
@@ -537,7 +609,7 @@
                 }
             }
 
-            // 3. Visualization
+            // Visualization
             if (state.faceCoords) {
                 drawAura(state.faceCoords);
                 updateChakras(state.faceCoords);
@@ -546,79 +618,59 @@
             state.rafId = requestAnimationFrame(processFrame);
         }
 
-        // --- Biometrics & Analysis Logic (The "Science") ---
         function processBiometrics(face) {
-            // ROI: Forehead (approx top 20% of face, center 50% width)
+            // Simplified rPPG Simulation based on green channel noise
             const roiX = face.x + face.w * 0.25;
             const roiY = face.y + face.h * 0.1;
             const roiW = face.w * 0.5;
             const roiH = face.h * 0.15;
 
-            // Get pixels
             const imageData = els.ctx.getImageData(roiX, roiY, roiW, roiH);
-            const data = imageData.data;
             let greenSum = 0;
-            
-            // Calculate avg Green
-            for (let i = 0; i < data.length; i += 4) {
-                greenSum += data[i + 1];
-            }
-            const greenAvg = greenSum / (data.length / 4);
+            for (let i = 0; i < imageData.data.length; i += 4) greenSum += imageData.data[i + 1];
+            const greenAvg = greenSum / (imageData.data.length / 4);
 
-            // rPPG Logic (Simplified for MVP)
-            // Real implementation requires FFT or Peak Detection over time
-            // Here we simulate coherence based on signal stability
             updateHeartRate(greenAvg);
             
-            // Color Analysis (Full Face)
+            // Full face color for Aura
             const faceData = els.ctx.getImageData(face.x, face.y, face.w, face.h).data;
             analyzeDominantColor(faceData);
         }
 
         function updateHeartRate(val) {
             state.history.greenSignal.push(val);
-            if (state.history.greenSignal.length > 150) state.history.greenSignal.shift(); // 5s buffer
+            if (state.history.greenSignal.length > 150) state.history.greenSignal.shift();
 
-            // Simple variation calc (Standard Deviation proxy for Stress)
+            // Standard deviation = Coherence proxy
             const arr = state.history.greenSignal;
             const mean = arr.reduce((a, b) => a + b) / arr.length;
             const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
             const stdDev = Math.sqrt(variance);
 
-            // Mapping: Low StdDev = High Coherence (Sakînah), High StdDev = Stress
-            // Normal stdDev for video noise is approx 1-5. Movement spikes it > 10.
-            
             let coherence = Math.max(0, Math.min(100, 100 - (stdDev * 5)));
-            let bpm = 60 + (stdDev * 3) + (Math.random() * 5); // Simulated realistic BPM based on noise
-            if (bpm > 110) bpm = 110;
-            if (bpm < 60) bpm = 60;
+            let bpm = 60 + (stdDev * 3) + (Math.random() * 5);
+            bpm = Math.min(110, Math.max(60, bpm));
 
-            // Update UI
             els.stats.bpm.innerHTML = `${Math.round(bpm)} <span class="text-sm font-normal text-slate-500">BPM</span>`;
             els.stats.coherence.innerText = `${Math.round(coherence)}%`;
-
-            // Calculate Vibrational Rate based on Coherence
-            const vibration = Math.round(coherence * 150 + 5000); // 5000 - 20000 range
+            
+            const vibration = Math.round(coherence * 150 + 5000);
             els.stats.vibVal.innerText = vibration.toLocaleString();
             els.stats.vibBar.style.width = `${coherence}%`;
             
-            let msg = "";
-            if (vibration > 15000) msg = "État Optimal (Ihsan) ✨";
-            else if (vibration > 10000) msg = "Équilibré (Wasat) ⚖️";
-            else msg = "Besoin de repos (Sabr) 🌙";
+            let msg = vibration > 15000 ? "État Optimal (Ihsan) ✨" : (vibration > 10000 ? "Équilibré (Wasat) ⚖️" : "Agité (Qabq) 🌊");
             document.getElementById('vibration-msg').innerText = msg;
         }
 
         function analyzeDominantColor(data) {
             let r=0, g=0, b=0, count=0;
-            for(let i=0; i<data.length; i+=20) { // Sample every 5th pixel for perf
+            for(let i=0; i<data.length; i+=40) { // Optimization
                 r += data[i]; g += data[i+1]; b += data[i+2]; count++;
             }
             r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
 
-            // RGB to HSV for better color naming
             const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, v = max;
+            let h, s, v = max / 255;
             const d = max - min;
             s = max === 0 ? 0 : d / max;
             if (max === min) h = 0;
@@ -631,9 +683,8 @@
                 h /= 6;
             }
 
-            // Determine Name
             let colorName = 'Blanc';
-            if (s < 0.2) colorName = v < 50 ? 'Noir' : 'Blanc';
+            if (s < 0.2) colorName = v < 0.2 ? 'Noir' : 'Blanc';
             else {
                 if (h < 0.05 || h > 0.95) colorName = 'Rouge';
                 else if (h < 0.15) colorName = 'Orange';
@@ -644,17 +695,15 @@
                 else colorName = 'Violet';
             }
 
-            // Update UI with smoothing (avoid flickering)
             state.history.colors.push(colorName);
             if(state.history.colors.length > 20) state.history.colors.shift();
             
-            // Get most frequent color in history
             const mode = state.history.colors.sort((a,b) =>
                 state.history.colors.filter(v => v===a).length - state.history.colors.filter(v => v===b).length
             ).pop();
+            state.currentColor = mode;
 
             const info = COLORS_DATA[mode] || COLORS_DATA['Blanc'];
-            
             els.stats.auraName.innerText = mode;
             els.stats.auraName.style.color = `rgb(${r},${g},${b})`;
             els.stats.auraDesc.innerText = info.desc;
@@ -662,15 +711,13 @@
             els.stats.preview.style.boxShadow = `0 0 30px rgba(${r},${g},${b}, 0.5)`;
             
             document.getElementById('recommendation-text').innerHTML = `
-                Pour harmoniser cette énergie <strong>${mode}</strong>, nous recommandons : <br>
-                <span class="text-indigo-400">• Remède :</span> ${info.remede} <br>
-                <span class="text-indigo-400">• Fréquence :</span> ${info.freq}
+                Harmonisation <strong>${mode}</strong> :<br>
+                <span class="text-indigo-400">• Remède :</span> ${info.remede}
             `;
         }
 
-        // --- Visuals ---
+        // --- Visualization Utils ---
         function drawAura(face) {
-            // Draw a glowing ellipse around the face
             const cx = face.x + face.w/2;
             const cy = face.y + face.h/2;
             const rx = face.w * 0.8;
@@ -691,36 +738,25 @@
         }
 
         function updateChakras(face) {
-            // Dynamic Positioning based on Face Anatomy
-            // Crown: above head, Throat: below chin, etc.
             const cx = face.x + face.w/2;
-            const topY = face.y;
-            const h = face.h;
-
             const positions = {
-                crown: { x: cx, y: topY - h*0.2 },
-                third: { x: cx, y: topY + h*0.35 },
-                throat: { x: cx, y: topY + h*1.1 },
-                heart: { x: cx, y: topY + h*1.8 },
-                solar: { x: cx, y: topY + h*2.6 },
-                sacral: { x: cx, y: topY + h*3.4 },
-                root: { x: cx, y: topY + h*4.2 }
+                crown: { x: cx, y: face.y - face.h*0.2 },
+                third: { x: cx, y: face.y + face.h*0.35 },
+                throat: { x: cx, y: face.y + face.h*1.1 },
+                heart: { x: cx, y: face.y + face.h*1.8 },
+                solar: { x: cx, y: face.y + face.h*2.6 },
+                sacral: { x: cx, y: face.y + face.h*3.4 },
+                root: { x: cx, y: face.y + face.h*4.2 }
             };
 
             let html = '';
             let listHtml = '';
-            
             CHAKRAS.forEach(c => {
                 const pos = positions[c.id];
-                // Only draw if within somewhat visible range (optional)
-                
-                // Draw Dot
                 const rgb = c.color.join(',');
                 html += `<div class="chakra-dot" style="left: ${pos.x}px; top: ${pos.y}px; width: 16px; height: 16px; background-color: rgb(${rgb}); box-shadow: 0 0 15px rgb(${rgb});"></div>`;
                 
-                // Draw List Item
-                // Mock activity for MVP based on color match
-                const activity = Math.floor(Math.random() * 30) + 60; // 60-90%
+                const activity = Math.floor(Math.random() * 30) + 60;
                 listHtml += `
                     <div class="flex items-center justify-between text-xs bg-white/5 p-2 rounded">
                         <div class="flex items-center gap-2">
@@ -731,12 +767,90 @@
                     </div>
                 `;
             });
-
             els.overlays.chakra.innerHTML = html;
-            els.panels.list.innerHTML = listHtml;
+            document.getElementById('chakras-list').innerHTML = listHtml;
         }
 
-        // --- Start App ---
+        // --- Tools Logic ---
+        let breatheInterval;
+        
+        function startBreathing() {
+            els.overlays.breath.classList.add('active');
+            const circle = document.querySelector('.breathing-circle');
+            const text = document.getElementById('breath-text');
+            circle.classList.add('breathe-anim');
+            
+            let isInhale = true;
+            text.innerText = "Inspirez... (Ya Rahman)";
+            
+            breatheInterval = setInterval(() => {
+                isInhale = !isInhale;
+                text.innerText = isInhale ? "Inspirez... (Ya Rahman)" : "Expirez... (Ya Rahim)";
+            }, 4000);
+        }
+
+        function stopBreathing() {
+            if(breatheInterval) clearInterval(breatheInterval);
+            document.querySelector('.breathing-circle').classList.remove('breathe-anim');
+        }
+
+        function openDhikrMeditation() {
+            const data = COLORS_DATA[state.currentColor] || COLORS_DATA['Blanc'];
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            
+            title.innerText = `Méditation ${state.currentColor}`;
+            body.innerHTML = `
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-4">
+                    <p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Invocation Recommandée</p>
+                    <p class="text-xl font-serif italic">"${data.dhikr}"</p>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                    <p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Tafakkur (Réflexion)</p>
+                    <p>${data.meditation}</p>
+                </div>
+            `;
+            els.overlays.info.classList.add('active');
+        }
+
+        function toggleSoundTherapy() {
+            if (state.audioCtx) {
+                state.audioCtx.close();
+                state.audioCtx = null;
+                alert("Son arrêté");
+                return;
+            }
+
+            // Create White Noise / Rain Generator
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            state.audioCtx = new AudioContext();
+            
+            const bufferSize = 2 * state.audioCtx.sampleRate;
+            const noiseBuffer = state.audioCtx.createBuffer(1, bufferSize, state.audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                output[i] = (lastOut + (0.02 * white)) / 1.02;
+                lastOut = output[i];
+                output[i] *= 3.5;
+            }
+            let lastOut = 0;
+
+            const whiteNoise = state.audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            whiteNoise.loop = true;
+            whiteNoise.start(0);
+
+            const gainNode = state.audioCtx.createGain();
+            gainNode.gain.value = 0.05; // Low volume
+
+            whiteNoise.connect(gainNode);
+            gainNode.connect(state.audioCtx.destination);
+            
+            alert("Son 'Pluie de Miséricorde' activé 🌧️");
+        }
+
         window.addEventListener('DOMContentLoaded', init);
 
     </script>
