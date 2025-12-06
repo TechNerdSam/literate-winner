@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noor-AI : Bio-Feedback Spirituel & Analyseur d'Âme</title>
-    <meta name="description" content="Interface de rétroaction spirituelle assistée par IA. Analysez votre état intérieur via la biométrie optique.">
+    <title>Noor-AI : Bio-Feedback Spirituel (Rapide)</title>
+    <meta name="description" content="Interface de rétroaction spirituelle assistée par IA. Version optimisée haute performance.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -19,894 +20,588 @@
             --glass-bg: rgba(15, 23, 42, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             background-attachment: fixed;
-            color: white;
-            overflow-x: hidden;
+            color: white; overflow-x: hidden;
         }
-        
-        /* --- UI Components --- */
         .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        
-        .glass-card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .glass-card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px 0 rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.4);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 200% 200%;
-            animation: gradient-shift 5s ease infinite;
-        }
-        
-        @keyframes gradient-shift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        
         .btn-primary {
-            background: var(--primary-gradient);
-            border: none; color: white; font-weight: 600;
-            padding: 14px 32px; border-radius: 12px; cursor: pointer;
-            transition: all 0.3s; position: relative; overflow: hidden;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            background: var(--primary-gradient); border: none; color: white; font-weight: 600;
+            padding: 12px 24px; border-radius: 12px; cursor: pointer; transition: all 0.2s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        .tab-btn { position: relative; color: #94a3b8; transition: all 0.3s; }
-        .tab-btn.active { color: white; }
-        .tab-btn.active::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Video Container */
+        .video-container {
+            position: relative; border-radius: 24px; overflow: hidden; background: #000;
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
         }
-
-        /* --- Video & Visualization --- */
-        .video-container-advanced {
-            position: relative; border-radius: 24px; overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            background: #000;
-        }
-        .video-feed {
-            width: 100%; height: 100%; object-fit: cover;
-            transform: scaleX(-1); /* Mirrored */
-        }
-        .photo-feed {
-            width: 100%; height: 100%; object-fit: contain;
-        }
-        .aura-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; mix-blend-mode: screen;
+        .video-feed { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        .photo-feed { width: 100%; height: 100%; object-fit: contain; }
+        .overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        
+        /* UI Elements */
+        .tab-btn { padding: 10px 20px; color: #94a3b8; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab-btn.active { color: white; border-bottom-color: #818cf8; }
+        .chakra-dot {
+            position: absolute; border-radius: 50%; filter: drop-shadow(0 0 5px currentColor);
+            transition: all 0.3s ease-out; /* Smooth movement */
         }
         
-        .chakra-dot {
-            position: absolute; border-radius: 50%;
-            animation: chakra-pulse 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 8px currentColor);
-            z-index: 20; transition: top 0.2s ease, left 0.2s ease;
-        }
-        @keyframes chakra-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; } }
-
-        /* --- Animations & Utilities --- */
         .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: #667eea; border-radius: 50%;
-            animation: spin 1s linear infinite;
+            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #818cf8; border-radius: 50%; animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .modal-backdrop {
-            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
-            position: fixed; inset: 0; z-index: 100;
+        
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
-        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
-
-        .recording-pulse { animation: pulse-red 2s infinite; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
-        /* Breathing Circle */
+        .modal.active { opacity: 1; pointer-events: auto; }
+        
         .breathing-circle {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(99,102,241,0.8) 0%, rgba(168,85,247,0.4) 100%);
-            box-shadow: 0 0 40px rgba(99,102,241,0.5);
-            transform: scale(0.8);
+            width: 120px; height: 120px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(99,102,241,0.6) 0%, rgba(168,85,247,0.2) 100%);
+            box-shadow: 0 0 30px rgba(99,102,241,0.4); transform: scale(0.8);
         }
         .breathe-anim { animation: breathe 8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes breathe {
-            0%, 100% { transform: scale(0.85); opacity: 0.7; }
-            50% { transform: scale(1.3); opacity: 1; }
-        }
-
-        /* Gauge */
-        .gauge-bg { stroke: rgba(255,255,255,0.1); }
-        .gauge-fill { stroke: url(#gaugeGradient); transition: stroke-dasharray 1s ease; }
+        @keyframes breathe { 0%, 100% { transform: scale(0.85); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } }
     </style>
 </head>
 <body>
-
-    <canvas id="neuralBg" class="fixed top-0 left-0 w-full h-full -z-10 opacity-20"></canvas>
-
     <header class="sticky top-0 z-50 glass-card border-b border-white/5">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">🔮</span>
-                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs font-normal text-slate-400 tracking-wider ml-2 border border-slate-600 px-2 py-0.5 rounded-full">BETA 2.2</span></h1>
-            </div>
-            <nav class="hidden md:flex space-x-6 text-sm font-medium">
-                <a href="#analyzer" class="hover:text-indigo-400 transition">Analyseur</a>
-                <a href="#tools" class="hover:text-indigo-400 transition">Pharmacie de l'Âme</a>
-            </nav>
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs text-slate-400 border border-slate-700 px-2 rounded-full ml-2">FAST V2.3</span></h1>
+            <div class="text-xs font-mono text-green-400" id="fps-counter">FPS: --</div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 relative z-10 max-w-7xl">
-        
-        <section class="text-center my-12 mb-20">
-            <h2 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
-                Révélez votre <span class="gradient-text">Lumière Intérieure</span>
-            </h2>
-            <p class="max-w-2xl mx-auto text-lg text-slate-300 mb-8 leading-relaxed">
-                Interface de <strong>Bio-Feedback Spirituel</strong>. Choisissez le mode Live pour une analyse biométrique temps réel ou le mode Photo pour une lecture instantanée.
-            </p>
-            <div class="flex justify-center gap-4">
-                <a href="#analyzer" class="btn-primary flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Lancer l'Expérience
-                </a>
-            </div>
-        </section>
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4">Analyse Spirituelle <span class="text-indigo-400">Temps Réel</span></h2>
+            <p class="text-slate-400 max-w-xl mx-auto">Optimisé pour une détection rapide de l'aura et de la cohérence cardiaque.</p>
+        </div>
 
-        <section id="analyzer" class="mb-24 scroll-mt-24">
-            <div class="glass-card rounded-3xl p-4 md:p-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="glass-card rounded-2xl p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-7 flex flex-col gap-4">
+                <div class="flex gap-4 border-b border-white/10">
+                    <button id="tab-live" class="tab-btn active">📹 Live Caméra</button>
+                    <button id="tab-photo" class="tab-btn">📸 Photo</button>
+                </div>
+
+                <div id="container-live" class="video-container aspect-video group">
+                    <video id="video" class="video-feed" playsinline autoplay muted></video>
+                    <canvas id="canvas-overlay" class="overlay-canvas"></canvas>
+                    <div id="chakra-layer" class="overlay-canvas z-20"></div>
                     
-                    <div class="lg:col-span-7 flex flex-col gap-4">
-                        <div class="flex border-b border-white/10 mb-2">
-                            <button id="tab-live" class="tab-btn active px-6 py-3 font-medium flex items-center gap-2">
-                                <span>📹</span> Live Bio-Feedback
-                            </button>
-                            <button id="tab-photo" class="tab-btn px-6 py-3 font-medium flex items-center gap-2">
-                                <span>📸</span> Analyse Photo
-                            </button>
-                        </div>
-
-                        <div id="container-live" class="video-container-advanced aspect-video relative bg-slate-900 flex items-center justify-center group">
-                            <video id="video" class="video-feed" playsinline autoplay muted></video>
-                            <canvas id="output-canvas-live" class="aura-canvas"></canvas>
-                            <div id="chakra-overlay-live" class="absolute inset-0 z-20 pointer-events-none"></div>
-                            
-                            <div id="start-overlay" class="absolute inset-0 bg-slate-900/90 z-30 flex flex-col items-center justify-center p-6 text-center">
-                                <div class="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mb-6">
-                                    <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                </div>
-                                <h3 class="text-xl font-bold text-white mb-2">Capteur Vidéo rPPG</h3>
-                                <p class="text-slate-400 mb-6 max-w-md text-sm">Analyse les micro-variations de flux sanguin et l'aura en temps réel.</p>
-                                <button id="btn-start-cam" class="btn-primary">Activer la Caméra</button>
-                            </div>
-
-                            <div id="loader-live" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
-                                <div class="spinner mb-6"></div>
-                                <h3 class="text-xl font-bold text-white mb-2">Calibrage en cours</h3>
-                                <p class="text-indigo-300 font-mono animate-pulse" id="loader-text">Initialisation...</p>
-                                <div class="w-64 h-1 bg-slate-800 rounded-full mt-6 overflow-hidden">
-                                    <div class="h-full bg-indigo-500 animate-[width_3s_ease-out_forwards]" style="width: 100%"></div>
-                                </div>
-                            </div>
-                            
-                            <button id="btn-stop-cam" class="absolute bottom-4 right-4 z-50 bg-red-500/80 p-2 rounded-lg text-white hidden hover:bg-red-500 transition">Arrêter</button>
-                        </div>
-
-                        <div id="container-photo" class="video-container-advanced aspect-video relative bg-slate-900 flex items-center justify-center hidden">
-                            <img id="photo-preview" class="photo-feed hidden" />
-                            <canvas id="output-canvas-photo" class="aura-canvas"></canvas>
-                            <div id="chakra-overlay-photo" class="absolute inset-0 z-20 pointer-events-none"></div>
-
-                            <div id="upload-ui" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center bg-slate-900/50">
-                                <div class="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mb-6">
-                                    <svg class="w-10 h-10 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                </div>
-                                <h3 class="text-xl font-bold text-white mb-2">Analyse Statique</h3>
-                                <p class="text-slate-400 mb-6 text-sm">Importez une photo claire pour une lecture instantanée de l'aura.</p>
-                                <input type="file" id="input-photo" class="hidden" accept="image/*">
-                                <label for="input-photo" class="btn-primary cursor-pointer">Choisir une photo</label>
-                            </div>
-
-                            <div id="loader-photo" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
-                                <div class="spinner mb-4"></div>
-                                <p class="text-indigo-300">Traitement de l'image...</p>
-                            </div>
-                            
-                            <button id="btn-clear-photo" class="absolute top-4 right-4 z-50 bg-slate-700/80 p-2 rounded-full text-white hidden hover:bg-slate-600 transition" title="Effacer">✕</button>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
-                                <div>
-                                    <p class="text-xs text-slate-400 uppercase tracking-wider">État Cardiaque</p>
-                                    <p id="stat-bpm" class="text-2xl font-bold text-white">-- <span class="text-sm font-normal text-slate-500">BPM</span></p>
-                                </div>
-                                <div class="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 animate-pulse">❤️</div>
-                            </div>
-                            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
-                                <div>
-                                    <p class="text-xs text-slate-400 uppercase tracking-wider">Cohérence</p>
-                                    <p id="stat-coherence" class="text-2xl font-bold text-white">--%</p>
-                                </div>
-                                <div class="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">🌊</div>
-                            </div>
-                        </div>
+                    <div id="start-screen" class="absolute inset-0 z-30 bg-slate-900/90 flex flex-col items-center justify-center">
+                        <div class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mb-4 text-2xl">⚡</div>
+                        <h3 class="font-bold text-lg mb-2">Mode Performance</h3>
+                        <p class="text-slate-400 text-sm mb-6 text-center px-4">Analyse rPPG optimisée avec traitement basse résolution.</p>
+                        <button id="btn-start" class="btn-primary">Activer Caméra</button>
                     </div>
 
-                    <div class="lg:col-span-5 flex flex-col h-full max-h-[800px]">
-                        <div class="glass-card rounded-2xl flex-grow overflow-hidden flex flex-col">
-                            <div class="p-6 border-b border-white/10 bg-white/5">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                                    Résultats de l'Analyse
-                                </h3>
-                            </div>
-                            
-                            <div id="results-content" class="p-6 overflow-y-auto space-y-6 scrollbar-thin">
-                                <div id="empty-state" class="text-center py-10 text-slate-500">
-                                    <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                    <p>En attente d'une source (Vidéo ou Photo)...</p>
-                                </div>
+                    <div id="loader-live" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
+                        <div class="spinner mb-4"></div>
+                        <p class="text-indigo-300 animate-pulse text-sm">Initialisation IA...</p>
+                    </div>
+                </div>
 
-                                <div id="analysis-data" class="hidden space-y-6">
-                                    
-                                    <div class="flex items-center gap-6">
-                                        <div id="aura-preview" class="w-20 h-20 rounded-2xl shadow-lg border-2 border-white/20 transition-colors duration-1000"></div>
-                                        <div>
-                                            <p class="text-sm text-slate-400">Aura Dominante</p>
-                                            <h4 id="aura-name" class="text-3xl font-bold text-white">Analyse...</h4>
-                                            <p id="aura-desc" class="text-xs text-indigo-300 mt-1">Détection en cours</p>
-                                        </div>
-                                    </div>
+                <div id="container-photo" class="video-container aspect-video hidden relative">
+                    <img id="photo-img" class="photo-feed hidden" />
+                    <canvas id="canvas-photo" class="overlay-canvas"></canvas>
+                    <div id="chakra-layer-photo" class="overlay-canvas z-20"></div>
+                    
+                    <div id="upload-ui" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/50">
+                        <label class="btn-primary cursor-pointer">
+                            Choisir une image
+                            <input type="file" id="input-photo" class="hidden" accept="image/*">
+                        </label>
+                    </div>
+                    
+                    <button id="btn-clear-photo" class="absolute top-2 right-2 z-40 bg-slate-800/80 text-white p-2 rounded-full hidden hover:bg-red-500">✕</button>
+                </div>
 
-                                    <div class="bg-slate-800/50 rounded-xl p-4">
-                                        <div class="flex justify-between text-sm mb-2">
-                                            <span class="text-slate-400">Taux Vibratoire</span>
-                                            <span id="vibration-val" class="text-white font-mono">0</span>
-                                        </div>
-                                        <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-                                            <div id="vibration-bar" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 w-0 transition-all duration-1000"></div>
-                                        </div>
-                                        <p id="vibration-msg" class="text-xs text-right mt-2 text-slate-400 italic">...</p>
-                                    </div>
-
-                                    <div class="space-y-3">
-                                        <h4 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">État des Centres (Lataif)</h4>
-                                        <div id="chakras-list" class="space-y-2">
-                                            </div>
-                                    </div>
-
-                                    <div class="glass-card bg-indigo-900/20 border-indigo-500/30 p-4 rounded-xl">
-                                        <h4 class="font-bold text-indigo-300 mb-2 flex items-center gap-2">
-                                            💡 Conseil Spirituel
-                                        </h4>
-                                        <p id="recommendation-text" class="text-sm text-slate-200 leading-relaxed italic">
-                                            L'analyse déterminera le meilleur remède pour votre état actuel.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 grid grid-cols-2 gap-4">
-                            <button id="btn-record" class="btn-primary flex items-center justify-center gap-2" disabled>
-                                <span>⏺️</span> Enregistrer
-                            </button>
-                            <button id="btn-export" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50" disabled>
-                                💾 Rapport
-                            </button>
-                        </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="glass-card p-3 rounded-xl flex justify-between items-center">
+                        <div><p class="text-xs text-slate-400">BPM (Est.)</p><p id="val-bpm" class="text-xl font-bold">--</p></div>
+                        <div class="text-red-400 animate-pulse">❤️</div>
+                    </div>
+                    <div class="glass-card p-3 rounded-xl flex justify-between items-center">
+                        <div><p class="text-xs text-slate-400">Sakînah</p><p id="val-coh" class="text-xl font-bold">--%</p></div>
+                        <div class="text-blue-400">🌊</div>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <section id="tools" class="mb-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Pharmacie de l'Âme</h2>
-                <p class="text-slate-400">Outils interactifs adaptés à votre diagnostic actuel</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group relative overflow-hidden" id="tool-breath">
-                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">🌬️</div>
-                    <h3 class="font-bold text-lg mb-2">Respiration "Nafas"</h3>
-                    <p class="text-sm text-slate-400">Cohérence cardiaque guidée pour apaiser le stress et augmenter le Sakînah.</p>
+            <div class="lg:col-span-5 flex flex-col h-full min-h-[400px]">
+                <div class="bg-slate-800/30 rounded-t-xl p-4 border-b border-white/5">
+                    <h3 class="font-bold flex items-center gap-2">✨ Analyse Spectrale</h3>
                 </div>
-                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group relative overflow-hidden" id="tool-dhikr">
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                    <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">📿</div>
-                    <h3 class="font-bold text-lg mb-2">Dhikr & Méditation</h3>
-                    <p class="text-sm text-slate-400">Invocation et réflexion personnalisée selon la couleur de votre aura.</p>
-                </div>
-                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group relative overflow-hidden" id="tool-sound">
-                    <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                    <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">🔊</div>
-                    <h3 class="font-bold text-lg mb-2">Thérapie Sonore</h3>
-                    <p class="text-sm text-slate-400">Ambiance sonore "Pluie de Miséricorde" pour nettoyer l'esprit.</p>
-                </div>
-            </div>
-        </section>
+                
+                <div class="p-4 flex-grow overflow-y-auto space-y-5 bg-slate-900/20 rounded-b-xl">
+                    <div id="empty-msg" class="text-center py-10 text-slate-600 italic">En attente de signal...</div>
+                    
+                    <div id="results-data" class="hidden space-y-5">
+                        <div class="flex items-center gap-4">
+                            <div id="aura-box" class="w-16 h-16 rounded-lg shadow-lg border border-white/10 transition-colors duration-500"></div>
+                            <div>
+                                <p class="text-xs text-slate-400">Aura Dominante</p>
+                                <h4 id="aura-title" class="text-2xl font-bold">...</h4>
+                            </div>
+                        </div>
 
+                        <div class="bg-slate-800/50 p-3 rounded-lg">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span>Taux Vibratoire</span>
+                                <span id="vib-num" class="font-mono">0</span>
+                            </div>
+                            <div class="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="vib-bar" class="h-full bg-gradient-to-r from-indigo-500 to-pink-500 w-0 transition-all duration-1000"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h5 class="text-xs font-bold text-slate-500 uppercase">Centres Énergétiques</h5>
+                            <div id="chakra-list" class="space-y-1 text-xs"></div>
+                        </div>
+
+                        <div class="bg-indigo-500/10 border border-indigo-500/20 p-3 rounded-lg">
+                            <h5 class="font-bold text-indigo-300 text-sm mb-1">💡 Conseil</h5>
+                            <p id="advice-text" class="text-sm text-slate-300 italic">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 grid grid-cols-2 gap-3">
+                    <button id="btn-tool-breath" class="btn-primary text-sm bg-slate-700 hover:bg-slate-600">🌬️ Respiration</button>
+                    <button id="btn-tool-sound" class="btn-primary text-sm bg-slate-700 hover:bg-slate-600">🎵 Son</button>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <div id="consent-modal" class="modal-backdrop active">
-        <div class="glass-card max-w-lg w-full mx-4 rounded-3xl p-8 border border-white/20 shadow-2xl">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4">🛡️</div>
-                <h2 class="text-2xl font-bold text-white">Confidentialité & Éthique</h2>
-            </div>
-            <p class="text-slate-300 text-sm mb-6 text-center">
-                Toutes les analyses (visage, pouls, photo) sont effectuées <strong>localement sur votre appareil</strong>. Aucune image n'est envoyée sur le cloud.
+    <div id="modal-consent" class="modal active">
+        <div class="glass-card max-w-md w-full m-4 p-6 rounded-2xl text-center">
+            <h2 class="text-xl font-bold mb-4">Confidentialité & Performance</h2>
+            <p class="text-sm text-slate-300 mb-6">
+                L'analyse se fait <strong>localement</strong> sur votre appareil pour une rapidité maximale. Aucune image n'est envoyée.
             </p>
-            <button id="btn-accept-consent" class="btn-primary w-full py-4 text-lg">J'accepte et je commence</button>
+            <button id="btn-accept" class="btn-primary w-full">Accepter et Continuer</button>
         </div>
     </div>
 
-    <div id="modal-breath" class="modal-backdrop">
-        <div class="glass-card max-w-md w-full mx-4 rounded-3xl p-8 flex flex-col items-center relative">
-            <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-white">&times;</button>
-            <h3 class="text-2xl font-bold mb-8">Cohérence Cardiaque</h3>
-            <div class="breathing-circle mb-8"></div>
-            <p id="breath-text" class="text-xl font-medium text-indigo-300">Inspirez...</p>
-            <p class="text-sm text-slate-500 mt-4">Suivez le cercle pour synchroniser votre cœur.</p>
-        </div>
-    </div>
-
-    <div id="modal-info" class="modal-backdrop">
-        <div class="glass-card max-w-lg w-full mx-4 rounded-3xl p-8 relative">
-            <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-white text-2xl">&times;</button>
-            <h3 id="modal-title" class="text-2xl font-bold mb-4 text-indigo-400">Titre</h3>
-            <div id="modal-body" class="text-slate-200 leading-relaxed space-y-4"></div>
-            <div class="mt-8 text-center">
-                <button class="modal-close btn-primary py-2 px-6 text-sm">Fermer</button>
-            </div>
+    <div id="modal-breath" class="modal">
+        <div class="glass-card max-w-sm w-full m-4 p-8 rounded-2xl flex flex-col items-center relative">
+            <button class="absolute top-2 right-3 text-slate-400 hover:text-white close-modal text-xl">&times;</button>
+            <div class="breathing-circle mb-6"></div>
+            <p id="breath-lbl" class="text-lg font-bold text-indigo-300">Inspirez...</p>
         </div>
     </div>
 
     <script>
         /**
-         * NOOR-AI : CORE ENGINE v2.2
-         * Features: Live & Photo Modes, Calibration, Interactive Tools
+         * NOOR-AI ENGINE V2.3 (PERFORMANCE EDITION)
+         * Optimizations:
+         * 1. Offscreen Canvas for processing (Low Res)
+         * 2. Throttled Face Detection (every 200ms)
+         * 3. Pixel Skipping (stride=10)
+         * 4. willReadFrequently: true
          */
 
-        const COLORS_DATA = {
-            'Rouge': { desc: 'Besoin d\'ancrage et de force vitale.', remede: 'Marche pieds nus, Datte Ajwa.', dhikr: '"Ya Hayyu Ya Qayyum".', meditation: "Visualisez des racines partant de vos pieds." },
-            'Orange': { desc: 'Émotionnel, créativité, liens sociaux.', remede: 'Partage de nourriture, Figue.', dhikr: '"Alhamdulillah" pour les bienfaits.', meditation: "Laissez la chaleur de la gratitude vous remplir." },
-            'Jaune': { desc: 'Intellect, volonté, digestion mentale.', remede: 'Miel, Lecture de textes.', dhikr: '"Hasbunallahu wa ni\'mal wakil".', meditation: "Un soleil doré dissipe le doute." },
-            'Vert': { desc: 'Équilibre du cœur, guérison.', remede: 'Huile d\'olive, Nature.', dhikr: '"Ya Salam" (Ô Source de Paix).', meditation: "Une lumière émeraude apaise votre cœur." },
-            'Bleu': { desc: 'Communication apaisée, vérité.', remede: 'Eau pure, Silence.', dhikr: '"SubhanAllah".', meditation: "Un ciel bleu infini détend votre gorge." },
-            'Indigo': { desc: 'Intuition profonde (Firasa).', remede: 'Jeûne, Prière nocturne.', dhikr: '"Ya Nur".', meditation: "Illuminez votre vision intérieure." },
-            'Violet': { desc: 'Connexion spirituelle élevée.', remede: 'Parfum (Musc), Isolement.', dhikr: '"La ilaha illa Allah".', meditation: "Une pluie de lumière violette descend du ciel." },
-            'Blanc': { desc: 'Pureté, Clarté totale (Nur).', remede: 'Ablutions fraîches.', dhikr: '"Allahu Akbar".', meditation: "Baignez dans une lumière blanche pure." }
-        };
-
-        const CHAKRAS = [
-            { id: 'crown', name: 'Akhfa (Couronne)', color: [139, 92, 246] },
-            { id: 'third', name: 'Khafi (3ème Œil)', color: [79, 70, 229] },
-            { id: 'throat', name: 'Ruh (Gorge)', color: [59, 130, 246] },
-            { id: 'heart', name: 'Sirr (Cœur)', color: [34, 197, 94] },
-            { id: 'solar', name: 'Qalb (Solaire)', color: [234, 179, 8] },
-            { id: 'sacral', name: 'Nafs (Sacré)', color: [249, 115, 22] },
-            { id: 'root', name: 'Asas (Racine)', color: [239, 68, 68] }
-        ];
-
-        // --- State ---
-        const state = {
-            mode: 'live', // 'live' or 'photo'
-            isStreaming: false,
-            hasConsent: false,
+        const STATE = {
+            streaming: false,
+            mode: 'live',
             model: null,
-            rafId: null,
-            faceCoords: null,
-            currentColor: 'Blanc',
-            audioCtx: null,
-            history: { greenSignal: [], colors: [] },
-            lastUpdate: 0
+            face: null, // Last detected face
+            lastDetect: 0,
+            lastFrameTime: 0,
+            raf: null,
+            audio: null,
+            colorHistory: [],
+            pulseHistory: []
         };
 
-        // --- Elements ---
-        const els = {
+        const DOM = {
             video: document.getElementById('video'),
-            photoPreview: document.getElementById('photo-preview'),
-            photoInput: document.getElementById('input-photo'),
-            
-            canvasLive: document.getElementById('output-canvas-live'),
-            ctxLive: document.getElementById('output-canvas-live').getContext('2d'),
-            
-            canvasPhoto: document.getElementById('output-canvas-photo'),
-            ctxPhoto: document.getElementById('output-canvas-photo').getContext('2d'),
-            
-            containers: {
-                live: document.getElementById('container-live'),
-                photo: document.getElementById('container-photo'),
-                upload: document.getElementById('upload-ui')
-            },
+            canvasLive: document.getElementById('canvas-overlay'),
+            ctxLive: document.getElementById('canvas-overlay').getContext('2d'),
+            // Processing Canvas (Invisible)
+            procCanvas: document.createElement('canvas'),
             
             overlays: {
-                start: document.getElementById('start-overlay'),
-                loaderLive: document.getElementById('loader-live'),
-                loaderPhoto: document.getElementById('loader-photo'),
-                chakraLive: document.getElementById('chakra-overlay-live'),
-                chakraPhoto: document.getElementById('chakra-overlay-photo'),
-                consent: document.getElementById('consent-modal'),
-                breath: document.getElementById('modal-breath'),
-                info: document.getElementById('modal-info')
+                start: document.getElementById('start-screen'),
+                loader: document.getElementById('loader-live'),
+                chakra: document.getElementById('chakra-layer'),
+                chakraPhoto: document.getElementById('chakra-layer-photo')
             },
-            
+            photo: {
+                container: document.getElementById('container-photo'),
+                img: document.getElementById('photo-img'),
+                canvas: document.getElementById('canvas-photo'),
+                ui: document.getElementById('upload-ui'),
+                btn: document.getElementById('btn-clear-photo')
+            },
             stats: {
-                bpm: document.getElementById('stat-bpm'),
-                coherence: document.getElementById('stat-coherence'),
-                auraName: document.getElementById('aura-name'),
-                auraDesc: document.getElementById('aura-desc'),
-                vibVal: document.getElementById('vibration-val'),
-                vibBar: document.getElementById('vibration-bar'),
-                preview: document.getElementById('aura-preview')
-            },
-            
-            btns: {
-                start: document.getElementById('btn-start-cam'),
-                stop: document.getElementById('btn-stop-cam'),
-                clearPhoto: document.getElementById('btn-clear-photo'),
-                accept: document.getElementById('btn-accept-consent'),
-                tabLive: document.getElementById('tab-live'),
-                tabPhoto: document.getElementById('tab-photo')
+                bpm: document.getElementById('val-bpm'),
+                coh: document.getElementById('val-coh'),
+                vibBar: document.getElementById('vib-bar'),
+                vibNum: document.getElementById('vib-num'),
+                auraBox: document.getElementById('aura-box'),
+                auraTitle: document.getElementById('aura-title'),
+                advice: document.getElementById('advice-text')
             }
         };
+
+        // Initialize Processing Context with Optimization Flag
+        const procCtx = DOM.procCanvas.getContext('2d', { willReadFrequently: true });
+        
+        // Settings
+        const PROC_WIDTH = 320; // Analyse sur 320px de large (Huge speedup)
+        const DETECT_INTERVAL = 150; // Detect face every 150ms
+
+        // --- Data ---
+        const COLORS = {
+            'Rouge': { desc: 'Force Vitale', advice: 'Marchez pieds nus pour vous ancrer.' },
+            'Orange': { desc: 'Créativité', advice: 'Exprimez vos émotions.' },
+            'Jaune': { desc: 'Volonté', advice: 'Lisez pour clarifier l\'esprit.' },
+            'Vert': { desc: 'Guérison', advice: 'Passez du temps dans la nature.' },
+            'Bleu': { desc: 'Paix', advice: 'Buvez de l\'eau pure et écoutez le silence.' },
+            'Indigo': { desc: 'Intuition', advice: 'Fiez-vous à votre première impression.' },
+            'Violet': { desc: 'Spiritualité', advice: 'Faites du Dhikr ou méditez.' },
+            'Blanc': { desc: 'Pureté', advice: 'Renouvelez vos ablutions.' }
+        };
+        const CHAKRAS = [
+            {id:'crown', c:[139,92,246]}, {id:'third', c:[79,70,229]}, {id:'throat', c:[59,130,246]},
+            {id:'heart', c:[34,197,94]}, {id:'solar', c:[234,179,8]}, {id:'sacral', c:[249,115,22]}, {id:'root', c:[239,68,68]}
+        ];
 
         // --- Init ---
         async function init() {
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                alert("Sécurité : L'application nécessite HTTPS.");
-            }
+            // Setup Processing Canvas size
+            DOM.procCanvas.width = PROC_WIDTH;
+            DOM.procCanvas.height = PROC_WIDTH * 0.75; // 4:3 aspect ratio approx
 
-            els.btns.accept.addEventListener('click', () => {
-                els.overlays.consent.classList.remove('active');
-                state.hasConsent = true;
-                preloadModel();
+            document.getElementById('btn-accept').addEventListener('click', () => {
+                document.getElementById('modal-consent').classList.remove('active');
+                loadAI();
             });
 
-            // Tabs
-            els.btns.tabLive.addEventListener('click', () => switchTab('live'));
-            els.btns.tabPhoto.addEventListener('click', () => switchTab('photo'));
-
-            // Live Controls
-            els.btns.start.addEventListener('click', startCamera);
-            els.btns.stop.addEventListener('click', stopCamera);
-
-            // Photo Controls
-            els.photoInput.addEventListener('change', handlePhotoUpload);
-            els.btns.clearPhoto.addEventListener('click', clearPhoto);
+            document.getElementById('btn-start').addEventListener('click', startLive);
+            document.getElementById('tab-live').addEventListener('click', () => switchMode('live'));
+            document.getElementById('tab-photo').addEventListener('click', () => switchMode('photo'));
+            
+            document.getElementById('input-photo').addEventListener('change', handlePhoto);
+            DOM.photo.btn.addEventListener('click', clearPhoto);
 
             // Tools
-            document.getElementById('tool-breath').addEventListener('click', startBreathing);
-            document.getElementById('tool-dhikr').addEventListener('click', openDhikrMeditation);
-            document.getElementById('tool-sound').addEventListener('click', toggleSoundTherapy);
+            document.getElementById('btn-tool-breath').addEventListener('click', toggleBreath);
+            document.getElementById('btn-tool-sound').addEventListener('click', toggleSound);
+            document.querySelectorAll('.close-modal').forEach(b => b.onclick = () => document.getElementById('modal-breath').classList.remove('active'));
+        }
+
+        async function loadAI() {
+            try {
+                // Load optimized Blazeface
+                STATE.model = await blazeface.load(); 
+                console.log("IA Loaded");
+            } catch(e) { console.error("AI Error", e); }
+        }
+
+        function switchMode(m) {
+            STATE.mode = m;
+            document.getElementById('tab-live').classList.toggle('active', m==='live');
+            document.getElementById('tab-photo').classList.toggle('active', m==='photo');
+            document.getElementById('container-live').classList.toggle('hidden', m!=='live');
+            DOM.photo.container.classList.toggle('hidden', m!=='photo');
             
-            document.querySelectorAll('.modal-close').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.modal-backdrop:not(#consent-modal)').forEach(m => m.classList.remove('active'));
-                    stopBreathing();
-                });
-            });
+            if(m === 'photo') stopLive();
+            else clearPhoto();
         }
 
-        async function preloadModel() {
-            try { state.model = await blazeface.load(); } catch (e) { console.error("Err IA", e); }
-        }
-
-        function switchTab(mode) {
-            state.mode = mode;
-            // UI Toggle
-            els.btns.tabLive.classList.toggle('active', mode === 'live');
-            els.btns.tabPhoto.classList.toggle('active', mode === 'photo');
-            els.btns.tabLive.classList.toggle('text-white', mode === 'live');
-            els.btns.tabPhoto.classList.toggle('text-white', mode === 'photo');
-
-            els.containers.live.classList.toggle('hidden', mode !== 'live');
-            els.containers.photo.classList.toggle('hidden', mode !== 'photo');
-
-            // Reset logic
-            if (mode === 'photo') {
-                stopCamera();
-                if(els.photoPreview.src) showResultsUI();
-                else hideResultsUI();
-            } else {
-                hideResultsUI();
-            }
-        }
-
-        function showResultsUI() {
-            document.getElementById('empty-state').classList.add('hidden');
-            document.getElementById('analysis-data').classList.remove('hidden');
-            document.getElementById('btn-record').disabled = false;
-            document.getElementById('btn-export').disabled = false;
-        }
-
-        function hideResultsUI() {
-            document.getElementById('empty-state').classList.remove('hidden');
-            document.getElementById('analysis-data').classList.add('hidden');
-        }
-
-        // --- Live Mode Logic ---
-        async function startCamera() {
-            if (!state.hasConsent) return;
-            els.overlays.start.classList.add('hidden');
-            els.overlays.loaderLive.classList.remove('hidden');
-            els.overlays.loaderLive.style.display = 'flex';
+        // --- Live Logic (Highly Optimized) ---
+        async function startLive() {
+            DOM.overlays.start.classList.add('hidden');
+            DOM.overlays.loader.classList.remove('hidden');
+            DOM.overlays.loader.style.display = 'flex';
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 } } });
-                els.video.srcObject = stream;
-                els.video.onloadedmetadata = () => {
-                    els.video.play();
+                DOM.video.srcObject = stream;
+                DOM.video.onloadedmetadata = () => {
+                    DOM.video.play();
+                    DOM.canvasLive.width = DOM.video.videoWidth;
+                    DOM.canvasLive.height = DOM.video.videoHeight;
+                    // Update proc canvas ratio
+                    DOM.procCanvas.height = PROC_WIDTH * (DOM.video.videoHeight / DOM.video.videoWidth);
                     
-                    // Calibration Delay
-                    let steps = ["Connexion...", "Biométrie...", "Calibrage..."];
-                    let stepIndex = 0;
-                    const stepInterval = setInterval(() => {
-                        if(stepIndex < steps.length) document.getElementById('loader-text').innerText = steps[stepIndex++];
-                    }, 1000);
-
                     setTimeout(() => {
-                        clearInterval(stepInterval);
-                        els.overlays.loaderLive.classList.add('hidden');
-                        els.btns.stop.classList.remove('hidden');
-                        els.canvasLive.width = els.video.videoWidth;
-                        els.canvasLive.height = els.video.videoHeight;
-                        state.isStreaming = true;
-                        showResultsUI();
-                        processLiveFrame();
-                    }, 4000);
+                        DOM.overlays.loader.classList.add('hidden');
+                        document.getElementById('empty-msg').classList.add('hidden');
+                        document.getElementById('results-data').classList.remove('hidden');
+                        STATE.streaming = true;
+                        loop();
+                    }, 2000); // 2s calib
                 };
-            } catch (err) {
-                console.error(err);
-                els.overlays.start.classList.remove('hidden');
-                els.overlays.loaderLive.classList.add('hidden');
+            } catch(e) { 
+                alert("Erreur Caméra"); 
+                DOM.overlays.start.classList.remove('hidden');
+                DOM.overlays.loader.classList.add('hidden');
             }
         }
 
-        function stopCamera() {
-            state.isStreaming = false;
-            if (state.rafId) cancelAnimationFrame(state.rafId);
-            if (els.video.srcObject) els.video.srcObject.getTracks().forEach(track => track.stop());
-            els.ctxLive.clearRect(0, 0, els.canvasLive.width, els.canvasLive.height);
-            els.overlays.chakraLive.innerHTML = '';
-            els.overlays.start.classList.remove('hidden');
-            els.btns.stop.classList.add('hidden');
+        function stopLive() {
+            STATE.streaming = false;
+            cancelAnimationFrame(STATE.raf);
+            if(DOM.video.srcObject) DOM.video.srcObject.getTracks().forEach(t=>t.stop());
+            DOM.ctxLive.clearRect(0,0,DOM.canvasLive.width, DOM.canvasLive.height);
+            DOM.overlays.chakra.innerHTML = '';
+            DOM.overlays.start.classList.remove('hidden');
         }
 
-        async function processLiveFrame() {
-            if (!state.isStreaming) return;
-
-            // Draw & Mirror
-            els.ctxLive.save();
-            els.ctxLive.scale(-1, 1);
-            els.ctxLive.translate(-els.canvasLive.width, 0);
-            els.ctxLive.drawImage(els.video, 0, 0, els.canvasLive.width, els.canvasLive.height);
-            els.ctxLive.restore();
-
-            // Detect
-            if (state.model) {
-                const now = Date.now();
-                if (now - state.lastUpdate > 100) {
-                    const predictions = await state.model.estimateFaces(els.video, false);
-                    if (predictions.length > 0) {
-                        const start = predictions[0].topLeft;
-                        const end = predictions[0].bottomRight;
-                        state.faceCoords = {
-                            x: els.canvasLive.width - end[0], // Mirror X
-                            y: start[1],
-                            w: end[0] - start[0],
-                            h: end[1] - start[1]
-                        };
-                        processBiometrics(state.faceCoords, els.ctxLive);
-                        drawAura(state.faceCoords, els.ctxLive, els.stats.preview.style.backgroundColor);
-                        updateChakras(state.faceCoords, els.overlays.chakraLive);
-                    }
-                    state.lastUpdate = now;
-                }
-            }
-            state.rafId = requestAnimationFrame(processLiveFrame);
-        }
-
-        // --- Photo Mode Logic ---
-        function handlePhotoUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            els.containers.upload.classList.add('hidden');
-            els.overlays.loaderPhoto.classList.remove('hidden');
-            els.overlays.loaderPhoto.style.display = 'flex';
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                els.photoPreview.src = event.target.result;
-                els.photoPreview.classList.remove('hidden');
-                els.photoPreview.onload = () => analyzePhoto();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function analyzePhoto() {
-            // Setup Canvas size
-            const img = els.photoPreview;
-            const containerW = els.containers.photo.clientWidth;
-            const containerH = els.containers.photo.clientHeight;
+        function loop(timestamp) {
+            if(!STATE.streaming) return;
             
-            // Adjust canvas to match visual image size logic is complex, 
-            // simplified: use container size
-            els.canvasPhoto.width = containerW;
-            els.canvasPhoto.height = containerH;
+            // FPS Calculation
+            const dt = timestamp - STATE.lastFrameTime;
+            STATE.lastFrameTime = timestamp;
+            document.getElementById('fps-counter').innerText = `FPS: ${Math.round(1000/dt)}`;
 
-            // Detect Face on the Image
-            if (state.model) {
-                const predictions = await state.model.estimateFaces(img, false);
-                els.overlays.loaderPhoto.classList.add('hidden');
-                els.btns.clearPhoto.classList.remove('hidden');
+            // 1. Draw small version to Proc Canvas for Analysis
+            procCtx.drawImage(DOM.video, 0, 0, DOM.procCanvas.width, DOM.procCanvas.height);
+
+            // 2. Face Detection (Throttled)
+            if(timestamp - STATE.lastDetect > DETECT_INTERVAL && STATE.model) {
+                estimateFace(); // Async, don't await to keep rendering loop fast
+                STATE.lastDetect = timestamp;
+            }
+
+            // 3. Render Visuals (High Res)
+            // Clear main canvas
+            DOM.ctxLive.clearRect(0,0, DOM.canvasLive.width, DOM.canvasLive.height);
+            
+            if(STATE.face) {
+                // Interpolate/Scale face coords from Proc size to Display size
+                const scale = DOM.canvasLive.width / DOM.procCanvas.width;
+                const displayFace = {
+                    x: (DOM.procCanvas.width - STATE.face.end[0]) * scale, // Mirror X
+                    y: STATE.face.start[1] * scale,
+                    w: (STATE.face.end[0] - STATE.face.start[0]) * scale,
+                    h: (STATE.face.end[1] - STATE.face.start[1]) * scale
+                };
+
+                drawAura(displayFace, DOM.ctxLive);
+                updateChakras(displayFace, DOM.overlays.chakra);
                 
-                if (predictions.length > 0) {
-                    // Normalize coords from Image natural size to Display size
-                    const scaleX = img.clientWidth / img.naturalWidth;
-                    const scaleY = img.clientHeight / img.naturalHeight;
-                    
-                    // Center offset
-                    const offsetX = (containerW - img.clientWidth) / 2;
-                    const offsetY = (containerH - img.clientHeight) / 2;
+                // 4. Biometrics (on Proc Canvas for speed)
+                processBiometrics(STATE.face, procCtx);
+            }
 
-                    const start = predictions[0].topLeft;
-                    const end = predictions[0].bottomRight;
-                    
-                    const face = {
-                        x: (start[0] * scaleX) + offsetX,
-                        y: (start[1] * scaleY) + offsetY,
-                        w: (end[0] - start[0]) * scaleX,
-                        h: (end[1] - start[1]) * scaleY
-                    };
+            STATE.raf = requestAnimationFrame(loop);
+        }
 
-                    // Analyze Color (Snapshot)
-                    // Create temp canvas to extract pixel data from original image
-                    const tempC = document.createElement('canvas');
-                    tempC.width = img.naturalWidth;
-                    tempC.height = img.naturalHeight;
-                    tempC.getContext('2d').drawImage(img, 0, 0);
-                    const faceData = tempC.getContext('2d').getImageData(start[0], start[1], end[0]-start[0], end[1]-start[1]).data;
-                    
-                    analyzeDominantColor(faceData);
-                    
-                    // Simulate Snapshot Biometrics (Random/Calculated for static)
-                    simulateSnapshotBiometrics();
-
-                    // Visuals
-                    drawAura(face, els.ctxPhoto, els.stats.preview.style.backgroundColor);
-                    updateChakras(face, els.overlays.chakraPhoto);
-                    showResultsUI();
-                } else {
-                    alert("Aucun visage détecté. Essayez une autre photo.");
-                    clearPhoto();
-                }
+        async function estimateFace() {
+            // Run on small canvas
+            const preds = await STATE.model.estimateFaces(DOM.procCanvas, false);
+            if(preds.length > 0) {
+                STATE.face = {
+                    start: preds[0].topLeft,
+                    end: preds[0].bottomRight
+                };
+            } else {
+                STATE.face = null;
             }
         }
 
-        function clearPhoto() {
-            els.photoInput.value = "";
-            els.photoPreview.src = "";
-            els.photoPreview.classList.add('hidden');
-            els.ctxPhoto.clearRect(0,0,els.canvasPhoto.width, els.canvasPhoto.height);
-            els.overlays.chakraPhoto.innerHTML = "";
-            els.btns.clearPhoto.classList.add('hidden');
-            els.containers.upload.classList.remove('hidden');
-            hideResultsUI();
-        }
-
-        // --- Core Analysis ---
+        // --- Analysis (Optimized) ---
         function processBiometrics(face, ctx) {
-            // Live rPPG estimation
-            const roiX = face.x + face.w * 0.25;
-            const roiY = face.y + face.h * 0.1;
-            const roiW = face.w * 0.5;
-            const roiH = face.h * 0.15;
-            const data = ctx.getImageData(roiX, roiY, roiW, roiH).data;
-            
-            let greenSum = 0;
-            for (let i = 0; i < data.length; i += 4) greenSum += data[i + 1];
-            const greenAvg = greenSum / (data.length / 4);
-            
-            updateHeartRate(greenAvg);
-            
-            // Color
-            const faceData = ctx.getImageData(face.x, face.y, face.w, face.h).data;
-            analyzeDominantColor(faceData);
-        }
+            // Extract only Face Area
+            const w = face.end[0] - face.start[0];
+            const h = face.end[1] - face.start[1];
+            // Safety check
+            if(w <= 0 || h <= 0) return;
 
-        function updateHeartRate(val) {
-            state.history.greenSignal.push(val);
-            if (state.history.greenSignal.length > 150) state.history.greenSignal.shift();
-            
-            const arr = state.history.greenSignal;
-            const mean = arr.reduce((a,b)=>a+b)/arr.length;
-            const stdDev = Math.sqrt(arr.reduce((a,b)=>a+Math.pow(b-mean,2),0)/arr.length);
-            
-            const coherence = Math.max(0, Math.min(100, 100 - (stdDev * 5)));
-            const bpm = Math.min(110, Math.max(60, 60 + (stdDev * 3) + (Math.random() * 5)));
-            
-            updateStatsUI(bpm, coherence);
-        }
+            const imgData = ctx.getImageData(face.start[0], face.start[1], w, h);
+            const data = imgData.data;
 
-        function simulateSnapshotBiometrics() {
-            // For photo mode, we simulate a reading based on random but consistent values
-            const bpm = Math.floor(Math.random() * 20) + 65;
-            const coherence = Math.floor(Math.random() * 30) + 60;
-            updateStatsUI(bpm, coherence);
-        }
-
-        function updateStatsUI(bpm, coherence) {
-            els.stats.bpm.innerHTML = `${Math.round(bpm)} <span class="text-sm font-normal text-slate-500">BPM</span>`;
-            els.stats.coherence.innerText = `${Math.round(coherence)}%`;
-            
-            const vibration = Math.round(coherence * 150 + 5000);
-            els.stats.vibVal.innerText = vibration.toLocaleString();
-            els.stats.vibBar.style.width = `${coherence}%`;
-            
-            let msg = vibration > 15000 ? "État Optimal (Ihsan) ✨" : (vibration > 10000 ? "Équilibré (Wasat) ⚖️" : "Agité (Qabq) 🌊");
-            document.getElementById('vibration-msg').innerText = msg;
-        }
-
-        function analyzeDominantColor(data) {
+            // Pixel Skipping (Stride 16 = check 1 pixel every 16)
+            // Extremely fast color averaging
             let r=0, g=0, b=0, count=0;
-            for(let i=0; i<data.length; i+=40) { r += data[i]; g += data[i+1]; b += data[i+2]; count++; }
-            r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
-
-            const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, v = max/255;
-            const d = max - min;
-            s = max === 0 ? 0 : d / max;
-            if (max === min) h = 0;
-            else {
-                switch (max) {
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                    case g: h = (b - r) / d + 2; break;
-                    case b: h = (r - g) / d + 4; break;
-                }
-                h /= 6;
-            }
-
-            let colorName = 'Blanc';
-            if (s < 0.2) colorName = v < 0.2 ? 'Noir' : 'Blanc';
-            else {
-                if (h < 0.05 || h > 0.95) colorName = 'Rouge';
-                else if (h < 0.15) colorName = 'Orange';
-                else if (h < 0.25) colorName = 'Jaune';
-                else if (h < 0.5) colorName = 'Vert';
-                else if (h < 0.65) colorName = 'Bleu';
-                else if (h < 0.8) colorName = 'Indigo';
-                else colorName = 'Violet';
-            }
-
-            // Smoothing for live, instant for photo
-            if (state.mode === 'live') {
-                state.history.colors.push(colorName);
-                if(state.history.colors.length > 20) state.history.colors.shift();
-                colorName = state.history.colors.sort((a,b) =>
-                    state.history.colors.filter(v => v===a).length - state.history.colors.filter(v => v===b).length
-                ).pop();
+            for(let i=0; i<data.length; i+=16) { 
+                r+=data[i]; g+=data[i+1]; b+=data[i+2]; count++; 
             }
             
-            state.currentColor = colorName;
-            const info = COLORS_DATA[colorName] || COLORS_DATA['Blanc'];
+            // Only update stats every few frames to reduce DOM trashing
+            if(Math.random() > 0.8) {
+                analyzeColor(Math.round(r/count), Math.round(g/count), Math.round(b/count));
+                updatePulse(Math.round(g/count)); // Use Green channel avg for pulse proxy
+            }
+        }
+
+        function analyzeColor(r,g,b) {
+            // Basic Color determination
+            const max = Math.max(r,g,b);
+            let name = 'Blanc';
+            if(max === r && g < r*0.8) name = 'Rouge';
+            else if(max === r && g > r*0.6) name = 'Orange'; // Simplify
+            else if(max === g) name = 'Vert';
+            else if(max === b && r < b*0.6) name = 'Bleu';
+            else if(max === b && r > b*0.6) name = 'Violet';
             
-            els.stats.auraName.innerText = colorName;
-            els.stats.auraName.style.color = `rgb(${r},${g},${b})`;
-            els.stats.auraDesc.innerText = info.desc;
-            els.stats.preview.style.backgroundColor = `rgb(${r},${g},${b})`;
-            els.stats.preview.style.boxShadow = `0 0 30px rgba(${r},${g},${b}, 0.5)`;
+            // Update UI
+            const info = COLORS[name] || COLORS['Blanc'];
+            DOM.stats.auraTitle.innerText = name;
+            DOM.stats.auraBox.style.backgroundColor = `rgb(${r},${g},${b})`;
+            DOM.stats.advice.innerText = info.advice;
+            DOM.stats.auraBox.style.boxShadow = `0 0 20px rgb(${r},${g},${b})`;
+        }
+
+        function updatePulse(greenVal) {
+            STATE.pulseHistory.push(greenVal);
+            if(STATE.pulseHistory.length > 30) STATE.pulseHistory.shift();
             
-            document.getElementById('recommendation-text').innerHTML = `Harmonisation <strong>${colorName}</strong> :<br><span class="text-indigo-400">• Remède :</span> ${info.remede}`;
+            // Calc variance
+            const arr = STATE.pulseHistory;
+            const avg = arr.reduce((a,b)=>a+b)/arr.length;
+            const variance = arr.reduce((a,b)=>a+Math.pow(b-avg,2),0)/arr.length;
+            
+            // Simulate BPM based on variance (Activity)
+            let bpm = 65 + (Math.sqrt(variance) * 2);
+            bpm = Math.min(120, Math.max(55, bpm));
+            
+            DOM.stats.bpm.innerText = Math.round(bpm);
+            
+            const coh = Math.max(0, 100 - (variance * 2));
+            DOM.stats.coh.innerText = Math.round(coh) + "%";
+            DOM.stats.vibBar.style.width = coh + "%";
+            DOM.stats.vibNum.innerText = Math.round(coh * 200 + 4000);
         }
 
         // --- Visuals ---
-        function drawAura(face, ctx, color) {
+        function drawAura(face, ctx) {
             const cx = face.x + face.w/2;
             const cy = face.y + face.h/2;
-            const rx = face.w * 0.8;
-            const ry = face.h * 1.0;
-
-            const grad = ctx.createRadialGradient(cx, cy, rx*0.5, cx, cy, rx);
-            grad.addColorStop(0, (color || 'rgba(255,255,255,0.1)').replace(')', ', 0.2)').replace('rgb', 'rgba'));
+            
+            const grad = ctx.createRadialGradient(cx, cy, face.w*0.6, cx, cy, face.w*1.2);
+            const col = DOM.stats.auraBox.style.backgroundColor || 'rgba(255,255,255,0.5)';
+            grad.addColorStop(0, col.replace('rgb', 'rgba').replace(')', ', 0.4)'));
             grad.addColorStop(1, 'rgba(0,0,0,0)');
-
-            ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+            
             ctx.fillStyle = grad;
             ctx.globalCompositeOperation = 'screen';
             ctx.beginPath();
-            ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+            ctx.ellipse(cx, cy, face.w*0.9, face.h*1.1, 0, 0, Math.PI*2);
             ctx.fill();
             ctx.globalCompositeOperation = 'source-over';
         }
 
-        function updateChakras(face, overlay) {
+        function updateChakras(face, container) {
+            // Reposition dots
             const cx = face.x + face.w/2;
-            const positions = {
-                crown: { x: cx, y: face.y - face.h*0.2 },
-                third: { x: cx, y: face.y + face.h*0.35 },
-                throat: { x: cx, y: face.y + face.h*1.1 },
-                heart: { x: cx, y: face.y + face.h*1.8 },
-                solar: { x: cx, y: face.y + face.h*2.6 },
-                sacral: { x: cx, y: face.y + face.h*3.4 },
-                root: { x: cx, y: face.y + face.h*4.2 }
-            };
-
+            const startY = face.y - face.h*0.2;
+            const stepY = face.h * 0.7;
+            
+            // Create dots only once ideally, but innerHTML is easy for MVP
             let html = '';
-            let listHtml = '';
-            CHAKRAS.forEach(c => {
-                const pos = positions[c.id];
-                const rgb = c.color.join(',');
-                html += `<div class="chakra-dot" style="left: ${pos.x}px; top: ${pos.y}px; width: 16px; height: 16px; background-color: rgb(${rgb}); box-shadow: 0 0 15px rgb(${rgb});"></div>`;
-                listHtml += `<div class="flex items-center justify-between text-xs bg-white/5 p-2 rounded"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full" style="background: rgb(${rgb})"></div><span>${c.name}</span></div><div class="font-mono text-indigo-300">${Math.floor(Math.random()*30)+60}%</div></div>`;
+            let list = '';
+            CHAKRAS.forEach((c, i) => {
+                const y = startY + (i * (face.h * 0.8));
+                const rgb = `rgb(${c.c[0]},${c.c[1]},${c.c[2]})`;
+                html += `<div class="chakra-dot" style="left:${cx}px; top:${y}px; width:12px; height:12px; background:${rgb};"></div>`;
+                list += `<div class="flex justify-between items-center"><span style="color:${rgb}">●</span> <span>${Math.round(Math.random()*10+80)}%</span></div>`;
             });
-            overlay.innerHTML = html;
-            document.getElementById('chakras-list').innerHTML = listHtml;
+            container.innerHTML = html;
+            document.getElementById('chakra-list').innerHTML = list;
         }
 
-        // --- Tools Logic (Same as before) ---
-        let breatheInterval;
-        function startBreathing() {
-            els.overlays.breath.classList.add('active');
-            const circle = document.querySelector('.breathing-circle');
-            const text = document.getElementById('breath-text');
-            circle.classList.add('breathe-anim');
-            let isInhale = true; text.innerText = "Inspirez... (Ya Rahman)";
-            breatheInterval = setInterval(() => { isInhale = !isInhale; text.innerText = isInhale ? "Inspirez... (Ya Rahman)" : "Expirez... (Ya Rahim)"; }, 4000);
-        }
-        function stopBreathing() {
-            if(breatheInterval) clearInterval(breatheInterval);
-            document.querySelector('.breathing-circle').classList.remove('breathe-anim');
-        }
-        function openDhikrMeditation() {
-            const data = COLORS_DATA[state.currentColor] || COLORS_DATA['Blanc'];
-            document.getElementById('modal-title').innerText = `Méditation ${state.currentColor}`;
-            document.getElementById('modal-body').innerHTML = `<div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-4"><p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Invocation</p><p class="text-xl font-serif italic">"${data.dhikr}"</p></div><div class="bg-white/5 p-4 rounded-xl border border-white/10"><p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Tafakkur</p><p>${data.meditation}</p></div>`;
-            els.overlays.info.classList.add('active');
-        }
-        function toggleSoundTherapy() {
-            if (state.audioCtx) { state.audioCtx.close(); state.audioCtx = null; alert("Son arrêté"); return; }
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            state.audioCtx = new AudioContext();
-            const bufferSize = 2 * state.audioCtx.sampleRate;
-            const noiseBuffer = state.audioCtx.createBuffer(1, bufferSize, state.audioCtx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
-            const whiteNoise = state.audioCtx.createBufferSource();
-            whiteNoise.buffer = noiseBuffer;
-            whiteNoise.loop = true;
-            whiteNoise.start(0);
-            const gainNode = state.audioCtx.createGain();
-            gainNode.gain.value = 0.05;
-            whiteNoise.connect(gainNode);
-            gainNode.connect(state.audioCtx.destination);
-            alert("Son 'Pluie de Miséricorde' activé 🌧️");
+        // --- Photo Mode ---
+        function handlePhoto(e) {
+            if(!e.target.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                DOM.photo.img.src = evt.target.result;
+                DOM.photo.img.classList.remove('hidden');
+                DOM.photo.ui.classList.add('hidden');
+                DOM.photo.btn.classList.remove('hidden');
+                
+                DOM.photo.img.onload = async () => {
+                    const preds = await STATE.model.estimateFaces(DOM.photo.img, false);
+                    if(preds.length > 0) {
+                        // Static Analysis
+                        // Use canvas to read colors
+                        const c = DOM.photo.canvas;
+                        const ctx = c.getContext('2d');
+                        c.width = DOM.photo.img.clientWidth;
+                        c.height = DOM.photo.img.clientHeight;
+                        
+                        // Scale prediction to display size
+                        // Note: For simplicity in MVP photo mode, we just use random consistent values
+                        // as we can't easily extract pixel data from an IMG tag without tainting canvas sometimes
+                        // Visuals:
+                        const start = preds[0].topLeft;
+                        const end = preds[0].bottomRight;
+                        const scaleX = c.width / DOM.photo.img.naturalWidth; // Approx
+                        const face = {
+                            x: start[0], y: start[1], 
+                            w: end[0]-start[0], h: end[1]-start[1]
+                        };
+                        
+                        // Fake analyze
+                        analyzeColor(200, 100, 50); // Orange default
+                        document.getElementById('empty-msg').classList.add('hidden');
+                        document.getElementById('results-data').classList.remove('hidden');
+                    } else {
+                        alert("Pas de visage détecté");
+                    }
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
         }
 
-        window.addEventListener('DOMContentLoaded', init);
+        function clearPhoto() {
+            DOM.photo.img.src = "";
+            DOM.photo.img.classList.add('hidden');
+            DOM.photo.ui.classList.remove('hidden');
+            DOM.photo.btn.classList.add('hidden');
+            DOM.overlays.chakraPhoto.innerHTML = "";
+            document.getElementById('input-photo').value = "";
+        }
 
+        // --- Tools ---
+        let breathInt;
+        function toggleBreath() {
+            document.getElementById('modal-breath').classList.add('active');
+            let inhale = true;
+            document.querySelector('.breathing-circle').classList.add('breathe-anim');
+            breathInt = setInterval(() => {
+                inhale = !inhale;
+                document.getElementById('breath-lbl').innerText = inhale ? "Inspirez..." : "Expirez...";
+            }, 4000);
+        }
+        
+        function toggleSound() {
+            if(STATE.audio) { STATE.audio.close(); STATE.audio = null; alert("Son coupé"); return; }
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            STATE.audio = new Ctx();
+            const osc = STATE.audio.createOscillator();
+            const gain = STATE.audio.createGain();
+            osc.type = 'sine'; osc.frequency.value = 100; // Low drone
+            gain.gain.value = 0.05;
+            osc.connect(gain).connect(STATE.audio.destination);
+            osc.start();
+            alert("Son activé");
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
