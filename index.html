@@ -16,7 +16,7 @@
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-bg: rgba(15, 23, 42, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
         
@@ -66,6 +66,13 @@
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+        .tab-btn { position: relative; color: #94a3b8; transition: all 0.3s; }
+        .tab-btn.active { color: white; }
+        .tab-btn.active::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
         /* --- Video & Visualization --- */
         .video-container-advanced {
             position: relative; border-radius: 24px; overflow: hidden;
@@ -75,6 +82,9 @@
         .video-feed {
             width: 100%; height: 100%; object-fit: cover;
             transform: scaleX(-1); /* Mirrored */
+        }
+        .photo-feed {
+            width: 100%; height: 100%; object-fit: contain;
         }
         .aura-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -134,7 +144,7 @@
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">🔮</span>
-                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs font-normal text-slate-400 tracking-wider ml-2 border border-slate-600 px-2 py-0.5 rounded-full">BETA 2.1</span></h1>
+                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs font-normal text-slate-400 tracking-wider ml-2 border border-slate-600 px-2 py-0.5 rounded-full">BETA 2.2</span></h1>
             </div>
             <nav class="hidden md:flex space-x-6 text-sm font-medium">
                 <a href="#analyzer" class="hover:text-indigo-400 transition">Analyseur</a>
@@ -150,7 +160,7 @@
                 Révélez votre <span class="gradient-text">Lumière Intérieure</span>
             </h2>
             <p class="max-w-2xl mx-auto text-lg text-slate-300 mb-8 leading-relaxed">
-                La première interface de <strong>Bio-Feedback Spirituel</strong> qui transforme votre signal physiologique (rythme cardiaque, micro-expressions) en une analyse de l'âme conforme à l'éthique.
+                Interface de <strong>Bio-Feedback Spirituel</strong>. Choisissez le mode Live pour une analyse biométrique temps réel ou le mode Photo pour une lecture instantanée.
             </p>
             <div class="flex justify-center gap-4">
                 <a href="#analyzer" class="btn-primary flex items-center gap-2">
@@ -166,52 +176,74 @@
                     
                     <div class="lg:col-span-7 flex flex-col gap-4">
                         <div class="flex border-b border-white/10 mb-2">
-                            <button id="liveTab" class="px-6 py-3 text-white border-b-2 border-indigo-500 font-medium transition">📹 Live Bio-Feedback</button>
-                            <button class="px-6 py-3 text-slate-500 cursor-not-allowed" title="Bientôt disponible">📸 Photo (Bientôt)</button>
+                            <button id="tab-live" class="tab-btn active px-6 py-3 font-medium flex items-center gap-2">
+                                <span>📹</span> Live Bio-Feedback
+                            </button>
+                            <button id="tab-photo" class="tab-btn px-6 py-3 font-medium flex items-center gap-2">
+                                <span>📸</span> Analyse Photo
+                            </button>
                         </div>
 
-                        <div id="video-wrapper" class="video-container-advanced aspect-video relative bg-slate-900 flex items-center justify-center group">
+                        <div id="container-live" class="video-container-advanced aspect-video relative bg-slate-900 flex items-center justify-center group">
                             <video id="video" class="video-feed" playsinline autoplay muted></video>
-                            <canvas id="output-canvas" class="aura-canvas"></canvas>
-                            <div id="chakra-overlay" class="absolute inset-0 z-20 pointer-events-none"></div>
+                            <canvas id="output-canvas-live" class="aura-canvas"></canvas>
+                            <div id="chakra-overlay-live" class="absolute inset-0 z-20 pointer-events-none"></div>
                             
                             <div id="start-overlay" class="absolute inset-0 bg-slate-900/90 z-30 flex flex-col items-center justify-center p-6 text-center">
                                 <div class="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mb-6">
                                     <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                 </div>
-                                <h3 class="text-xl font-bold text-white mb-2">Initialisation du Capteur</h3>
-                                <p class="text-slate-400 mb-8 max-w-md">L'IA va analyser les micro-variations de couleur de votre peau (rPPG) pour déterminer votre cohérence cardiaque et votre état énergétique.</p>
-                                <button id="btn-start-cam" class="btn-primary">Activer la Caméra (Sécurisé)</button>
-                                <p class="text-xs text-slate-500 mt-4"><span class="text-green-400">🔒 100% Privé</span> : Aucune image n'est envoyée sur le cloud.</p>
+                                <h3 class="text-xl font-bold text-white mb-2">Capteur Vidéo rPPG</h3>
+                                <p class="text-slate-400 mb-6 max-w-md text-sm">Analyse les micro-variations de flux sanguin et l'aura en temps réel.</p>
+                                <button id="btn-start-cam" class="btn-primary">Activer la Caméra</button>
                             </div>
 
-                            <div id="loader" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
+                            <div id="loader-live" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
                                 <div class="spinner mb-6"></div>
                                 <h3 class="text-xl font-bold text-white mb-2">Calibrage en cours</h3>
-                                <p class="text-indigo-300 font-mono animate-pulse" id="loader-text">Analyse du spectre lumineux...</p>
+                                <p class="text-indigo-300 font-mono animate-pulse" id="loader-text">Initialisation...</p>
                                 <div class="w-64 h-1 bg-slate-800 rounded-full mt-6 overflow-hidden">
                                     <div class="h-full bg-indigo-500 animate-[width_3s_ease-out_forwards]" style="width: 100%"></div>
                                 </div>
                             </div>
+                            
+                            <button id="btn-stop-cam" class="absolute bottom-4 right-4 z-50 bg-red-500/80 p-2 rounded-lg text-white hidden hover:bg-red-500 transition">Arrêter</button>
+                        </div>
 
-                            <div class="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                <button id="btn-stop" class="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm shadow-lg hidden">
-                                    Arrêter
-                                </button>
+                        <div id="container-photo" class="video-container-advanced aspect-video relative bg-slate-900 flex items-center justify-center hidden">
+                            <img id="photo-preview" class="photo-feed hidden" />
+                            <canvas id="output-canvas-photo" class="aura-canvas"></canvas>
+                            <div id="chakra-overlay-photo" class="absolute inset-0 z-20 pointer-events-none"></div>
+
+                            <div id="upload-ui" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center bg-slate-900/50">
+                                <div class="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mb-6">
+                                    <svg class="w-10 h-10 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Analyse Statique</h3>
+                                <p class="text-slate-400 mb-6 text-sm">Importez une photo claire pour une lecture instantanée de l'aura.</p>
+                                <input type="file" id="input-photo" class="hidden" accept="image/*">
+                                <label for="input-photo" class="btn-primary cursor-pointer">Choisir une photo</label>
                             </div>
+
+                            <div id="loader-photo" class="absolute inset-0 z-40 bg-slate-900/95 flex flex-col items-center justify-center hidden">
+                                <div class="spinner mb-4"></div>
+                                <p class="text-indigo-300">Traitement de l'image...</p>
+                            </div>
+                            
+                            <button id="btn-clear-photo" class="absolute top-4 right-4 z-50 bg-slate-700/80 p-2 rounded-full text-white hidden hover:bg-slate-600 transition" title="Effacer">✕</button>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between">
                                 <div>
-                                    <p class="text-xs text-slate-400 uppercase tracking-wider">État Cardiaque (Est.)</p>
+                                    <p class="text-xs text-slate-400 uppercase tracking-wider">État Cardiaque</p>
                                     <p id="stat-bpm" class="text-2xl font-bold text-white">-- <span class="text-sm font-normal text-slate-500">BPM</span></p>
                                 </div>
                                 <div class="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 animate-pulse">❤️</div>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between">
                                 <div>
-                                    <p class="text-xs text-slate-400 uppercase tracking-wider">Cohérence (Sakînah)</p>
+                                    <p class="text-xs text-slate-400 uppercase tracking-wider">Cohérence</p>
                                     <p id="stat-coherence" class="text-2xl font-bold text-white">--%</p>
                                 </div>
                                 <div class="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">🌊</div>
@@ -224,14 +256,14 @@
                             <div class="p-6 border-b border-white/10 bg-white/5">
                                 <h3 class="font-bold text-lg flex items-center gap-2">
                                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                                    Analyse Spectrale
+                                    Résultats de l'Analyse
                                 </h3>
                             </div>
                             
                             <div id="results-content" class="p-6 overflow-y-auto space-y-6 scrollbar-thin">
                                 <div id="empty-state" class="text-center py-10 text-slate-500">
                                     <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                    <p>En attente du flux vidéo...</p>
+                                    <p>En attente d'une source (Vidéo ou Photo)...</p>
                                 </div>
 
                                 <div id="analysis-data" class="hidden space-y-6">
@@ -323,7 +355,7 @@
                 <h2 class="text-2xl font-bold text-white">Confidentialité & Éthique</h2>
             </div>
             <p class="text-slate-300 text-sm mb-6 text-center">
-                Toutes les analyses (visage, pouls) sont effectuées <strong>localement sur votre appareil</strong>. Aucune image n'est envoyée sur le cloud.
+                Toutes les analyses (visage, pouls, photo) sont effectuées <strong>localement sur votre appareil</strong>. Aucune image n'est envoyée sur le cloud.
             </p>
             <button id="btn-accept-consent" class="btn-primary w-full py-4 text-lg">J'accepte et je commence</button>
         </div>
@@ -352,60 +384,19 @@
 
     <script>
         /**
-         * NOOR-AI : CORE ENGINE v2.1
-         * Features: Calibration Delay, Interactive Tools, rPPG Simulation
+         * NOOR-AI : CORE ENGINE v2.2
+         * Features: Live & Photo Modes, Calibration, Interactive Tools
          */
 
-        // --- Data Definitions ---
         const COLORS_DATA = {
-            'Rouge': { 
-                desc: 'Besoin d\'ancrage et de force vitale.', 
-                remede: 'Marche pieds nus, Datte Ajwa.', 
-                dhikr: '"Ya Hayyu Ya Qayyum" (Ô Vivant, Ô Subsistant).',
-                meditation: "Visualisez des racines partant de vos pieds s'enfonçant profondément dans la terre, puisant la force et la stabilité d'Allah."
-            },
-            'Orange': { 
-                desc: 'Émotionnel, créativité, liens sociaux.', 
-                remede: 'Partage de nourriture, Figue.', 
-                dhikr: '"Alhamdulillah" pour les bienfaits de la vie.',
-                meditation: "Pensez aux liens qui vous unissent aux autres. Laissez la chaleur de la gratitude remplir votre ventre et votre cœur."
-            },
-            'Jaune': { 
-                desc: 'Intellect, volonté, digestion mentale.', 
-                remede: 'Miel, Lecture de textes sacrés.', 
-                dhikr: '"Hasbunallahu wa ni\'mal wakil" (Allah me suffit).',
-                meditation: "Imaginez un soleil doré irradiant depuis votre plexus solaire, dissipant le doute et apportant la clarté de la certitude (Yaqin)."
-            },
-            'Vert': { 
-                desc: 'Équilibre du cœur, guérison, nature.', 
-                remede: 'Huile d\'olive, Contemplation nature.', 
-                dhikr: '"Ya Salam" (Ô Source de Paix).',
-                meditation: "Visualisez une lumière émeraude apaisante enveloppant votre cœur, guérissant toute blessure et rancune."
-            },
-            'Bleu': { 
-                desc: 'Communication apaisée, vérité.', 
-                remede: 'Eau pure, Silence.', 
-                dhikr: '"SubhanAllah" (Gloire à Allah).',
-                meditation: "Imaginez un ciel bleu infini ou un océan calme. Sentez votre gorge se détendre, prête à ne dire que la vérité bienveillante."
-            },
-            'Indigo': { 
-                desc: 'Intuition profonde (Firasa).', 
-                remede: 'Jeûne, Prière nocturne.', 
-                dhikr: '"Ya Nur" (Ô Lumière).',
-                meditation: "Portez votre attention entre vos sourcils. Demandez à Allah d'illuminer votre vision intérieure pour voir au-delà des apparences."
-            },
-            'Violet': { 
-                desc: 'Connexion spirituelle élevée.', 
-                remede: 'Parfum (Musc/Oud), Isolement.', 
-                dhikr: '"La ilaha illa Allah".',
-                meditation: "Sentez une pluie de lumière violette descendre du ciel, vous connectant à la Présence Divine et dissolvant l'ego."
-            },
-            'Blanc': { 
-                desc: 'Pureté, Clarté totale (Nur).', 
-                remede: 'Ablutions fraîches.', 
-                dhikr: '"Allahu Akbar".',
-                meditation: "Baignez dans une lumière blanche pure et éclatante, symbole de la pureté originelle (Fitra)."
-            }
+            'Rouge': { desc: 'Besoin d\'ancrage et de force vitale.', remede: 'Marche pieds nus, Datte Ajwa.', dhikr: '"Ya Hayyu Ya Qayyum".', meditation: "Visualisez des racines partant de vos pieds." },
+            'Orange': { desc: 'Émotionnel, créativité, liens sociaux.', remede: 'Partage de nourriture, Figue.', dhikr: '"Alhamdulillah" pour les bienfaits.', meditation: "Laissez la chaleur de la gratitude vous remplir." },
+            'Jaune': { desc: 'Intellect, volonté, digestion mentale.', remede: 'Miel, Lecture de textes.', dhikr: '"Hasbunallahu wa ni\'mal wakil".', meditation: "Un soleil doré dissipe le doute." },
+            'Vert': { desc: 'Équilibre du cœur, guérison.', remede: 'Huile d\'olive, Nature.', dhikr: '"Ya Salam" (Ô Source de Paix).', meditation: "Une lumière émeraude apaise votre cœur." },
+            'Bleu': { desc: 'Communication apaisée, vérité.', remede: 'Eau pure, Silence.', dhikr: '"SubhanAllah".', meditation: "Un ciel bleu infini détend votre gorge." },
+            'Indigo': { desc: 'Intuition profonde (Firasa).', remede: 'Jeûne, Prière nocturne.', dhikr: '"Ya Nur".', meditation: "Illuminez votre vision intérieure." },
+            'Violet': { desc: 'Connexion spirituelle élevée.', remede: 'Parfum (Musc), Isolement.', dhikr: '"La ilaha illa Allah".', meditation: "Une pluie de lumière violette descend du ciel." },
+            'Blanc': { desc: 'Pureté, Clarté totale (Nur).', remede: 'Ablutions fraîches.', dhikr: '"Allahu Akbar".', meditation: "Baignez dans une lumière blanche pure." }
         };
 
         const CHAKRAS = [
@@ -420,6 +411,7 @@
 
         // --- State ---
         const state = {
+            mode: 'live', // 'live' or 'photo'
             isStreaming: false,
             hasConsent: false,
             model: null,
@@ -427,24 +419,39 @@
             faceCoords: null,
             currentColor: 'Blanc',
             audioCtx: null,
-            whiteNoise: null,
             history: { greenSignal: [], colors: [] },
             lastUpdate: 0
         };
 
-        // --- DOM Elements ---
+        // --- Elements ---
         const els = {
             video: document.getElementById('video'),
-            canvas: document.getElementById('output-canvas'),
-            ctx: document.getElementById('output-canvas').getContext('2d', { willReadFrequently: true }),
+            photoPreview: document.getElementById('photo-preview'),
+            photoInput: document.getElementById('input-photo'),
+            
+            canvasLive: document.getElementById('output-canvas-live'),
+            ctxLive: document.getElementById('output-canvas-live').getContext('2d'),
+            
+            canvasPhoto: document.getElementById('output-canvas-photo'),
+            ctxPhoto: document.getElementById('output-canvas-photo').getContext('2d'),
+            
+            containers: {
+                live: document.getElementById('container-live'),
+                photo: document.getElementById('container-photo'),
+                upload: document.getElementById('upload-ui')
+            },
+            
             overlays: {
                 start: document.getElementById('start-overlay'),
-                loader: document.getElementById('loader'),
-                chakra: document.getElementById('chakra-overlay'),
+                loaderLive: document.getElementById('loader-live'),
+                loaderPhoto: document.getElementById('loader-photo'),
+                chakraLive: document.getElementById('chakra-overlay-live'),
+                chakraPhoto: document.getElementById('chakra-overlay-photo'),
                 consent: document.getElementById('consent-modal'),
                 breath: document.getElementById('modal-breath'),
                 info: document.getElementById('modal-info')
             },
+            
             stats: {
                 bpm: document.getElementById('stat-bpm'),
                 coherence: document.getElementById('stat-coherence'),
@@ -454,15 +461,14 @@
                 vibBar: document.getElementById('vibration-bar'),
                 preview: document.getElementById('aura-preview')
             },
+            
             btns: {
                 start: document.getElementById('btn-start-cam'),
-                stop: document.getElementById('btn-stop'),
-                accept: document.getElementById('btn-accept-consent')
-            },
-            tools: {
-                breath: document.getElementById('tool-breath'),
-                dhikr: document.getElementById('tool-dhikr'),
-                sound: document.getElementById('tool-sound')
+                stop: document.getElementById('btn-stop-cam'),
+                clearPhoto: document.getElementById('btn-clear-photo'),
+                accept: document.getElementById('btn-accept-consent'),
+                tabLive: document.getElementById('tab-live'),
+                tabPhoto: document.getElementById('tab-photo')
             }
         };
 
@@ -478,15 +484,23 @@
                 preloadModel();
             });
 
+            // Tabs
+            els.btns.tabLive.addEventListener('click', () => switchTab('live'));
+            els.btns.tabPhoto.addEventListener('click', () => switchTab('photo'));
+
+            // Live Controls
             els.btns.start.addEventListener('click', startCamera);
             els.btns.stop.addEventListener('click', stopCamera);
+
+            // Photo Controls
+            els.photoInput.addEventListener('change', handlePhotoUpload);
+            els.btns.clearPhoto.addEventListener('click', clearPhoto);
+
+            // Tools
+            document.getElementById('tool-breath').addEventListener('click', startBreathing);
+            document.getElementById('tool-dhikr').addEventListener('click', openDhikrMeditation);
+            document.getElementById('tool-sound').addEventListener('click', toggleSoundTherapy);
             
-            // Tools Listeners
-            els.tools.breath.addEventListener('click', startBreathing);
-            els.tools.dhikr.addEventListener('click', openDhikrMeditation);
-            els.tools.sound.addEventListener('click', toggleSoundTherapy);
-            
-            // Modal Closers
             document.querySelectorAll('.modal-close').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.modal-backdrop:not(#consent-modal)').forEach(m => m.classList.remove('active'));
@@ -496,67 +510,77 @@
         }
 
         async function preloadModel() {
-            try {
-                state.model = await blazeface.load();
-                console.log("IA : Modèle facial chargé");
-            } catch (e) {
-                console.error("Erreur IA", e);
+            try { state.model = await blazeface.load(); } catch (e) { console.error("Err IA", e); }
+        }
+
+        function switchTab(mode) {
+            state.mode = mode;
+            // UI Toggle
+            els.btns.tabLive.classList.toggle('active', mode === 'live');
+            els.btns.tabPhoto.classList.toggle('active', mode === 'photo');
+            els.btns.tabLive.classList.toggle('text-white', mode === 'live');
+            els.btns.tabPhoto.classList.toggle('text-white', mode === 'photo');
+
+            els.containers.live.classList.toggle('hidden', mode !== 'live');
+            els.containers.photo.classList.toggle('hidden', mode !== 'photo');
+
+            // Reset logic
+            if (mode === 'photo') {
+                stopCamera();
+                if(els.photoPreview.src) showResultsUI();
+                else hideResultsUI();
+            } else {
+                hideResultsUI();
             }
         }
 
-        // --- Camera & Calibration ---
+        function showResultsUI() {
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('analysis-data').classList.remove('hidden');
+            document.getElementById('btn-record').disabled = false;
+            document.getElementById('btn-export').disabled = false;
+        }
+
+        function hideResultsUI() {
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('analysis-data').classList.add('hidden');
+        }
+
+        // --- Live Mode Logic ---
         async function startCamera() {
             if (!state.hasConsent) return;
-            
             els.overlays.start.classList.add('hidden');
-            els.overlays.loader.classList.remove('hidden');
-            els.overlays.loader.style.display = 'flex';
+            els.overlays.loaderLive.classList.remove('hidden');
+            els.overlays.loaderLive.style.display = 'flex';
 
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-                    audio: false
-                });
-                
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 } } });
                 els.video.srcObject = stream;
-                
-                // Calibration Logic
                 els.video.onloadedmetadata = () => {
                     els.video.play();
                     
-                    // Simulate Calibration time (4 seconds)
-                    let steps = ["Connexion au flux...", "Analyse biométrique...", "Calibrage du spectre..."];
+                    // Calibration Delay
+                    let steps = ["Connexion...", "Biométrie...", "Calibrage..."];
                     let stepIndex = 0;
-                    
                     const stepInterval = setInterval(() => {
-                        if(stepIndex < steps.length) {
-                            document.getElementById('loader-text').innerText = steps[stepIndex];
-                            stepIndex++;
-                        }
+                        if(stepIndex < steps.length) document.getElementById('loader-text').innerText = steps[stepIndex++];
                     }, 1000);
 
                     setTimeout(() => {
                         clearInterval(stepInterval);
-                        els.overlays.loader.classList.add('hidden');
+                        els.overlays.loaderLive.classList.add('hidden');
                         els.btns.stop.classList.remove('hidden');
-                        
-                        els.canvas.width = els.video.videoWidth;
-                        els.canvas.height = els.video.videoHeight;
-                        
+                        els.canvasLive.width = els.video.videoWidth;
+                        els.canvasLive.height = els.video.videoHeight;
                         state.isStreaming = true;
-                        document.getElementById('empty-state').classList.add('hidden');
-                        document.getElementById('analysis-data').classList.remove('hidden');
-                        document.getElementById('btn-record').disabled = false;
-                        document.getElementById('btn-export').disabled = false;
-                        
-                        processFrame();
-                    }, 4000); // 4 seconds delay
+                        showResultsUI();
+                        processLiveFrame();
+                    }, 4000);
                 };
             } catch (err) {
                 console.error(err);
-                alert("Erreur Caméra. Vérifiez les permissions.");
                 els.overlays.start.classList.remove('hidden');
-                els.overlays.loader.classList.add('hidden');
+                els.overlays.loaderLive.classList.add('hidden');
             }
         }
 
@@ -564,30 +588,23 @@
             state.isStreaming = false;
             if (state.rafId) cancelAnimationFrame(state.rafId);
             if (els.video.srcObject) els.video.srcObject.getTracks().forEach(track => track.stop());
-            
-            els.ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
-            els.overlays.chakra.innerHTML = '';
+            els.ctxLive.clearRect(0, 0, els.canvasLive.width, els.canvasLive.height);
+            els.overlays.chakraLive.innerHTML = '';
             els.overlays.start.classList.remove('hidden');
             els.btns.stop.classList.add('hidden');
-            document.getElementById('empty-state').classList.remove('hidden');
-            document.getElementById('analysis-data').classList.add('hidden');
-            
-            if(state.audioCtx) state.audioCtx.close();
-            state.audioCtx = null;
         }
 
-        // --- Analysis Loop ---
-        async function processFrame() {
+        async function processLiveFrame() {
             if (!state.isStreaming) return;
 
-            // Draw Video
-            els.ctx.save();
-            els.ctx.scale(-1, 1);
-            els.ctx.translate(-els.canvas.width, 0);
-            els.ctx.drawImage(els.video, 0, 0, els.canvas.width, els.canvas.height);
-            els.ctx.restore();
+            // Draw & Mirror
+            els.ctxLive.save();
+            els.ctxLive.scale(-1, 1);
+            els.ctxLive.translate(-els.canvasLive.width, 0);
+            els.ctxLive.drawImage(els.video, 0, 0, els.canvasLive.width, els.canvasLive.height);
+            els.ctxLive.restore();
 
-            // Face Detection (every ~100ms)
+            // Detect
             if (state.model) {
                 const now = Date.now();
                 if (now - state.lastUpdate > 100) {
@@ -596,61 +613,152 @@
                         const start = predictions[0].topLeft;
                         const end = predictions[0].bottomRight;
                         state.faceCoords = {
-                            x: els.canvas.width - end[0], // Mirror correction
+                            x: els.canvasLive.width - end[0], // Mirror X
                             y: start[1],
                             w: end[0] - start[0],
                             h: end[1] - start[1]
                         };
-                        processBiometrics(state.faceCoords);
-                    } else {
-                        state.faceCoords = null;
+                        processBiometrics(state.faceCoords, els.ctxLive);
+                        drawAura(state.faceCoords, els.ctxLive, els.stats.preview.style.backgroundColor);
+                        updateChakras(state.faceCoords, els.overlays.chakraLive);
                     }
                     state.lastUpdate = now;
                 }
             }
-
-            // Visualization
-            if (state.faceCoords) {
-                drawAura(state.faceCoords);
-                updateChakras(state.faceCoords);
-            }
-
-            state.rafId = requestAnimationFrame(processFrame);
+            state.rafId = requestAnimationFrame(processLiveFrame);
         }
 
-        function processBiometrics(face) {
-            // Simplified rPPG Simulation based on green channel noise
+        // --- Photo Mode Logic ---
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            els.containers.upload.classList.add('hidden');
+            els.overlays.loaderPhoto.classList.remove('hidden');
+            els.overlays.loaderPhoto.style.display = 'flex';
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                els.photoPreview.src = event.target.result;
+                els.photoPreview.classList.remove('hidden');
+                els.photoPreview.onload = () => analyzePhoto();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function analyzePhoto() {
+            // Setup Canvas size
+            const img = els.photoPreview;
+            const containerW = els.containers.photo.clientWidth;
+            const containerH = els.containers.photo.clientHeight;
+            
+            // Adjust canvas to match visual image size logic is complex, 
+            // simplified: use container size
+            els.canvasPhoto.width = containerW;
+            els.canvasPhoto.height = containerH;
+
+            // Detect Face on the Image
+            if (state.model) {
+                const predictions = await state.model.estimateFaces(img, false);
+                els.overlays.loaderPhoto.classList.add('hidden');
+                els.btns.clearPhoto.classList.remove('hidden');
+                
+                if (predictions.length > 0) {
+                    // Normalize coords from Image natural size to Display size
+                    const scaleX = img.clientWidth / img.naturalWidth;
+                    const scaleY = img.clientHeight / img.naturalHeight;
+                    
+                    // Center offset
+                    const offsetX = (containerW - img.clientWidth) / 2;
+                    const offsetY = (containerH - img.clientHeight) / 2;
+
+                    const start = predictions[0].topLeft;
+                    const end = predictions[0].bottomRight;
+                    
+                    const face = {
+                        x: (start[0] * scaleX) + offsetX,
+                        y: (start[1] * scaleY) + offsetY,
+                        w: (end[0] - start[0]) * scaleX,
+                        h: (end[1] - start[1]) * scaleY
+                    };
+
+                    // Analyze Color (Snapshot)
+                    // Create temp canvas to extract pixel data from original image
+                    const tempC = document.createElement('canvas');
+                    tempC.width = img.naturalWidth;
+                    tempC.height = img.naturalHeight;
+                    tempC.getContext('2d').drawImage(img, 0, 0);
+                    const faceData = tempC.getContext('2d').getImageData(start[0], start[1], end[0]-start[0], end[1]-start[1]).data;
+                    
+                    analyzeDominantColor(faceData);
+                    
+                    // Simulate Snapshot Biometrics (Random/Calculated for static)
+                    simulateSnapshotBiometrics();
+
+                    // Visuals
+                    drawAura(face, els.ctxPhoto, els.stats.preview.style.backgroundColor);
+                    updateChakras(face, els.overlays.chakraPhoto);
+                    showResultsUI();
+                } else {
+                    alert("Aucun visage détecté. Essayez une autre photo.");
+                    clearPhoto();
+                }
+            }
+        }
+
+        function clearPhoto() {
+            els.photoInput.value = "";
+            els.photoPreview.src = "";
+            els.photoPreview.classList.add('hidden');
+            els.ctxPhoto.clearRect(0,0,els.canvasPhoto.width, els.canvasPhoto.height);
+            els.overlays.chakraPhoto.innerHTML = "";
+            els.btns.clearPhoto.classList.add('hidden');
+            els.containers.upload.classList.remove('hidden');
+            hideResultsUI();
+        }
+
+        // --- Core Analysis ---
+        function processBiometrics(face, ctx) {
+            // Live rPPG estimation
             const roiX = face.x + face.w * 0.25;
             const roiY = face.y + face.h * 0.1;
             const roiW = face.w * 0.5;
             const roiH = face.h * 0.15;
-
-            const imageData = els.ctx.getImageData(roiX, roiY, roiW, roiH);
+            const data = ctx.getImageData(roiX, roiY, roiW, roiH).data;
+            
             let greenSum = 0;
-            for (let i = 0; i < imageData.data.length; i += 4) greenSum += imageData.data[i + 1];
-            const greenAvg = greenSum / (imageData.data.length / 4);
-
+            for (let i = 0; i < data.length; i += 4) greenSum += data[i + 1];
+            const greenAvg = greenSum / (data.length / 4);
+            
             updateHeartRate(greenAvg);
             
-            // Full face color for Aura
-            const faceData = els.ctx.getImageData(face.x, face.y, face.w, face.h).data;
+            // Color
+            const faceData = ctx.getImageData(face.x, face.y, face.w, face.h).data;
             analyzeDominantColor(faceData);
         }
 
         function updateHeartRate(val) {
             state.history.greenSignal.push(val);
             if (state.history.greenSignal.length > 150) state.history.greenSignal.shift();
-
-            // Standard deviation = Coherence proxy
+            
             const arr = state.history.greenSignal;
-            const mean = arr.reduce((a, b) => a + b) / arr.length;
-            const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
-            const stdDev = Math.sqrt(variance);
+            const mean = arr.reduce((a,b)=>a+b)/arr.length;
+            const stdDev = Math.sqrt(arr.reduce((a,b)=>a+Math.pow(b-mean,2),0)/arr.length);
+            
+            const coherence = Math.max(0, Math.min(100, 100 - (stdDev * 5)));
+            const bpm = Math.min(110, Math.max(60, 60 + (stdDev * 3) + (Math.random() * 5)));
+            
+            updateStatsUI(bpm, coherence);
+        }
 
-            let coherence = Math.max(0, Math.min(100, 100 - (stdDev * 5)));
-            let bpm = 60 + (stdDev * 3) + (Math.random() * 5);
-            bpm = Math.min(110, Math.max(60, bpm));
+        function simulateSnapshotBiometrics() {
+            // For photo mode, we simulate a reading based on random but consistent values
+            const bpm = Math.floor(Math.random() * 20) + 65;
+            const coherence = Math.floor(Math.random() * 30) + 60;
+            updateStatsUI(bpm, coherence);
+        }
 
+        function updateStatsUI(bpm, coherence) {
             els.stats.bpm.innerHTML = `${Math.round(bpm)} <span class="text-sm font-normal text-slate-500">BPM</span>`;
             els.stats.coherence.innerText = `${Math.round(coherence)}%`;
             
@@ -664,13 +772,11 @@
 
         function analyzeDominantColor(data) {
             let r=0, g=0, b=0, count=0;
-            for(let i=0; i<data.length; i+=40) { // Optimization
-                r += data[i]; g += data[i+1]; b += data[i+2]; count++;
-            }
+            for(let i=0; i<data.length; i+=40) { r += data[i]; g += data[i+1]; b += data[i+2]; count++; }
             r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
 
             const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, v = max / 255;
+            let h, s, v = max/255;
             const d = max - min;
             s = max === 0 ? 0 : d / max;
             if (max === min) h = 0;
@@ -695,49 +801,48 @@
                 else colorName = 'Violet';
             }
 
-            state.history.colors.push(colorName);
-            if(state.history.colors.length > 20) state.history.colors.shift();
+            // Smoothing for live, instant for photo
+            if (state.mode === 'live') {
+                state.history.colors.push(colorName);
+                if(state.history.colors.length > 20) state.history.colors.shift();
+                colorName = state.history.colors.sort((a,b) =>
+                    state.history.colors.filter(v => v===a).length - state.history.colors.filter(v => v===b).length
+                ).pop();
+            }
             
-            const mode = state.history.colors.sort((a,b) =>
-                state.history.colors.filter(v => v===a).length - state.history.colors.filter(v => v===b).length
-            ).pop();
-            state.currentColor = mode;
-
-            const info = COLORS_DATA[mode] || COLORS_DATA['Blanc'];
-            els.stats.auraName.innerText = mode;
+            state.currentColor = colorName;
+            const info = COLORS_DATA[colorName] || COLORS_DATA['Blanc'];
+            
+            els.stats.auraName.innerText = colorName;
             els.stats.auraName.style.color = `rgb(${r},${g},${b})`;
             els.stats.auraDesc.innerText = info.desc;
             els.stats.preview.style.backgroundColor = `rgb(${r},${g},${b})`;
             els.stats.preview.style.boxShadow = `0 0 30px rgba(${r},${g},${b}, 0.5)`;
             
-            document.getElementById('recommendation-text').innerHTML = `
-                Harmonisation <strong>${mode}</strong> :<br>
-                <span class="text-indigo-400">• Remède :</span> ${info.remede}
-            `;
+            document.getElementById('recommendation-text').innerHTML = `Harmonisation <strong>${colorName}</strong> :<br><span class="text-indigo-400">• Remède :</span> ${info.remede}`;
         }
 
-        // --- Visualization Utils ---
-        function drawAura(face) {
+        // --- Visuals ---
+        function drawAura(face, ctx, color) {
             const cx = face.x + face.w/2;
             const cy = face.y + face.h/2;
             const rx = face.w * 0.8;
             const ry = face.h * 1.0;
 
-            const grad = els.ctx.createRadialGradient(cx, cy, rx*0.5, cx, cy, rx);
-            const color = els.stats.preview.style.backgroundColor || 'rgba(255,255,255,0.1)';
-            
-            grad.addColorStop(0, color.replace(')', ', 0.2)').replace('rgb', 'rgba'));
+            const grad = ctx.createRadialGradient(cx, cy, rx*0.5, cx, cy, rx);
+            grad.addColorStop(0, (color || 'rgba(255,255,255,0.1)').replace(')', ', 0.2)').replace('rgb', 'rgba'));
             grad.addColorStop(1, 'rgba(0,0,0,0)');
 
-            els.ctx.fillStyle = grad;
-            els.ctx.globalCompositeOperation = 'screen';
-            els.ctx.beginPath();
-            els.ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
-            els.ctx.fill();
-            els.ctx.globalCompositeOperation = 'source-over';
+            ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+            ctx.fillStyle = grad;
+            ctx.globalCompositeOperation = 'screen';
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
         }
 
-        function updateChakras(face) {
+        function updateChakras(face, overlay) {
             const cx = face.x + face.w/2;
             const positions = {
                 crown: { x: cx, y: face.y - face.h*0.2 },
@@ -755,99 +860,48 @@
                 const pos = positions[c.id];
                 const rgb = c.color.join(',');
                 html += `<div class="chakra-dot" style="left: ${pos.x}px; top: ${pos.y}px; width: 16px; height: 16px; background-color: rgb(${rgb}); box-shadow: 0 0 15px rgb(${rgb});"></div>`;
-                
-                const activity = Math.floor(Math.random() * 30) + 60;
-                listHtml += `
-                    <div class="flex items-center justify-between text-xs bg-white/5 p-2 rounded">
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full" style="background: rgb(${rgb})"></div>
-                            <span>${c.name}</span>
-                        </div>
-                        <div class="font-mono text-indigo-300">${activity}%</div>
-                    </div>
-                `;
+                listHtml += `<div class="flex items-center justify-between text-xs bg-white/5 p-2 rounded"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full" style="background: rgb(${rgb})"></div><span>${c.name}</span></div><div class="font-mono text-indigo-300">${Math.floor(Math.random()*30)+60}%</div></div>`;
             });
-            els.overlays.chakra.innerHTML = html;
+            overlay.innerHTML = html;
             document.getElementById('chakras-list').innerHTML = listHtml;
         }
 
-        // --- Tools Logic ---
+        // --- Tools Logic (Same as before) ---
         let breatheInterval;
-        
         function startBreathing() {
             els.overlays.breath.classList.add('active');
             const circle = document.querySelector('.breathing-circle');
             const text = document.getElementById('breath-text');
             circle.classList.add('breathe-anim');
-            
-            let isInhale = true;
-            text.innerText = "Inspirez... (Ya Rahman)";
-            
-            breatheInterval = setInterval(() => {
-                isInhale = !isInhale;
-                text.innerText = isInhale ? "Inspirez... (Ya Rahman)" : "Expirez... (Ya Rahim)";
-            }, 4000);
+            let isInhale = true; text.innerText = "Inspirez... (Ya Rahman)";
+            breatheInterval = setInterval(() => { isInhale = !isInhale; text.innerText = isInhale ? "Inspirez... (Ya Rahman)" : "Expirez... (Ya Rahim)"; }, 4000);
         }
-
         function stopBreathing() {
             if(breatheInterval) clearInterval(breatheInterval);
             document.querySelector('.breathing-circle').classList.remove('breathe-anim');
         }
-
         function openDhikrMeditation() {
             const data = COLORS_DATA[state.currentColor] || COLORS_DATA['Blanc'];
-            const title = document.getElementById('modal-title');
-            const body = document.getElementById('modal-body');
-            
-            title.innerText = `Méditation ${state.currentColor}`;
-            body.innerHTML = `
-                <div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-4">
-                    <p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Invocation Recommandée</p>
-                    <p class="text-xl font-serif italic">"${data.dhikr}"</p>
-                </div>
-                <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-                    <p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Tafakkur (Réflexion)</p>
-                    <p>${data.meditation}</p>
-                </div>
-            `;
+            document.getElementById('modal-title').innerText = `Méditation ${state.currentColor}`;
+            document.getElementById('modal-body').innerHTML = `<div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-4"><p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Invocation</p><p class="text-xl font-serif italic">"${data.dhikr}"</p></div><div class="bg-white/5 p-4 rounded-xl border border-white/10"><p class="text-xs text-indigo-300 uppercase tracking-wider mb-2">Tafakkur</p><p>${data.meditation}</p></div>`;
             els.overlays.info.classList.add('active');
         }
-
         function toggleSoundTherapy() {
-            if (state.audioCtx) {
-                state.audioCtx.close();
-                state.audioCtx = null;
-                alert("Son arrêté");
-                return;
-            }
-
-            // Create White Noise / Rain Generator
+            if (state.audioCtx) { state.audioCtx.close(); state.audioCtx = null; alert("Son arrêté"); return; }
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             state.audioCtx = new AudioContext();
-            
             const bufferSize = 2 * state.audioCtx.sampleRate;
             const noiseBuffer = state.audioCtx.createBuffer(1, bufferSize, state.audioCtx.sampleRate);
             const output = noiseBuffer.getChannelData(0);
-            
-            for (let i = 0; i < bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                output[i] = (lastOut + (0.02 * white)) / 1.02;
-                lastOut = output[i];
-                output[i] *= 3.5;
-            }
-            let lastOut = 0;
-
+            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
             const whiteNoise = state.audioCtx.createBufferSource();
             whiteNoise.buffer = noiseBuffer;
             whiteNoise.loop = true;
             whiteNoise.start(0);
-
             const gainNode = state.audioCtx.createGain();
-            gainNode.gain.value = 0.05; // Low volume
-
+            gainNode.gain.value = 0.05;
             whiteNoise.connect(gainNode);
             gainNode.connect(state.audioCtx.destination);
-            
             alert("Son 'Pluie de Miséricorde' activé 🌧️");
         }
 
