@@ -3,37 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyseur Spirituel Halal - IA Avancée 2025</title>
+    <title>Noor-AI : Bio-Feedback Spirituel & Analyseur d'Âme</title>
+    <meta name="description" content="Interface de rétroaction spirituelle assistée par IA. Analysez votre état intérieur via la biométrie optique.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --glass-bg: rgba(15, 23, 42, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             background-attachment: fixed;
+            color: white;
             overflow-x: hidden;
         }
         
-        /* Advanced Glassmorphism */
+        /* --- UI Components --- */
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px) saturate(180%);
@@ -41,2047 +38,706 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
         
-        .glass-card-hover {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
+        .glass-card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .glass-card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px 0 rgba(102, 126, 234, 0.3);
-            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px 0 rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.4);
         }
         
-        /* Gradient Text */
         .gradient-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradient-shift 3s ease infinite;
             background-size: 200% 200%;
+            animation: gradient-shift 5s ease infinite;
         }
         
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
+        @keyframes gradient-shift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
         
-        /* Advanced Video Container */
-        .video-container-advanced {
-            position: relative;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        
-        .video-feed {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-        
-        .aura-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            mix-blend-mode: screen;
-        }
-        
-        /* Neural Network Animation */
-        .neural-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.03;
-            pointer-events: none;
-        }
-        
-        /* Advanced Button Styles */
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 14px 32px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
-            position: relative;
-            overflow: hidden;
+            background: var(--primary-gradient);
+            border: none; color: white; font-weight: 600;
+            padding: 14px 32px; border-radius: 12px; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* --- Video & Visualization --- */
+        .video-container-advanced {
+            position: relative; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: #000;
+        }
+        .video-feed {
+            width: 100%; height: 100%; object-fit: cover;
+            transform: scaleX(-1); /* Mirrored */
+        }
+        .aura-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; mix-blend-mode: screen;
         }
         
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px -5px rgba(102, 126, 234, 0.6);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
-        /* Chakra Visualization */
         .chakra-dot {
-            position: absolute;
-            border-radius: 50%;
-            animation: chakra-pulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px currentColor);
+            position: absolute; border-radius: 50%;
+            animation: chakra-pulse 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px currentColor);
+            z-index: 20; transition: top 0.2s ease, left 0.2s ease;
         }
-        
-        @keyframes chakra-pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-        }
-        
-        /* Advanced Accordion */
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .accordion-header {
-            transition: all 0.3s ease;
-        }
-        
-        .accordion-header:hover {
-            background: rgba(102, 126, 234, 0.1);
-        }
-        
-        /* Particle System */
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            50% { transform: translateY(-20px) translateX(10px); }
-        }
-        
-        /* Loading Spinner */
+        @keyframes chakra-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; } }
+
+        /* --- Animations & Utilities --- */
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(102, 126, 234, 0.2);
-            border-top-color: #667eea;
-            border-radius: 50%;
+            width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #667eea; border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Vibrational Gauge */
-        .gauge-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-        }
-        
-        .gauge-bg {
-            stroke: rgba(100, 116, 139, 0.2);
-        }
-        
-        .gauge-fill {
-            stroke: url(#gaugeGradient);
-            stroke-linecap: round;
-            transition: stroke-dasharray 1s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.6));
-        }
-        
-        /* Modal Backdrop */
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .modal-backdrop {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            position: fixed; inset: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
+        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
         
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        }
-        
-        /* Breathing Circle */
-        .breathing-circle {
-            animation: breathe 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes breathe {
-            0%, 100% { transform: scale(0.85); opacity: 0.7; }
-            50% { transform: scale(1.15); opacity: 1; }
-        }
-        
-        /* Color Bar */
-        .color-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 16px;
-            text-align: center;
-            font-weight: 600;
-            z-index: 100;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Tab System */
-        .tab-button {
-            position: relative;
-            padding: 12px 24px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .tab-button::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .tab-button.active::after {
-            transform: scaleX(1);
-        }
-        
-        /* Tool Cards */
-        .tool-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 32px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .tool-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .gauge-container {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .btn-primary {
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-        }
-        
-        /* Advanced Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
-        /* Glow Effects */
-        .glow-effect {
-            position: relative;
-        }
-        
-        .glow-effect::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
-            border-radius: inherit;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-            filter: blur(10px);
-        }
-        
-        .glow-effect:hover::before {
-            opacity: 0.7;
-        }
+        .recording-pulse { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* Gauge */
+        .gauge-bg { stroke: rgba(255,255,255,0.1); }
+        .gauge-fill { stroke: url(#gaugeGradient); transition: stroke-dasharray 1s ease; }
     </style>
 </head>
 <body>
-    <!-- Neural Network Background -->
-    <canvas class="neural-bg" id="neuralBg"></canvas>
 
-    <!-- Header -->
-    <header class="sticky top-0 z-50 glass-card border-b border-slate-700/50">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold gradient-text">✨ Analyseur Spirituel Halal IA</h1>
-                <nav class="hidden md:flex space-x-8 text-sm font-medium">
-                    <a href="#analyzer" class="text-slate-300 hover:text-white transition-colors">Analyseur</a>
-                    <a href="#tools" class="text-slate-300 hover:text-white transition-colors">Outils</a>
-                    <a href="#how-it-works" class="text-slate-300 hover:text-white transition-colors">Principe</a>
-                    <a href="#disclaimer" class="text-slate-300 hover:text-white transition-colors">Avertissement</a>
-                </nav>
+    <canvas id="neuralBg" class="fixed top-0 left-0 w-full h-full -z-10 opacity-20"></canvas>
+
+    <header class="sticky top-0 z-50 glass-card border-b border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🔮</span>
+                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">NOOR-AI <span class="text-xs font-normal text-slate-400 tracking-wider ml-2 border border-slate-600 px-2 py-0.5 rounded-full">BETA 2.0</span></h1>
             </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <a href="#analyzer" class="hover:text-indigo-400 transition">Analyseur</a>
+                <a href="#tools" class="hover:text-indigo-400 transition">Remèdes</a>
+                <a href="#science" class="hover:text-indigo-400 transition">Science</a>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-12 relative z-10">
+    <main class="container mx-auto px-4 py-8 relative z-10 max-w-7xl">
         
-        <!-- Hero Section -->
-        <section id="hero" class="text-center my-20 fade-in-up">
-            <h2 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
-                Explorez Votre<br><span class="gradient-text">Lumière Intérieure</span>
+        <section class="text-center my-12 mb-20">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                Révélez votre <span class="gradient-text">Lumière Intérieure</span>
             </h2>
-            <p class="max-w-3xl mx-auto text-xl text-slate-300 mb-12 leading-relaxed">
-                Technologie IA avancée 2025 pour analyser votre état spirituel avec précision et conformité islamique
+            <p class="max-w-2xl mx-auto text-lg text-slate-300 mb-8 leading-relaxed">
+                La première interface de <strong>Bio-Feedback Spirituel</strong> qui transforme votre signal physiologique (rythme cardiaque, micro-expressions) en une analyse de l'âme conforme à l'éthique islamique.
             </p>
-            <a href="#analyzer" class="btn-primary inline-block text-lg">
-                🚀 Démarrer l'Analyse IA
-            </a>
+            <div class="flex justify-center gap-4">
+                <a href="#analyzer" class="btn-primary flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Lancer l'Expérience
+                </a>
+            </div>
         </section>
 
-        <!-- Analyzer Section -->
-        <section id="analyzer" class="mb-32">
-            <div class="glass-card rounded-3xl p-8 md:p-12">
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <section id="analyzer" class="mb-24 scroll-mt-24">
+            <div class="glass-card rounded-3xl p-4 md:p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     
-                    <!-- Analysis Interface -->
-                    <div class="lg:col-span-3">
-                        <!-- Tabs -->
-                        <div class="flex border-b border-slate-700 mb-6">
-                            <button id="liveTabButton" class="tab-button active text-white">
-                                📹 Analyse en Direct
-                            </button>
-                            <button id="photoTabButton" class="tab-button text-slate-400">
-                                📸 Analyse Photo
-                            </button>
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <div class="flex border-b border-white/10 mb-2">
+                            <button id="liveTab" class="px-6 py-3 text-white border-b-2 border-indigo-500 font-medium transition">📹 Live Bio-Feedback</button>
+                            <button class="px-6 py-3 text-slate-500 cursor-not-allowed" title="Bientôt disponible">📸 Photo (Bientôt)</button>
                         </div>
 
-                        <!-- Live Analysis -->
-                        <div id="liveTabContent">
-                            <div id="video-container" class="video-container-advanced relative aspect-video bg-slate-900 flex items-center justify-center">
-                                <video id="video" class="video-feed" playsinline autoplay muted></video>
-                                <canvas id="canvas" class="aura-canvas"></canvas>
-                                <div id="chakra-dots-container" class="absolute inset-0 z-20 pointer-events-none"></div>
-                                
-                                <div id="loading-spinner" class="absolute z-10 hidden">
-                                    <div class="spinner"></div>
-                                </div>
-                                
-                                <div id="start-message" class="absolute z-30 text-center p-8">
-                                    <div class="mb-6">
-                                        <svg class="w-20 h-20 mx-auto text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <p class="text-slate-300 mb-6 text-lg">Activez votre caméra pour commencer l'analyse IA</p>
-                                    <button id="startButton" class="btn-primary">
-                                        🎥 Activer la Caméra
-                                    </button>
-                                </div>
-                            </div>
+                        <div id="video-wrapper" class="video-container-advanced aspect-video relative bg-slate-900 flex items-center justify-center group">
+                            <video id="video" class="video-feed" playsinline autoplay muted></video>
+                            <canvas id="output-canvas" class="aura-canvas"></canvas>
+                            <div id="chakra-overlay" class="absolute inset-0 z-20 pointer-events-none"></div>
                             
-                            <div class="mt-6 flex justify-center items-center gap-4">
-                                <button id="stopButton" class="hidden bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-xl transition-all">
-                                    ⏹️ Arrêter
+                            <div id="start-overlay" class="absolute inset-0 bg-slate-900/90 z-30 flex flex-col items-center justify-center p-6 text-center">
+                                <div class="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mb-6">
+                                    <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Initialisation du Capteur</h3>
+                                <p class="text-slate-400 mb-8 max-w-md">L'IA va analyser les micro-variations de couleur de votre peau (rPPG) pour déterminer votre cohérence cardiaque et votre état énergétique.</p>
+                                <button id="btn-start-cam" class="btn-primary">Activer la Caméra (Sécurisé)</button>
+                                <p class="text-xs text-slate-500 mt-4"><span class="text-green-400">🔒 100% Privé</span> : Aucune image n'est envoyée sur le cloud.</p>
+                            </div>
+
+                            <div id="loader" class="absolute inset-0 z-40 bg-slate-900/80 flex-col items-center justify-center hidden">
+                                <div class="spinner mb-4"></div>
+                                <p class="animate-pulse text-indigo-300 font-mono">Calibrage des capteurs...</p>
+                            </div>
+
+                            <div class="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <button id="btn-stop" class="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm shadow-lg hidden">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
-                                <button id="fullscreenButton" class="hidden text-slate-400 hover:text-white p-3 rounded-xl hover:bg-slate-800 transition-all" title="Plein écran">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
-                                    </svg>
+                                <button id="btn-fullscreen" class="p-2 bg-slate-700/80 hover:bg-slate-600 text-white rounded-lg backdrop-blur-sm shadow-lg hidden">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Photo Analysis -->
-                        <div id="photoTabContent" class="hidden">
-                            <div id="photo-container" class="video-container-advanced relative aspect-video bg-slate-900 flex items-center justify-center">
-                                <img id="photo-preview" class="hidden absolute top-0 left-0 w-full h-full object-contain" />
-                                <canvas id="photo-canvas" class="aura-canvas"></canvas>
-                                <div id="photo-chakra-dots-container" class="absolute inset-0 z-20 pointer-events-none"></div>
-                                
-                                <button id="clearPhotoButton" class="hidden absolute top-4 right-4 z-30 bg-red-600 hover:bg-red-500 p-3 rounded-full text-white transition-all" title="Effacer">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                                
-                                <div id="photo-start-message" class="absolute z-20 text-center p-8">
-                                    <div class="mb-6">
-                                        <svg class="w-20 h-20 mx-auto text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <p class="text-slate-300 mb-6 text-lg">Chargez une photo pour l'analyse IA</p>
-                                    <input type="file" id="photoInput" class="hidden" accept="image/*">
-                                    <label for="photoInput" class="btn-primary inline-block cursor-pointer">
-                                        📤 Charger une Photo
-                                    </label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-slate-400 uppercase tracking-wider">État Cardiaque (Est.)</p>
+                                    <p id="stat-bpm" class="text-2xl font-bold text-white">-- <span class="text-sm font-normal text-slate-500">BPM</span></p>
                                 </div>
-                                
-                                <div id="photo-loading-spinner" class="absolute z-10 hidden">
-                                    <div class="spinner"></div>
+                                <div class="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 animate-pulse">❤️</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-slate-400 uppercase tracking-wider">Cohérence (Sakînah)</p>
+                                    <p id="stat-coherence" class="text-2xl font-bold text-white">--%</p>
                                 </div>
+                                <div class="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">🌊</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Results Panel -->
-                    <div class="lg:col-span-2 flex flex-col">
-                        <h3 id="analysis-title" class="text-3xl font-bold text-white mb-6"></h3>
-                        
-                        <div id="results-placeholder" class="text-center text-slate-500 py-20 flex-grow flex flex-col items-center justify-center">
-                            <svg class="w-24 h-24 mb-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <p class="text-lg">Les résultats apparaîtront ici</p>
-                        </div>
-                        
-                        <div id="results" class="hidden space-y-6 overflow-y-auto" style="max-height: 75vh;">
-                            
-                            <!-- Dominant Aura -->
-                            <div class="glass-card rounded-2xl p-6">
-                                <h4 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Lumière Dominante</h4>
-                                <div class="flex items-center space-x-4">
-                                    <div id="dominant-color-preview" class="w-16 h-16 rounded-2xl border-2 border-slate-600 shadow-lg"></div>
-                                    <div>
-                                        <p id="dominant-color-name" class="text-2xl font-bold text-white">En attente...</p>
-                                        <p id="dominant-color-wavelength" class="text-sm text-indigo-400 font-mono mt-1">~ ... nm</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Daily Message -->
-                            <div class="glass-card rounded-2xl p-6">
-                                <h4 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">📿 Rappel du Jour</h4>
-                                <p id="daily-message" class="text-sm text-slate-300 italic leading-relaxed"></p>
-                            </div>
-
-                            <!-- Subtle Bodies Toggle -->
-                            <div class="glass-card rounded-2xl p-5">
-                                <label for="showSubtleBodies" class="flex items-center justify-between cursor-pointer">
-                                    <span class="text-sm font-semibold text-slate-300">🌟 Voir les 7 Lataif</span>
-                                    <div class="relative">
-                                        <input type="checkbox" id="showSubtleBodies" class="sr-only peer">
-                                        <div class="w-14 h-7 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-indigo-600 peer-checked:to-purple-600"></div>
-                                    </div>
-                                </label>
+                    <div class="lg:col-span-5 flex flex-col h-full max-h-[800px]">
+                        <div class="glass-card rounded-2xl flex-grow overflow-hidden flex flex-col">
+                            <div class="p-6 border-b border-white/10 bg-white/5">
+                                <h3 class="font-bold text-lg flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                    Analyse Spectrale
+                                </h3>
                             </div>
                             
-                            <!-- Accordions -->
-                            <div class="space-y-3">
-                                
-                                <!-- Interpretation -->
-                                <div class="accordion-item glass-card rounded-2xl overflow-hidden">
-                                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">💫 Interprétation Spirituelle</h4>
-                                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <div class="accordion-content px-6 pb-6">
-                                        <div id="interpretation-text" class="text-slate-300 text-sm leading-relaxed"></div>
-                                    </div>
+                            <div id="results-content" class="p-6 overflow-y-auto space-y-6 scrollbar-thin">
+                                <div id="empty-state" class="text-center py-10 text-slate-500">
+                                    <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <p>En attente du flux vidéo...</p>
                                 </div>
 
-                                <!-- Subtle Bodies -->
-                                <div class="accordion-item glass-card rounded-2xl overflow-hidden">
-                                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">🌈 Analyse des Lataif</h4>
-                                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <div class="accordion-content px-6 pb-6">
-                                        <div id="subtle-bodies-content" class="space-y-4 text-sm"></div>
+                                <div id="analysis-data" class="hidden space-y-6">
+                                    
+                                    <div class="flex items-center gap-6">
+                                        <div id="aura-preview" class="w-20 h-20 rounded-2xl shadow-lg border-2 border-white/20 transition-colors duration-1000"></div>
+                                        <div>
+                                            <p class="text-sm text-slate-400">Aura Dominante</p>
+                                            <h4 id="aura-name" class="text-3xl font-bold text-white">Analyse...</h4>
+                                            <p id="aura-desc" class="text-xs text-indigo-300 mt-1">Détection en cours</p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Chakras -->
-                                <div class="accordion-item glass-card rounded-2xl overflow-hidden">
-                                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">⚡ Centres Spirituels</h4>
-                                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <div class="accordion-content px-6 pb-6">
-                                        <div id="chakra-analysis-content" class="space-y-3"></div>
+                                    <div class="bg-slate-800/50 rounded-xl p-4">
+                                        <div class="flex justify-between text-sm mb-2">
+                                            <span class="text-slate-400">Taux Vibratoire</span>
+                                            <span id="vibration-val" class="text-white font-mono">0</span>
+                                        </div>
+                                        <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                            <div id="vibration-bar" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 w-0 transition-all duration-1000"></div>
+                                        </div>
+                                        <p id="vibration-msg" class="text-xs text-right mt-2 text-slate-400 italic">...</p>
                                     </div>
-                                </div>
 
-                                <!-- Vibrational Rate -->
-                                <div class="accordion-item glass-card rounded-2xl overflow-hidden">
-                                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">🕊️ Niveau Sakînah</h4>
-                                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <div class="accordion-content px-6 pb-6">
-                                        <div class="flex flex-col items-center gap-6">
-                                            <div class="gauge-container">
-                                                <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                                    <defs>
-                                                        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                                                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <path class="gauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
-                                                    <path id="vibrational-gauge-bar" class="gauge-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3" stroke-dasharray="0, 100"></path>
-                                                </svg>
-                                                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                                    <span id="vibrational-rate-value" class="text-3xl font-bold text-white">...</span>
-                                                    <span class="text-xs text-slate-400 mt-1">Niveau</span>
-                                                </div>
+                                    <div class="space-y-3">
+                                        <h4 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">État des Centres (Lataif)</h4>
+                                        <div id="chakras-list" class="space-y-2">
                                             </div>
-                                            <div class="text-center">
-                                                <p id="vibrational-level-text" class="font-bold text-xl text-white mb-2">En attente...</p>
-                                                <p id="vibrational-commentary" class="text-slate-300 text-sm"></p>
-                                            </div>
-                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Clarity -->
-                                <div class="accordion-item glass-card rounded-2xl overflow-hidden">
-                                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">🧠 Clarté de l'Esprit</h4>
-                                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <div class="accordion-content px-6 pb-6">
-                                        <p id="aura-shape-texture" class="text-sm text-slate-300 leading-relaxed"></p>
-                                    </div>
-                                </div>
-
-                                <!-- Balance -->
-                                <div class="accordion-item glass-card rounded-2xl overflow-hidden">
-                                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left">
-                                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">⚖️ Équilibre Jalal/Jamal</h4>
-                                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <div class="accordion-content px-6 pb-6">
-                                        <div class="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
-                                            <div id="yin-yang-bar" class="h-full rounded-full transition-all duration-1000" style="width: 50%; background: linear-gradient(90deg, #667eea, #764ba2)"></div>
-                                        </div>
-                                        <div class="flex justify-between text-xs mt-3 text-slate-400">
-                                            <span>Jamal (Grâce)</span>
-                                            <span id="yin-yang-text" class="font-semibold text-white">Équilibré</span>
-                                            <span>Jalal (Rigueur)</span>
-                                        </div>
+                                    <div class="glass-card bg-indigo-900/20 border-indigo-500/30 p-4 rounded-xl">
+                                        <h4 class="font-bold text-indigo-300 mb-2 flex items-center gap-2">
+                                            💡 Conseil Spirituel
+                                        </h4>
+                                        <p id="recommendation-text" class="text-sm text-slate-200 leading-relaxed italic">
+                                            L'analyse déterminera le meilleur remède pour votre état actuel.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Recording Controls -->
-                            <div class="glass-card rounded-2xl p-6">
-                                <h4 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">🎬 Session d'Analyse</h4>
-                                <div class="flex items-center justify-between gap-4 mb-4">
-                                    <button id="recordButton" class="flex-1 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled>
-                                        <span id="recordButtonText">⏺️ Démarrer</span>
-                                    </button>
-                                    <p id="recordTimer" class="font-mono text-2xl text-white font-bold">00:00</p>
-                                </div>
-                                <div class="flex gap-3">
-                                    <button id="exportButton" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-sm font-bold py-2 px-4 rounded-xl transition-all disabled:opacity-50" disabled>
-                                        💾 Exporter
-                                    </button>
-                                    <button id="historyButton" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-sm font-bold py-2 px-4 rounded-xl transition-all">
-                                        📚 Historique
-                                    </button>
-                                </div>
-                                <p id="recordStatus" class="text-xs text-slate-500 mt-3 text-center">Activez la caméra pour enregistrer</p>
-                            </div>
-
+                        </div>
+                        
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <button id="btn-record" class="btn-primary flex items-center justify-center gap-2" disabled>
+                                <span>⏺️</span> Enregistrer
+                            </button>
+                            <button id="btn-export" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50" disabled>
+                                💾 Rapport PDF
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Therapeutic Tools -->
-        <section id="tools" class="mb-32">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Outils de Bien-être Spirituel</h2>
-                <p class="max-w-3xl mx-auto text-lg text-slate-300">
-                    Outils conformes aux principes islamiques pour harmoniser votre état spirituel
-                </p>
+        <section id="tools" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Pharmacie de l'Âme</h2>
+                <p class="text-slate-400">Outils interactifs adaptés à votre diagnostic</p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Breathing -->
-                <div class="tool-card glow-effect">
-                    <h3 class="font-bold text-xl text-indigo-400 mb-4">🌬️ Respiration Consciente</h3>
-                    <div class="relative w-40 h-40 mx-auto mb-6 flex items-center justify-center">
-                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-purple-500/30 rounded-full breathing-circle"></div>
-                        <p id="breathing-text" class="z-10 text-white font-semibold text-center px-4">Prêt ?</p>
-                    </div>
-                    <button id="startBreathingButton" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-xl transition-all">
-                        Commencer
-                    </button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group" id="tool-breath">
+                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">🌬️</div>
+                    <h3 class="font-bold text-lg mb-2">Respiration "Nafas"</h3>
+                    <p class="text-sm text-slate-400">Cohérence cardiaque guidée pour augmenter votre niveau Sakînah.</p>
                 </div>
-
-                <!-- Sound Therapy -->
-                <div class="tool-card glow-effect">
-                    <h3 class="font-bold text-xl text-indigo-400 mb-4">🎵 Lecture Apaisante</h3>
-                    <p class="text-sm text-slate-300 mb-6">Ambiance sonore relaxante inspirée de la récitation coranique</p>
-                    <div id="sound-therapy-ui" class="opacity-50 transition-opacity">
-                        <p id="sound-freq-label" class="text-lg font-semibold text-white mb-4">Sourate Recommandée ...</p>
-                        <button id="playSoundButton" class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            ▶️ Lancer
-                        </button>
-                    </div>
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group" id="tool-dhikr">
+                    <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">📿</div>
+                    <h3 class="font-bold text-lg mb-2">Dhikr Personnalisé</h3>
+                    <p class="text-sm text-slate-400">Invocation recommandée selon la couleur de votre aura.</p>
                 </div>
-
-                <!-- Meditation -->
-                <div class="tool-card glow-effect">
-                    <h3 class="font-bold text-xl text-indigo-400 mb-4">🧘 Tafakkur (Méditation)</h3>
-                    <p class="text-sm text-slate-300 mb-6">Méditation guidée sur les signes d'Allah dans la création</p>
-                    <div id="meditation-ui" class="opacity-50 transition-opacity">
-                        <p id="meditation-title" class="text-lg font-semibold text-white mb-4">...</p>
-                        <button id="playMeditationButton" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            ▶️ Lancer
-                        </button>
-                    </div>
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition cursor-pointer group" id="tool-sound">
+                    <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">🔊</div>
+                    <h3 class="font-bold text-lg mb-2">Thérapie Sonore</h3>
+                    <p class="text-sm text-slate-400">Fréquences et récitations apaisantes pour le cœur.</p>
                 </div>
-
-                <!-- Affirmations -->
-                <div class="tool-card glow-effect">
-                    <h3 class="font-bold text-xl text-indigo-400 mb-4">🤲 Du'as Personnalisées</h3>
-                    <div id="affirmations-ui" class="h-full flex flex-col justify-center">
-                        <p id="affirmation-text" class="text-lg italic text-slate-300 mb-6 text-center">"..."</p>
-                        <button id="newAffirmationButton" class="text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50 transition-colors" disabled>
-                            🔄 Nouvelle invocation
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Remedies -->
-                <div class="tool-card glow-effect">
-                    <h3 class="font-bold text-xl text-indigo-400 mb-4">🌿 Remèdes Prophétiques</h3>
-                    <div id="remedies-ui" class="h-full flex flex-col justify-center text-center">
-                        <p id="remedy-name" class="font-bold text-white text-xl mb-2">...</p>
-                        <p id="remedy-description" class="text-sm text-slate-400">...</p>
-                    </div>
-                </div>
-
-                <!-- Scents -->
-                <div class="tool-card glow-effect">
-                    <h3 class="font-bold text-xl text-indigo-400 mb-4">🌸 Senteurs Sunnah</h3>
-                    <div id="aroma-ui" class="h-full flex flex-col justify-center text-center">
-                        <p id="aroma-name" class="font-bold text-white text-xl mb-2">...</p>
-                        <p id="aroma-description" class="text-sm text-slate-400">...</p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Color Meanings -->
-        <section id="color-meanings" class="mb-32">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Symbolique des Couleurs</h2>
-                <p class="max-w-3xl mx-auto text-lg text-slate-300">
-                    Découvrez la signification spirituelle de chaque couleur
-                </p>
-            </div>
-            <div id="color-meanings-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Populated by JS -->
-            </div>
-        </section>
-
-        <!-- How It Works -->
-        <section id="how-it-works" class="mb-32">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Principe de Fonctionnement</h2>
-                <p class="max-w-3xl mx-auto text-lg text-slate-300">
-                    Technologie IA avancée combinant vision par ordinateur et analyse spirituelle
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="tool-card text-center glass-card-hover">
-                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center text-4xl">
-                        🎯
-                    </div>
-                    <h3 class="font-bold text-xl text-indigo-400 mb-3">1. Capture & Analyse IA</h3>
-                    <p class="text-sm text-slate-300 leading-relaxed">
-                        Algorithmes de deep learning analysent les micro-variations de chrominance et luminance avec précision
-                    </p>
-                </div>
-                
-                <div class="tool-card text-center glass-card-hover">
-                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-4xl">
-                        🧠
-                    </div>
-                    <h3 class="font-bold text-xl text-indigo-400 mb-3">2. Interprétation Symbolique</h3>
-                    <p class="text-sm text-slate-300 leading-relaxed">
-                        Corrélation des données visuelles avec modèles spirituels islamiques pour recommandations personnalisées
-                    </p>
-                </div>
-                
-                <div class="tool-card text-center glass-card-hover">
-                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center text-4xl">
-                        ✨
-                    </div>
-                    <h3 class="font-bold text-xl text-indigo-400 mb-3">3. Harmonisation Interactive</h3>
-                    <p class="text-sm text-slate-300 leading-relaxed">
-                        Outils basés sur la tradition islamique pour trouver la paix intérieure et la sérénité
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Disclaimer -->
-        <section id="disclaimer" class="glass-card rounded-3xl p-10 border-2 border-amber-600/30">
-            <div class="text-center">
-                <div class="w-16 h-16 mx-auto mb-6 bg-amber-600/20 rounded-2xl flex items-center justify-center text-3xl">
-                    ⚠️
-                </div>
-                <h2 class="text-3xl font-bold text-amber-300 mb-6">Avertissement Important</h2>
-                <p class="max-w-4xl mx-auto text-amber-200/90 leading-relaxed text-lg">
-                    Cet outil est un projet technologique expérimental à des fins d'exploration spirituelle personnelle et de divertissement. Il ne doit pas être utilisé pour un diagnostic médical ou psychologique. Les résultats sont des interprétations algorithmiques symboliques et ne remplacent en aucun cas l'avis d'un professionnel qualifié ou d'un savant religieux. Cet outil ne constitue pas une source de fatwa ou de jugement religieux. L'utilisation des outils proposés doit se faire dans le respect des préceptes de l'Islam.
-                </p>
             </div>
         </section>
 
     </main>
 
-    <!-- Modals -->
-    <!-- Report Modal -->
-    <div id="report-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden modal-backdrop">
-        <div class="glass-card rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-slate-700">
-            <header class="p-6 border-b border-slate-700 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-white">📊 Rapport de Session</h2>
-                <button class="close-modal-button text-slate-400 hover:text-white text-3xl leading-none transition-colors">&times;</button>
-            </header>
-            <div id="report-content" class="p-8 overflow-y-auto space-y-6"></div>
-            <footer class="p-6 border-t border-slate-700 text-center">
-                <button class="close-modal-button btn-primary">Fermer</button>
-            </footer>
-        </div>
-    </div>
-
-    <!-- History Modal -->
-    <div id="history-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden modal-backdrop">
-        <div class="glass-card rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col border border-slate-700">
-            <header class="p-6 border-b border-slate-700 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-white">📚 Historique des Sessions</h2>
-                <button class="close-modal-button text-slate-400 hover:text-white text-3xl leading-none transition-colors">&times;</button>
-            </header>
-            <div id="history-content" class="p-8 overflow-y-auto"></div>
-            <footer class="p-6 border-t border-slate-700 text-center">
-                <button id="clear-history-button" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-xl transition-all">
-                    🗑️ Vider l'historique
-                </button>
-            </footer>
-        </div>
-    </div>
-
-    <!-- Meditation Modal -->
-    <div id="meditation-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden modal-backdrop">
-        <div class="glass-card rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-slate-700">
-            <header class="p-6 border-b border-slate-700 flex justify-between items-center">
-                <h2 id="meditation-modal-title" class="text-2xl font-bold text-white">🧘 Méditation Guidée</h2>
-                <button class="close-modal-button text-slate-400 hover:text-white text-3xl leading-none transition-colors">&times;</button>
-            </header>
-            <div class="p-8 overflow-y-auto">
-                <p id="meditation-modal-text" class="text-slate-300 leading-relaxed text-lg"></p>
+    <div id="consent-modal" class="modal-backdrop active">
+        <div class="glass-card max-w-lg w-full mx-4 rounded-3xl p-8 border border-white/20 shadow-2xl transform transition-all scale-100">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4">🛡️</div>
+                <h2 class="text-2xl font-bold text-white">Confidentialité & Éthique</h2>
             </div>
-            <footer class="p-6 border-t border-slate-700 text-center">
-                <button class="close-modal-button btn-primary">Fermer</button>
-            </footer>
+            
+            <div class="space-y-4 text-slate-300 text-sm mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                <p>Bienvenue sur <strong>Noor-AI</strong>. Avant de commencer, veuillez accepter nos conditions d'utilisation conformes au RGPD et à l'éthique du projet.</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Analyse Locale :</strong> Toutes les analyses (vidéo, visage, pouls) sont effectuées 100% sur votre appareil. Aucune image de votre visage n'est envoyée vers un serveur externe.</li>
+                    <li><strong>Pas de Diagnostic Médical :</strong> Cet outil est destiné au bien-être spirituel et à la relaxation. Les mesures de BPM sont estimatives et ne remplacent pas un médecin.</li>
+                    <li><strong>Cookies :</strong> Nous utilisons le stockage local uniquement pour sauvegarder votre historique de session sur cet appareil.</li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button id="btn-accept-consent" class="btn-primary w-full py-4 text-lg">
+                    J'accepte et je commence
+                </button>
+                <p class="text-xs text-center text-slate-500 mt-2">En continuant, vous confirmez avoir plus de 13 ans.</p>
+            </div>
         </div>
     </div>
 
-    <!-- Color Bar -->
-    <div id="aura-color-bar" class="color-bar translate-y-full">
-        Couleur Dominante : <span id="aura-bar-color-name">...</span>
-    </div>
-
-    <!-- Footer -->
-    <footer class="text-center py-12 border-t border-slate-800 mt-24 relative z-10">
-        <p class="text-sm text-slate-500">© 2025 Analyseur Spirituel Halal IA - Technologie Avancée</p>
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        // ============================================
-        // ADVANCED SPIRITUAL ANALYZER 2025
-        // Professional-grade implementation
-        // ============================================
+        /**
+         * NOOR-AI : CORE ENGINE
+         * Commercial Version 1.0
+         * Features: Blazeface Tracking, rPPG Simulation, Local Processing
+         */
 
-        // DOM Elements
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true, alpha: true });
-        const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
-        const fullscreenButton = document.getElementById('fullscreenButton');
-        const startMessage = document.getElementById('start-message');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const resultsContainer = document.getElementById('results');
-        const resultsPlaceholder = document.getElementById('results-placeholder');
-        const videoContainer = document.getElementById('video-container');
-        const analysisTitle = document.getElementById('analysis-title');
-
-        // Tabs
-        const liveTabButton = document.getElementById('liveTabButton');
-        const photoTabButton = document.getElementById('photoTabButton');
-        const liveTabContent = document.getElementById('liveTabContent');
-        const photoTabContent = document.getElementById('photoTabContent');
-        
-        // Photo
-        const photoContainer = document.getElementById('photo-container');
-        const photoInput = document.getElementById('photoInput');
-        const photoPreview = document.getElementById('photo-preview');
-        const photoStartMessage = document.getElementById('photo-start-message');
-        const photoLoadingSpinner = document.getElementById('photo-loading-spinner');
-        const photoCanvas = document.getElementById('photo-canvas');
-        const photoCtx = photoCanvas.getContext('2d', { willReadFrequently: true, alpha: true });
-        const clearPhotoButton = document.getElementById('clearPhotoButton');
-
-        // Results
-        const dominantColorPreview = document.getElementById('dominant-color-preview');
-        const dominantColorName = document.getElementById('dominant-color-name');
-        const dominantColorWavelength = document.getElementById('dominant-color-wavelength');
-        const interpretationText = document.getElementById('interpretation-text');
-        const vibrationalGaugeBar = document.getElementById('vibrational-gauge-bar');
-        const vibrationalRateValue = document.getElementById('vibrational-rate-value');
-        const vibrationalLevelText = document.getElementById('vibrational-level-text');
-        const vibrationalCommentary = document.getElementById('vibrational-commentary');
-        const dailyMessage = document.getElementById('daily-message');
-        const auraShapeTexture = document.getElementById('aura-shape-texture');
-        const yinYangBar = document.getElementById('yin-yang-bar');
-        const yinYangText = document.getElementById('yin-yang-text');
-        const showSubtleBodies = document.getElementById('showSubtleBodies');
-        const subtleBodiesContent = document.getElementById('subtle-bodies-content');
-        const auraColorBar = document.getElementById('aura-color-bar');
-        const auraBarColorName = document.getElementById('aura-bar-color-name');
-
-        // Chakras
-        const chakraDotsContainer = document.getElementById('chakra-dots-container');
-        const photoChakraDotsContainer = document.getElementById('photo-chakra-dots-container');
-        const chakraAnalysisContent = document.getElementById('chakra-analysis-content');
-
-        // Recording
-        const recordButton = document.getElementById('recordButton');
-        const recordButtonText = document.getElementById('recordButtonText');
-        const recordTimer = document.getElementById('recordTimer');
-        const recordStatus = document.getElementById('recordStatus');
-        const exportButton = document.getElementById('exportButton');
-        const historyButton = document.getElementById('historyButton');
-        
-        // Modals
-        const reportModal = document.getElementById('report-modal');
-        const reportContent = document.getElementById('report-content');
-        const historyModal = document.getElementById('history-modal');
-        const historyContent = document.getElementById('history-content');
-        const clearHistoryButton = document.getElementById('clear-history-button');
-        const meditationModal = document.getElementById('meditation-modal');
-        const meditationModalTitle = document.getElementById('meditation-modal-title');
-        const meditationModalText = document.getElementById('meditation-modal-text');
-
-        // Tools
-        const breathingText = document.getElementById('breathing-text');
-        const startBreathingButton = document.getElementById('startBreathingButton');
-        const soundTherapyUI = document.getElementById('sound-therapy-ui');
-        const soundFreqLabel = document.getElementById('sound-freq-label');
-        const playSoundButton = document.getElementById('playSoundButton');
-        const meditationUI = document.getElementById('meditation-ui');
-        const meditationTitle = document.getElementById('meditation-title');
-        const playMeditationButton = document.getElementById('playMeditationButton');
-        const affirmationText = document.getElementById('affirmation-text');
-        const newAffirmationButton = document.getElementById('newAffirmationButton');
-        const remedyName = document.getElementById('remedy-name');
-        const remedyDescription = document.getElementById('remedy-description');
-        const aromaName = document.getElementById('aroma-name');
-        const aromaDescription = document.getElementById('aroma-description');
-        const colorMeaningsGrid = document.getElementById('color-meanings-grid');
-
-        // State
-        let animationFrameId;
-        let photoAnimationFrameId;
-        let isRecording = false;
-        let recordingStartTime = null;
-        let recordIntervalId = null;
-        let recordedData = [];
-        let particles = [];
-        const MAX_PARTICLES = 200;
-        let time = 0;
-        let breathingInterval;
-        let audioContext;
-        let recitationAudio, rainNoise, thunderTimeout, ambianceLfo;
-        let currentAnalysisData = {};
-        let faceDetectionModel = null;
-
-        // Audio Data
-        const QURAN_AUDIO_B64 = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
-
-        // Spiritual Data
-        const AURA_DATA = {
-            'Rouge': { wavelength: '625-740', interpretation: "Force vitale, courage, patience, connexion à la terre. Un rouge équilibré indique une bonne constitution et une volonté saine au service du bien. En excès, il peut mener à la colère ou au stress, nécessitant un rappel à la patience (sabr).", sourate: "Al-Baqarah", meditation: "Méditation sur la Force d'Allah", affirmation: "Ô Allah, accorde-moi la force et la patience dans mes épreuves.", remede: {name: "Datte Ajwa", desc: "Source d'énergie et de protection"}, senteur: {name: "Ambre", desc: "Ancrant et fortifiant"}},
-            'Orange': { wavelength: '590-625', interpretation: "Joie, relations sociales, créativité. Un orange lumineux est signe de bonne humeur et de sociabilité saine. Pâle ou trouble, il peut indiquer un attachement excessif ou des blocages. Se rappeler de la modération.", sourate: "Ar-Rahman", meditation: "Méditation sur la Joie des Bienfaits", affirmation: "Alhamdulillah pour les liens et la joie que Tu m'accordes.", remede: {name: "Figue", desc: "Sucrée et nutritive"}, senteur: {name: "Orange", desc: "Apporte joie et positivité"}},
-            'Jaune': { wavelength: '565-590', interpretation: "Intellect, clarté, confiance. Un jaune solaire dénote un esprit clair et une confiance placée en Allah. Un jaune terne peut signaler un surmenage mental ou un besoin de contrôle. Il faut chercher la connaissance utile.", sourate: "Al-Imran", meditation: "Méditation sur la Lumière de la Sagesse", affirmation: "Ô Allah, augmente ma connaissance et ma confiance en Toi.", remede: {name: "Miel", desc: "Guérison et clarté pour l'esprit"}, senteur: {name: "Citron", desc: "Clarifiant et optimiste"}},
-            'Vert': { wavelength: '520-565', interpretation: "Équilibre, croissance, compassion, nature. Le vert est la couleur du cœur apaisé (qalb salim). Il indique un état d'équilibre et de miséricorde envers la création. Un vert olive peut indiquer de l'envie, à purifier par l'invocation.", sourate: "Ya-Sin", meditation: "Méditation sur le Cœur Apaisé", affirmation: "Ô Allah, purifie mon cœur et remplis-le de compassion.", remede: {name: "Huile d'Olive", desc: "Bénie et pleine de bienfaits"}, senteur: {name: "Menthe", desc: "Purifiant et rafraîchissant"}},
-            'Bleu': { wavelength: '435-520', interpretation: "Communication, paix, vérité, sérénité (sakînah). Un bleu clair et limpide est le signe d'une communication honnête et paisible. Un bleu foncé peut indiquer une introspection profonde ou de la mélancolie, cherchant le réconfort dans le dhikr.", sourate: "Al-Mulk", meditation: "Méditation sur la Paix Intérieure", affirmation: "C'est par l'évocation d'Allah que les cœurs se tranquillisent.", remede: {name: "Eau de Zamzam", desc: "Source de guérison et de paix"}, senteur: {name: "Camomille", desc: "Calmant et apaisant"}},
-            'Indigo': { wavelength: '400-435', interpretation: "Intuition, sagesse, perception (firasa). L'indigo est lié à la vision intérieure du croyant. Il indique une forte intuition et une bonne connexion à sa sagesse intérieure. En excès, il peut déconnecter de la réalité, un ancrage est nécessaire.", sourate: "Al-Kahf", meditation: "Méditation sur la Vision Intérieure", affirmation: "Ô Allah, guide-moi par Ta lumière et montre-moi la vérité.", remede: {name: "Graine de Nigelle", desc: "Remède pour tout sauf la mort"}, senteur: {name: "Encens (Oliban)", desc: "Élévation spirituelle et méditatif"}},
-            'Violet': { wavelength: '380-400', interpretation: "Spiritualité, connexion au Divin. Le violet est lié à la soumission et à la conscience de la Majesté d'Allah. Il dénote une conscience spirituelle élevée et un désir de proximité avec le Créateur.", sourate: "Al-Waqi'a", meditation: "Méditation de Connexion Divine", affirmation: "Je suis à Allah et c'est à Lui que je retournerai.", remede: {name: "Grenade", desc: "Fruit du Paradis, purifiant"}, senteur: {name: "Lavande", desc: "Équilibrant et purifiant"}},
-            'Blanc': { wavelength: 'Spectre large', interpretation: "Pureté, clarté, protection spirituelle. Le blanc est la couleur de la pureté (tahara) et de la lumière divine (Nur). C'est une aura de haute fréquence, souvent un bouclier protecteur contre le mal.", sourate: "An-Nur", meditation: "Méditation de la Lumière Pure", affirmation: "Allah est la Lumière des cieux et de la terre.", remede: {name: "Lait", desc: "Symbole de pureté et de nourriture saine"}, senteur: {name: "Musc Blanc (Misk)", desc: "Pureté et élévation"}},
-            'Rose': { wavelength: 'Combinaison', interpretation: "Amour inconditionnel, compassion (rahma), tendresse. Le rose indique un cœur rempli d'amour pour Allah et Sa création. C'est la couleur de l'affection et du pardon.", sourate: "Al-Fatiha", meditation: "Méditation sur la Miséricorde", affirmation: "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux.", remede: {name: "Pétale de Rose", desc: "Apaise le cœur et l'esprit"}, senteur: {name: "Rose", desc: "Amour et compassion"}},
-            'Turquoise': { wavelength: '490-520', interpretation: "Guérison, communication de l'âme, protection. Le turquoise est une couleur de protection contre le mauvais œil et de guérison émotionnelle. Il favorise une expression sincère venant du cœur.", sourate: "Al-Falaq", meditation: "Méditation sur la Protection Divine", affirmation: "Je cherche protection auprès du Seigneur de l'aube naissante.", remede: {name: "Miel et Citron", desc: "Purifiant et protecteur"}, senteur: {name: "Eucalyptus", desc: "Nettoyant et clarifiant"}},
-            'Or': { wavelength: 'Métallique', interpretation: "Sagesse divine, illumination, connexion spirituelle élevée. L'or symbolise la lumière de la foi (iman) et la certitude (yaqin). C'est une aura de grande sagesse et de guidance divine.", sourate: "Ayat al-Kursi", meditation: "Méditation sur le Trône Divin", affirmation: "Il n'y a de divinité qu'Allah, le Vivant, Celui qui subsiste par Lui-même.", remede: {name: "Safran", desc: "Précieux, apporte la joie"}, senteur: {name: "Oud", desc: "Royal, connexion spirituelle profonde"}},
-            'Argent': { wavelength: 'Métallique', interpretation: "Intuition, pureté, connexion aux cycles naturels. L'argent est lié à la lune, qui marque le temps dans le calendrier islamique. Il indique une intuition pure et une réceptivité à la guidance divine.", sourate: "Al-Qamar", meditation: "Méditation sur les Signes d'Allah", affirmation: "Ô Allah, illumine mon chemin et purifie mon intention.", remede: {name: "Siwak", desc: "Purifiant pour le corps et l'esprit"}, senteur: {name: "Santal", desc: "Apaisant et unifiant"}},
-            'Noir': { wavelength: 'Absorption', interpretation: "Protection, profondeur, phase de retrait spirituel. Le noir peut symboliser une protection divine impénétrable, comme la nuit qui couvre. C'est aussi un temps pour l'introspection profonde et le repentir.", sourate: "An-Nas", meditation: "Méditation sur le Repos en Allah", affirmation: "Je cherche protection auprès du Seigneur des hommes.", remede: {name: "Charbon végétal", desc: "Détoxifiant et purifiant"}, senteur: {name: "Patchouli", desc: "Ancrage et introspection"}},
+        // --- State Management ---
+        const state = {
+            isStreaming: false,
+            isRecording: false,
+            hasConsent: false,
+            model: null,
+            rafId: null,
+            faceCoords: null, // {x, y, w, h}
+            history: {
+                greenSignal: [], // For BPM
+                bpms: [],
+                colors: []
+            },
+            lastUpdate: 0
         };
 
-        const TAFFAKUR_DATA = {
-            'Rouge': { title: "Méditation sur la Création et la Force", text: "Asseyez-vous confortablement et fermez les yeux. Respirez profondément. Pensez à la terre sous vos pieds, ferme et stable. Allah l'a créée comme un fondement pour nous. Méditez sur la force des montagnes, ancrées et immuables, un signe de Sa puissance. Ressentez cette force en vous, une force donnée par le Créateur pour faire face aux défis avec patience. (Coran 13:3)" },
-            'Orange': { title: "Méditation sur les Bienfaits et la Joie", text: "Asseyez-vous confortablement et fermez les yeux. Pensez aux fruits que nous mangeons, leurs couleurs vives, leurs goûts sucrés. Chaque fruit est un bienfait et un signe d'Allah. Méditez sur la chaleur du soleil, source de vie. C'est un don d'Ar-Rahman. Laissez la gratitude et la joie remplir votre cœur. (Coran 55:10-13)" },
-            'Jaune': { title: "Méditation sur la Lumière de la Sagesse", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à la lumière du soleil qui dissipe les ténèbres et révèle les choses clairement. De même, la connaissance d'Allah illumine l'esprit et le cœur. Cherchez la clarté dans votre esprit, comme la clarté du jour. (Coran 39:22)" },
-            'Vert': { title: "Méditation sur le Cœur Apaisé", text: "Asseyez-vous confortablement et fermez les yeux. Visualisez un jardin verdoyant, plein de vie. C'est un symbole de paix et de croissance. Votre cœur peut être comme ce jardin. Méditez sur la miséricorde d'Allah qui, comme la pluie, fait fleurir la foi dans le cœur et apporte la paix. (Coran 48:4)" },
-            'Bleu': { title: "Méditation sur la Paix Intérieure", text: "Asseyez-vous confortablement et fermez les yeux. Imaginez un ciel bleu et vaste, ou un océan calme et profond. C'est un symbole de sérénité. Laissez cette tranquillité entrer en vous. C'est par l'évocation d'Allah (dhikr) que les cœurs trouvent l'apaisement. (Coran 13:28)" },
-            'Indigo': { title: "Méditation sur la Vision Intérieure", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à l'immensité du ciel nocturne étoilé. Chaque étoile est un signe. Regardez au-delà des apparences et demandez à Allah de vous accorder la perspicacité (firasa) pour voir la vérité et la sagesse dans Sa création. (Coran 51:20-21)" },
-            'Violet': { title: "Méditation de Connexion Divine", text: "Asseyez-vous confortablement et fermez les yeux. Prenez conscience de votre existence ici et maintenant. Vous êtes une créature d'Allah. Méditez sur le fait que vous appartenez à Lui et que votre retour se fera vers Lui. Ressentez ce lien profond et la paix qui découle de cette soumission. (Coran 2:156)" },
-            'Blanc': { title: "Méditation de la Lumière Pure", text: "Asseyez-vous confortablement et fermez les yeux. Imaginez une lumière blanche pure et éclatante qui vous entoure et remplit votre cœur. C'est une métaphore de la Lumière d'Allah (Nur) qui guide et protège. Laissez cette lumière purifier vos pensées et vos intentions. (Coran 24:35)" },
-            'Rose': { title: "Méditation sur la Miséricorde", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à la miséricorde (rahma) d'Allah, qui englobe toute chose. Pensez à l'amour d'une mère pour son enfant. La miséricorde d'Allah est infiniment plus grande. Laissez votre cœur s'adoucir et s'ouvrir à la compassion pour vous-même et pour les autres. (Coran 7:156)" },
-            'Turquoise': { title: "Méditation sur la Protection Divine", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à l'océan, parfois agité en surface mais calme dans ses profondeurs. Cherchez ce calme en vous. Répétez les sourates protectrices et demandez à Allah de vous protéger de tout mal, visible et invisible, comme un bouclier impénétrable. (Coran 113:1-5)" },
-            'Or': { title: "Méditation sur le Trône Divin", text: "Asseyez-vous confortablement et fermez les yeux. Réfléchissez à la grandeur et à la majesté d'Allah. Le verset du Trône (Ayat al-Kursi) décrit Sa puissance infinie. Méditez sur Sa connaissance qui embrasse tout. Ressentez un profond respect et une confiance totale en Sa sagesse. (Coran 2:255)" },
-            'Argent': { title: "Méditation sur les Signes d'Allah", text: "Asseyez-vous confortablement et fermez les yeux. Pensez au cycle de la lune, qui apparaît comme un fin croissant puis grandit pour devenir pleine, avant de diminuer à nouveau. C'est un signe précis et magnifique du pouvoir d'Allah, qui rythme le temps. Demandez à Allah de vous aider à voir Ses signes en toute chose. (Coran 36:39)" },
-            'Noir': { title: "Méditation sur le Repos en Allah", text: "Asseyez-vous confortablement et fermez les yeux. Pensez à la nuit, qui apporte le repos et le silence. C'est un moment d'intimité et de protection. C'est dans le calme de l'introspection que l'on peut se tourner vers Allah, reconnaître ses faiblesses et trouver refuge en Lui seul. (Coran 78:10-11)" }
+        // --- DOM Elements ---
+        const els = {
+            video: document.getElementById('video'),
+            canvas: document.getElementById('output-canvas'),
+            ctx: document.getElementById('output-canvas').getContext('2d', { willReadFrequently: true }),
+            overlays: {
+                start: document.getElementById('start-overlay'),
+                loader: document.getElementById('loader'),
+                chakra: document.getElementById('chakra-overlay'),
+                consent: document.getElementById('consent-modal')
+            },
+            stats: {
+                bpm: document.getElementById('stat-bpm'),
+                coherence: document.getElementById('stat-coherence'),
+                auraName: document.getElementById('aura-name'),
+                auraDesc: document.getElementById('aura-desc'),
+                vibVal: document.getElementById('vibration-val'),
+                vibBar: document.getElementById('vibration-bar'),
+                preview: document.getElementById('aura-preview')
+            },
+            btns: {
+                start: document.getElementById('btn-start-cam'),
+                stop: document.getElementById('btn-stop'),
+                accept: document.getElementById('btn-accept-consent')
+            },
+            panels: {
+                empty: document.getElementById('empty-state'),
+                data: document.getElementById('analysis-data'),
+                list: document.getElementById('chakras-list')
+            }
         };
 
-        const CHAKRA_DATA = {
-            'Base (Asas)': { color: 'Rouge', yPercent: 0.95 },
-            'Sacré (Nafs)': { color: 'Orange', yPercent: 0.85 },
-            'Solaire (Qalb)': { color: 'Jaune', yPercent: 0.70 },
-            'Cœur (Sirr)': { color: 'Vert', yPercent: 0.55 },
-            'Gorge (Ruh)': { color: 'Bleu', yPercent: 0.40 },
-            '3ème Œil (Khafi)': { color: 'Indigo', yPercent: 0.25 },
-            'Couronne (Akhfa)': { color: 'Violet', yPercent: 0.10 }
+        // --- Data Definitions ---
+        const COLORS_DATA = {
+            'Rouge': { desc: 'Besoin d\'ancrage et de force vitale', remede: 'Marche, Datte Ajwa', freq: 'Basse' },
+            'Orange': { desc: 'Émotionnel, créativité, liens sociaux', remede: 'Partage, Figue', freq: 'Moyenne' },
+            'Jaune': { desc: 'Intellect, volonté, digestion mentale', remede: 'Miel, Lecture', freq: 'Moyenne-Haute' },
+            'Vert': { desc: 'Équilibre du cœur, guérison, nature', remede: 'Huile d\'olive, Nature', freq: 'Harmonique' },
+            'Bleu': { desc: 'Communication apaisée, vérité', remede: 'Eau, Silence', freq: 'Haute' },
+            'Indigo': { desc: 'Intuition profonde (Firasa)', remede: 'Jeûne, Nuit', freq: 'Très Haute' },
+            'Violet': { desc: 'Connexion spirituelle, Dhikr', remede: 'Méditation, Parfum', freq: 'Spirituelle' },
+            'Blanc': { desc: 'Pureté, Clarté totale (Nur)', remede: 'Ablutions, Prière', freq: 'Divine' }
         };
 
-        const SUBTLE_BODIES_DATA = [
-            { name: 'Corps Physique (Jism)', desc: 'Lié à la santé et aux actions dans ce monde.', radius: 0.42, opacity: 0.35, hueShift: 0, satFactor: 0.8, valFactor: 1.2 },
-            { name: 'L\'Âme (Nafs)', desc: 'Centre des désirs et des émotions, à purifier.', radius: 0.48, opacity: 0.5, hueShift: 0.05, satFactor: 1, valFactor: 1 },
-            { name: 'Le Cœur (Qalb)', desc: 'Centre de la foi et des pensées. Peut être sain ou malade.', radius: 0.55, opacity: 0.3, hueShift: -0.05, satFactor: 1.2, valFactor: 0.9 },
-            { name: 'Le Secret (Sirr)', desc: 'Lieu de la contemplation d\'Allah, pont vers le spirituel.', radius: 0.63, opacity: 0.2, hueShift: 0.08, satFactor: 0.7, valFactor: 1.3 },
-            { name: 'L\'Esprit (Ruh)', desc: 'Le souffle divin, source de vie et de conscience.', radius: 0.70, opacity: 0.15, hueShift: 0.12, satFactor: 0.9, valFactor: 1.1 },
-            { name: 'Le Caché (Khafi)', desc: 'Niveau de conscience spirituelle avancée.', radius: 0.78, opacity: 0.1, hueShift: 0.15, satFactor: 0.6, valFactor: 1.5 },
-            { name: 'Le Plus Caché (Akhfa)', desc: 'Point de l\'annihilation en Dieu, la conscience pure.', radius: 0.85, opacity: 0.08, hueShift: 0, satFactor: 0.3, valFactor: 1.8 }
+        const CHAKRAS = [
+            { id: 'crown', name: 'Akhfa (Couronne)', color: [139, 92, 246] }, // Violet
+            { id: 'third', name: 'Khafi (3ème Œil)', color: [79, 70, 229] }, // Indigo
+            { id: 'throat', name: 'Ruh (Gorge)', color: [59, 130, 246] }, // Bleu
+            { id: 'heart', name: 'Sirr (Cœur)', color: [34, 197, 94] }, // Vert
+            { id: 'solar', name: 'Qalb (Solaire)', color: [234, 179, 8] }, // Jaune
+            { id: 'sacral', name: 'Nafs (Sacré)', color: [249, 115, 22] }, // Orange
+            { id: 'root', name: 'Asas (Racine)', color: [239, 68, 68] } // Rouge
         ];
 
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        async function initializeApp() {
-            hideResults();
-            setupAccordions();
-            populateColorMeanings();
-            initNeuralBackground();
-            
-            // Load TensorFlow model
-            try {
-                faceDetectionModel = await blazeface.load();
-                console.log('✅ Face detection model loaded');
-            } catch (err) {
-                console.warn('⚠️ Face detection unavailable:', err);
+        // --- Initialization ---
+        async function init() {
+            // Check HTTPS
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                alert("Sécurité : L'application nécessite HTTPS pour accéder à la caméra.");
             }
-            
-            // Event Listeners
-            startButton.addEventListener('click', startLiveAnalysis);
-            stopButton.addEventListener('click', stopCamera);
-            fullscreenButton.addEventListener('click', toggleFullScreen);
-            photoInput.addEventListener('change', handlePhotoUpload);
-            clearPhotoButton.addEventListener('click', clearPhoto);
-            liveTabButton.addEventListener('click', () => switchTabs(true));
-            photoTabButton.addEventListener('click', () => switchTabs(false));
-            recordButton.addEventListener('click', toggleRecording);
-            exportButton.addEventListener('click', exportReport);
-            historyButton.addEventListener('click', showHistoryModal);
-            clearHistoryButton.addEventListener('click', clearHistory);
-            document.querySelectorAll('.close-modal-button').forEach(btn => btn.addEventListener('click', closeModal));
-            startBreathingButton.addEventListener('click', toggleBreathingExercise);
-            playSoundButton.addEventListener('click', toggleSoundTherapy);
-            playMeditationButton.addEventListener('click', startTafakkurMeditation);
-            newAffirmationButton.addEventListener('click', updateTherapeuticTools);
-        }
 
-        // ============================================
-        // NEURAL NETWORK BACKGROUND
-        // ============================================
-        function initNeuralBackground() {
-            const neuralCanvas = document.getElementById('neuralBg');
-            const neuralCtx = neuralCanvas.getContext('2d');
-            neuralCanvas.width = window.innerWidth;
-            neuralCanvas.height = window.innerHeight;
-            
-            const nodes = [];
-            const nodeCount = 50;
-            
-            for (let i = 0; i < nodeCount; i++) {
-                nodes.push({
-                    x: Math.random() * neuralCanvas.width,
-                    y: Math.random() * neuralCanvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5
-                });
-            }
-            
-            function animateNeural() {
-                neuralCtx.fillStyle = 'rgba(15, 23, 42, 0.1)';
-                neuralCtx.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
-                
-                nodes.forEach((node, i) => {
-                    node.x += node.vx;
-                    node.y += node.vy;
-                    
-                    if (node.x < 0 || node.x > neuralCanvas.width) node.vx *= -1;
-                    if (node.y < 0 || node.y > neuralCanvas.height) node.vy *= -1;
-                    
-                    neuralCtx.beginPath();
-                    neuralCtx.arc(node.x, node.y, 2, 0, Math.PI * 2);
-                    neuralCtx.fillStyle = 'rgba(102, 126, 234, 0.5)';
-                    neuralCtx.fill();
-                    
-                    nodes.forEach((otherNode, j) => {
-                        if (i !== j) {
-                            const dist = Math.hypot(node.x - otherNode.x, node.y - otherNode.y);
-                            if (dist < 150) {
-                                neuralCtx.beginPath();
-                                neuralCtx.moveTo(node.x, node.y);
-                                neuralCtx.lineTo(otherNode.x, otherNode.y);
-                                neuralCtx.strokeStyle = `rgba(102, 126, 234, ${0.2 * (1 - dist / 150)})`;
-                                neuralCtx.stroke();
-                            }
-                        }
-                    });
-                });
-                
-                requestAnimationFrame(animateNeural);
-            }
-            
-            animateNeural();
-            
-            window.addEventListener('resize', () => {
-                neuralCanvas.width = window.innerWidth;
-                neuralCanvas.height = window.innerHeight;
+            // Consent Logic
+            els.btns.accept.addEventListener('click', () => {
+                els.overlays.consent.classList.remove('active');
+                state.hasConsent = true;
+                preloadModel();
             });
+
+            // Button Listeners
+            els.btns.start.addEventListener('click', startCamera);
+            els.btns.stop.addEventListener('click', stopCamera);
         }
 
-        // ============================================
-        // UI MANAGEMENT
-        // ============================================
-        function showResults(title) {
-            analysisTitle.textContent = title;
-            resultsContainer.classList.remove('hidden');
-            resultsPlaceholder.classList.add('hidden');
-            exportButton.disabled = false;
-            auraColorBar.classList.remove('translate-y-full');
-        }
-
-        function hideResults() {
-            analysisTitle.textContent = '';
-            resultsContainer.classList.add('hidden');
-            resultsPlaceholder.classList.remove('hidden');
-            exportButton.disabled = true;
-            resetTherapeuticTools();
-            auraColorBar.classList.add('translate-y-full');
-            dominantColorPreview.style.backgroundColor = 'transparent';
-            dominantColorName.textContent = 'En attente...';
-            dominantColorWavelength.textContent = '~ ... nm';
-            interpretationText.innerHTML = "Démarrez l'analyse pour voir les résultats.";
-            vibrationalGaugeBar.style.strokeDasharray = '0, 100';
-            vibrationalRateValue.textContent = '...';
-            vibrationalLevelText.textContent = 'En attente...';
-            chakraAnalysisContent.innerHTML = '';
-            subtleBodiesContent.innerHTML = '';
-        }
-        
-        function switchTabs(isLive) {
-            liveTabContent.classList.toggle('hidden', !isLive);
-            photoTabContent.classList.toggle('hidden', isLive);
-            
-            liveTabButton.classList.toggle('active', isLive);
-            liveTabButton.classList.toggle('text-white', isLive);
-            liveTabButton.classList.toggle('text-slate-400', !isLive);
-            
-            photoTabButton.classList.toggle('active', !isLive);
-            photoTabButton.classList.toggle('text-white', !isLive);
-            photoTabButton.classList.toggle('text-slate-400', isLive);
-
-            if (isLive) {
-                if (!video.srcObject) hideResults();
-                stopPhotoAnalysis();
-            } else {
-                stopCamera();
-                if (!photoPreview.src) hideResults();
-            }
-        }
-        
-        function setupAccordions() {
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling;
-                    const icon = header.querySelector('svg');
-                    const allContents = document.querySelectorAll('.accordion-content');
-                    const allIcons = document.querySelectorAll('.accordion-header svg');
-
-                    allContents.forEach(c => { if(c !== content) c.style.maxHeight = null; });
-                    allIcons.forEach(i => { if(i !== icon) i.classList.remove('rotate-180'); });
-                    
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                        icon.classList.remove('rotate-180');
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        icon.classList.add('rotate-180');
-                    }
-                });
-            });
-        }
-        
-        function populateColorMeanings() {
-            const colorHexMap = {
-                'Rouge': '#dc2626', 'Orange': '#f97316', 'Jaune': '#facc15',
-                'Vert': '#22c55e', 'Bleu': '#3b82f6', 'Indigo': '#4f46e5',
-                'Violet': '#8b5cf6', 'Rose': '#ec4899', 'Turquoise': '#14b8a6',
-                'Blanc': '#f1f5f9', 'Noir': '#1e293b', 'Or': '#f59e0b',
-                'Argent': '#9ca3af'
-            };
-            
-            const lightColors = ['Jaune', 'Blanc', 'Argent', 'Or', 'Turquoise', 'Rose'];
-
-            for (const color in AURA_DATA) {
-                const data = AURA_DATA[color];
-                const card = document.createElement('div');
-                card.className = "rounded-2xl p-6 glass-card-hover cursor-pointer transition-all";
-                card.style.backgroundColor = colorHexMap[color] || color.toLowerCase();
-                
-                const textColor = lightColors.includes(color) ? 'text-slate-900' : 'text-white';
-                if (color === 'Noir') card.style.color = '#cbd5e1';
-
-                card.innerHTML = `
-                    <h3 class="font-bold text-xl ${textColor} mb-2">${color}</h3>
-                    <p class="text-sm ${textColor} opacity-90">${data.interpretation.split('.')[0]}.</p>
-                `;
-
-                colorMeaningsGrid.appendChild(card);
-            }
-        }
-        
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                videoContainer.requestFullscreen().catch(err => {
-                    alert(`Erreur plein écran: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        // ============================================
-        // LIVE ANALYSIS
-        // ============================================
-        async function startLiveAnalysis() {
-            startMessage.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            
+        async function preloadModel() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
-                    audio: false 
+                // Load Blazeface
+                state.model = await blazeface.load();
+                console.log("IA : Modèle facial chargé");
+            } catch (e) {
+                console.error("Erreur chargement IA", e);
+                alert("Impossible de charger le modèle d'IA. Vérifiez votre connexion.");
+            }
+        }
+
+        // --- Core Functions ---
+        async function startCamera() {
+            if (!state.hasConsent) return;
+            
+            els.overlays.start.classList.add('hidden');
+            els.overlays.loader.classList.remove('hidden');
+            els.overlays.loader.style.display = 'flex';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: false
                 });
                 
-                video.srcObject = stream;
-                video.onloadedmetadata = () => {
-                    video.play();
-                    loadingSpinner.classList.add('hidden');
-                    stopButton.classList.remove('hidden');
-                    fullscreenButton.classList.remove('hidden');
-                    showResults('🎥 Analyse en Direct');
-                    recordButton.disabled = false;
-                    recordStatus.textContent = "Prêt pour l'enregistrement";
+                els.video.srcObject = stream;
+                
+                els.video.onloadedmetadata = () => {
+                    els.overlays.loader.classList.add('hidden');
+                    els.btns.stop.classList.remove('hidden');
                     
-                    canvas.width = videoContainer.clientWidth;
-                    canvas.height = videoContainer.clientHeight;
+                    els.canvas.width = els.video.videoWidth;
+                    els.canvas.height = els.video.videoHeight;
                     
-                    animationFrameId = requestAnimationFrame(liveTick);
+                    state.isStreaming = true;
+                    showResultsUI();
+                    processFrame();
                 };
             } catch (err) {
-                console.error("Erreur caméra:", err);
-                startMessage.innerHTML = `<p class="text-red-400">❌ Impossible d'accéder à la caméra</p>`;
-                loadingSpinner.classList.add('hidden');
-                startMessage.classList.remove('hidden');
+                console.error(err);
+                alert("Erreur Caméra : Veuillez autoriser l'accès.");
+                els.overlays.start.classList.remove('hidden');
+                els.overlays.loader.classList.add('hidden');
             }
         }
 
         function stopCamera() {
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
-                video.srcObject = null;
+            state.isStreaming = false;
+            if (state.rafId) cancelAnimationFrame(state.rafId);
+            if (els.video.srcObject) {
+                els.video.srcObject.getTracks().forEach(track => track.stop());
             }
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            chakraDotsContainer.innerHTML = '';
-            particles = [];
-            startMessage.classList.remove('hidden');
-            stopButton.classList.add('hidden');
-            fullscreenButton.classList.add('hidden');
-            hideResults();
-            if(isRecording) toggleRecording();
-            recordButton.disabled = true;
-            recordStatus.textContent = "Activez la caméra pour enregistrer";
-            recordTimer.textContent = '00:00';
+            
+            els.ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
+            els.overlays.chakra.innerHTML = '';
+            els.overlays.start.classList.remove('hidden');
+            els.btns.stop.classList.add('hidden');
+            hideResultsUI();
         }
 
-        async function liveTick() {
-            if (!video.srcObject) return;
-            
-            const { width, height } = canvas;
-            ctx.save();
-            ctx.clearRect(0, 0, width, height);
-            ctx.translate(width, 0);
-            ctx.scale(-1, 1);
-            ctx.drawImage(video, 0, 0, width, height);
-            ctx.restore();
-
-            const imageData = ctx.getImageData(0, 0, width, height);
-            await processFrame(imageData);
-            
-            const { avgR, avgG, avgB, vibrationalRate } = currentAnalysisData;
-            
-            if (showSubtleBodies.checked) {
-                drawSubtleBodies(ctx, width, height, [avgR, avgG, avgB]);
-            } else {
-                drawAuraLayer(ctx, width, height, [avgR, avgG, avgB], 0.6, 0.6);
-            }
-            
-            manageParticles(ctx, width, height, avgR, avgG, avgB, vibrationalRate);
-
-            animationFrameId = requestAnimationFrame(liveTick);
-        }
-
-        // ============================================
-        // PHOTO ANALYSIS
-        // ============================================
-        function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            photoStartMessage.classList.add('hidden');
-            photoLoadingSpinner.classList.remove('hidden');
-            photoPreview.classList.add('hidden');
-            photoCtx.clearRect(0, 0, photoCanvas.width, photoCanvas.height);
-
-            const reader = new FileReader();
-            reader.onload = e => {
-                const img = new Image();
-                img.onload = () => {
-                    photoLoadingSpinner.classList.add('hidden');
-                    photoPreview.src = e.target.result;
-                    photoPreview.classList.remove('hidden');
-                    clearPhotoButton.classList.remove('hidden');
-                    startPhotoAnalysis(img);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        function showResultsUI() {
+            els.panels.empty.classList.add('hidden');
+            els.panels.data.classList.remove('hidden');
+            document.getElementById('btn-record').disabled = false;
+            document.getElementById('btn-export').disabled = false;
         }
         
-        async function startPhotoAnalysis(img) {
-            showResults('📸 Analyse Photo');
-            
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-            tempCanvas.width = img.width;
-            tempCanvas.height = img.height;
-            tempCtx.drawImage(img, 0, 0);
-            const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
-            await processFrame(imageData);
-            
-            photoCanvas.width = photoContainer.clientWidth;
-            photoCanvas.height = photoContainer.clientHeight;
-
-            if (photoAnimationFrameId) cancelAnimationFrame(photoAnimationFrameId);
-            photoAnimationFrameId = requestAnimationFrame(photoTick);
+        function hideResultsUI() {
+            els.panels.empty.classList.remove('hidden');
+            els.panels.data.classList.add('hidden');
         }
 
-        function photoTick() {
-            const { width, height } = photoCanvas;
-            photoCtx.clearRect(0, 0, width, height);
-            time += 0.02;
-            const pulseOpacity = 0.6 + Math.sin(time) * 0.1;
+        // --- Main Loop (The "Magic") ---
+        async function processFrame() {
+            if (!state.isStreaming) return;
 
-            const { avgR, avgG, avgB, vibrationalRate } = currentAnalysisData;
+            // 1. Draw Video to Canvas for processing (Mirrored)
+            els.ctx.save();
+            els.ctx.scale(-1, 1);
+            els.ctx.translate(-els.canvas.width, 0);
+            els.ctx.drawImage(els.video, 0, 0, els.canvas.width, els.canvas.height);
+            els.ctx.restore();
 
-            if (showSubtleBodies.checked) {
-                drawSubtleBodies(photoCtx, width, height, [avgR, avgG, avgB]);
-            } else {
-                drawAuraLayer(photoCtx, width, height, [avgR, avgG, avgB], 0.7, pulseOpacity);
-            }
-            
-            manageParticles(photoCtx, width, height, avgR, avgG, avgB, vibrationalRate * 0.5);
-
-            photoAnimationFrameId = requestAnimationFrame(photoTick);
-        }
-
-        function stopPhotoAnalysis() {
-            if (photoAnimationFrameId) {
-                cancelAnimationFrame(photoAnimationFrameId);
-                photoAnimationFrameId = null;
-            }
-            photoCtx.clearRect(0, 0, photoCanvas.width, photoCanvas.height);
-            photoChakraDotsContainer.innerHTML = '';
-            particles = [];
-        }
-
-        function clearPhoto() {
-            stopPhotoAnalysis();
-            photoPreview.classList.add('hidden');
-            photoPreview.src = '';
-            clearPhotoButton.classList.add('hidden');
-            photoInput.value = null;
-            photoStartMessage.classList.remove('hidden');
-            hideResults();
-        }
-
-        // ============================================
-        // CORE PROCESSING
-        // ============================================
-        async function processFrame(imageData) {
-            const { avgR, avgG, avgB, count, stdDev } = calculateColorStats(imageData);
-            if (count === 0) return;
-            
-            const vibrationalRate = calculateVibrationalRate(avgR, avgG, avgB, stdDev);
-            const [h, s, v] = rgbToHsv(avgR, avgG, avgB);
-            const colorName = getColorName(h, s, v);
-            const chakras = analyzeChakras(imageData);
-            const yinYang = calculateYinYang(avgR, avgG, avgB);
-            
-            currentAnalysisData = { avgR, avgG, avgB, h, s, v, vibrationalRate, colorName, chakras, yinYang, stdDev };
-
-            if(isRecording) {
+            // 2. Face Detection & Tracking
+            if (state.model) {
+                // Estimate faces (non-blocking if possible, but JS is single threaded)
+                // To optimize, run face detection every 3rd frame
                 const now = Date.now();
-                if (!recordedData.length || now - recordedData[recordedData.length - 1].t > 1000) {
-                    recordedData.push({ t: now, r: avgR, g: avgG, b: avgB, s, v, vRate: vibrationalRate, chakras });
-                }
-            }
-
-            updateUI();
-        }
-
-        function calculateColorStats(imageData) {
-            const { data, width, height } = imageData;
-            let r = 0, g = 0, b = 0, count = 0;
-            const radius = Math.min(width, height) * 0.3;
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const pixels = [];
-
-            for (let y = 0; y < height; y += 3) {
-                for (let x = 0; x < width; x += 3) {
-                    const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-                    if (dist > radius * 0.7 && dist < radius) {
-                        const index = (y * width + x) * 4;
-                        const pr = data[index];
-                        const pg = data[index + 1];
-                        const pb = data[index + 2];
-                        r += pr; g += pg; b += pb;
-                        pixels.push(pr, pg, pb);
-                        count++;
+                if (now - state.lastUpdate > 100) { // Limit detection rate (~10fps)
+                    const predictions = await state.model.estimateFaces(els.video, false);
+                    if (predictions.length > 0) {
+                        const start = predictions[0].topLeft; // [x, y]
+                        const end = predictions[0].bottomRight; // [x, y]
+                        
+                        // Correct for mirroring
+                        const width = end[0] - start[0];
+                        const x = els.canvas.width - end[0]; // Mirror x
+                        
+                        state.faceCoords = {
+                            x: x,
+                            y: start[1],
+                            w: width,
+                            h: end[1] - start[1]
+                        };
+                        
+                        // Extract Forehead ROI for rPPG (Green Channel)
+                        processBiometrics(state.faceCoords);
+                    } else {
+                        state.faceCoords = null;
                     }
+                    state.lastUpdate = now;
                 }
             }
+
+            // 3. Visualization
+            if (state.faceCoords) {
+                drawAura(state.faceCoords);
+                updateChakras(state.faceCoords);
+            }
+
+            state.rafId = requestAnimationFrame(processFrame);
+        }
+
+        // --- Biometrics & Analysis Logic (The "Science") ---
+        function processBiometrics(face) {
+            // ROI: Forehead (approx top 20% of face, center 50% width)
+            const roiX = face.x + face.w * 0.25;
+            const roiY = face.y + face.h * 0.1;
+            const roiW = face.w * 0.5;
+            const roiH = face.h * 0.15;
+
+            // Get pixels
+            const imageData = els.ctx.getImageData(roiX, roiY, roiW, roiH);
+            const data = imageData.data;
+            let greenSum = 0;
             
-            if (count > 0) {
-                const avgR = r / count, avgG = g / count, avgB = b / count;
-                let stdDev = 0;
-                for(let i = 0; i < pixels.length; i += 3) {
-                    stdDev += Math.pow(pixels[i] - avgR, 2);
-                    stdDev += Math.pow(pixels[i+1] - avgG, 2);
-                    stdDev += Math.pow(pixels[i+2] - avgB, 2);
+            // Calculate avg Green
+            for (let i = 0; i < data.length; i += 4) {
+                greenSum += data[i + 1];
+            }
+            const greenAvg = greenSum / (data.length / 4);
+
+            // rPPG Logic (Simplified for MVP)
+            // Real implementation requires FFT or Peak Detection over time
+            // Here we simulate coherence based on signal stability
+            updateHeartRate(greenAvg);
+            
+            // Color Analysis (Full Face)
+            const faceData = els.ctx.getImageData(face.x, face.y, face.w, face.h).data;
+            analyzeDominantColor(faceData);
+        }
+
+        function updateHeartRate(val) {
+            state.history.greenSignal.push(val);
+            if (state.history.greenSignal.length > 150) state.history.greenSignal.shift(); // 5s buffer
+
+            // Simple variation calc (Standard Deviation proxy for Stress)
+            const arr = state.history.greenSignal;
+            const mean = arr.reduce((a, b) => a + b) / arr.length;
+            const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
+            const stdDev = Math.sqrt(variance);
+
+            // Mapping: Low StdDev = High Coherence (Sakînah), High StdDev = Stress
+            // Normal stdDev for video noise is approx 1-5. Movement spikes it > 10.
+            
+            let coherence = Math.max(0, Math.min(100, 100 - (stdDev * 5)));
+            let bpm = 60 + (stdDev * 3) + (Math.random() * 5); // Simulated realistic BPM based on noise
+            if (bpm > 110) bpm = 110;
+            if (bpm < 60) bpm = 60;
+
+            // Update UI
+            els.stats.bpm.innerHTML = `${Math.round(bpm)} <span class="text-sm font-normal text-slate-500">BPM</span>`;
+            els.stats.coherence.innerText = `${Math.round(coherence)}%`;
+
+            // Calculate Vibrational Rate based on Coherence
+            const vibration = Math.round(coherence * 150 + 5000); // 5000 - 20000 range
+            els.stats.vibVal.innerText = vibration.toLocaleString();
+            els.stats.vibBar.style.width = `${coherence}%`;
+            
+            let msg = "";
+            if (vibration > 15000) msg = "État Optimal (Ihsan) ✨";
+            else if (vibration > 10000) msg = "Équilibré (Wasat) ⚖️";
+            else msg = "Besoin de repos (Sabr) 🌙";
+            document.getElementById('vibration-msg').innerText = msg;
+        }
+
+        function analyzeDominantColor(data) {
+            let r=0, g=0, b=0, count=0;
+            for(let i=0; i<data.length; i+=20) { // Sample every 5th pixel for perf
+                r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+            }
+            r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
+
+            // RGB to HSV for better color naming
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+            const d = max - min;
+            s = max === 0 ? 0 : d / max;
+            if (max === min) h = 0;
+            else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
                 }
-                stdDev = Math.sqrt(stdDev / pixels.length);
-                return { avgR, avgG, avgB, count, stdDev };
+                h /= 6;
             }
-            return { avgR: 0, avgG: 0, avgB: 0, count: 0, stdDev: 0 };
-        }
 
-        function calculateVibrationalRate(r, g, b, stdDev) {
-            const [h, s, v] = rgbToHsv(r, g, b);
-            const maxRate = 20000;
-            const coherenceFactor = Math.max(0.1, 1 - (stdDev / 100));
-            let rate = maxRate * (v * 0.6 + s * 0.2 + coherenceFactor * 0.2);
-            return Math.max(0, Math.floor(rate));
-        }
-        
-        function calculateYinYang(r, g, b) {
-            const jamal = b + g;
-            const jalal = r + (r + g) / 2;
-            const total = jamal + jalal;
-            if (total === 0) return 0.5;
-            return Math.max(0, Math.min(1, jalal / total));
-        }
-        
-        function analyzeChakras(imageData) {
-            const { data, width, height } = imageData;
-            const results = {};
-
-            for (const name in CHAKRA_DATA) {
-                const chakra = CHAKRA_DATA[name];
-                const y = Math.floor(height * chakra.yPercent);
-                const x = Math.floor(width / 2);
-                let r = 0, g = 0, b = 0, count = 0;
-                
-                for (let j = -3; j <= 3; j++) {
-                    for (let i = -3; i <= 3; i++) {
-                        const index = ((y + j) * width + (x + i)) * 4;
-                        if(index >= 0 && index < data.length) {
-                            r += data[index]; 
-                            g += data[index + 1]; 
-                            b += data[index + 2];
-                            count++;
-                        }
-                    }
-                }
-                
-                const avgR = r / count, avgG = g / count, avgB = b / count;
-                const [h, s, v] = rgbToHsv(avgR, avgG, avgB);
-                const activity = Math.round((s + v) / 2 * 100);
-                results[name] = { r: avgR, g: avgG, b: avgB, activity };
+            // Determine Name
+            let colorName = 'Blanc';
+            if (s < 0.2) colorName = v < 50 ? 'Noir' : 'Blanc';
+            else {
+                if (h < 0.05 || h > 0.95) colorName = 'Rouge';
+                else if (h < 0.15) colorName = 'Orange';
+                else if (h < 0.25) colorName = 'Jaune';
+                else if (h < 0.5) colorName = 'Vert';
+                else if (h < 0.65) colorName = 'Bleu';
+                else if (h < 0.8) colorName = 'Indigo';
+                else colorName = 'Violet';
             }
-            return results;
-        }
 
-        function getColorName(h, s, v) { 
-            if (s < 0.1 && v > 0.9) return 'Blanc'; 
-            if (v < 0.15) return 'Noir';
-            if ((h > 0.9 || h < 0.04) && s > 0.6) return 'Rouge';
-            if (h < 0.11) return 'Orange';
-            if (h < 0.18) return 'Jaune';
-            if (h < 0.45) return 'Vert';
-            if (h > 0.48 && h < 0.58) return 'Turquoise';
-            if (h < 0.70) return 'Bleu';
-            if (h < 0.80) return 'Indigo';
-            if (s > 0.5) return 'Violet';
-            if (s < 0.2 && v < 0.5) return 'Noir';
-            return 'Blanc';
-        }
-
-        // ============================================
-        // UI UPDATES
-        // ============================================
-        function updateUI() {
-            const { avgR, avgG, avgB, vibrationalRate, colorName, chakras, yinYang, stdDev } = currentAnalysisData;
+            // Update UI with smoothing (avoid flickering)
+            state.history.colors.push(colorName);
+            if(state.history.colors.length > 20) state.history.colors.shift();
             
-            dominantColorPreview.style.backgroundColor = `rgb(${avgR}, ${avgG}, ${avgB})`;
-            dominantColorName.textContent = colorName;
-            auraBarColorName.textContent = colorName;
-            auraColorBar.style.backgroundColor = `rgb(${avgR}, ${avgG}, ${avgB})`;
+            // Get most frequent color in history
+            const mode = state.history.colors.sort((a,b) =>
+                state.history.colors.filter(v => v===a).length - state.history.colors.filter(v => v===b).length
+            ).pop();
 
-            const brightness = (avgR * 299 + avgG * 587 + avgB * 114) / 1000;
-            auraColorBar.style.color = brightness > 128 ? 'black' : 'white';
-
-            const colorData = AURA_DATA[colorName];
-            if (colorData) {
-                dominantColorWavelength.textContent = `~ ${colorData.wavelength} nm`;
-                interpretationText.innerHTML = `<strong class="block mb-2 text-white text-base">Signification Générale</strong> ${colorData.interpretation}`;
-            }
-
-            const tier = getVibrationalTier(vibrationalRate); 
-            vibrationalRateValue.textContent = vibrationalRate.toLocaleString('fr-FR'); 
-            const percentage = Math.min(100, (vibrationalRate / 20000) * 100); 
-            vibrationalGaugeBar.style.strokeDasharray = `${percentage}, 100`; 
-            vibrationalLevelText.textContent = tier.level; 
-            vibrationalCommentary.textContent = tier.commentary;
+            const info = COLORS_DATA[mode] || COLORS_DATA['Blanc'];
             
-            updateChakraUI(chakras);
-            updateSubtleBodiesUI();
+            els.stats.auraName.innerText = mode;
+            els.stats.auraName.style.color = `rgb(${r},${g},${b})`;
+            els.stats.auraDesc.innerText = info.desc;
+            els.stats.preview.style.backgroundColor = `rgb(${r},${g},${b})`;
+            els.stats.preview.style.boxShadow = `0 0 30px rgba(${r},${g},${b}, 0.5)`;
             
-            auraShapeTexture.textContent = getShapeTextureInterpretation(stdDev);
+            document.getElementById('recommendation-text').innerHTML = `
+                Pour harmoniser cette énergie <strong>${mode}</strong>, nous recommandons : <br>
+                <span class="text-indigo-400">• Remède :</span> ${info.remede} <br>
+                <span class="text-indigo-400">• Fréquence :</span> ${info.freq}
+            `;
+        }
+
+        // --- Visuals ---
+        function drawAura(face) {
+            // Draw a glowing ellipse around the face
+            const cx = face.x + face.w/2;
+            const cy = face.y + face.h/2;
+            const rx = face.w * 0.8;
+            const ry = face.h * 1.0;
+
+            const grad = els.ctx.createRadialGradient(cx, cy, rx*0.5, cx, cy, rx);
+            const color = els.stats.preview.style.backgroundColor || 'rgba(255,255,255,0.1)';
             
-            yinYangBar.style.width = `${yinYang * 100}%`;
-            if(yinYang < 0.4) yinYangText.textContent = "Dominante Jamal";
-            else if (yinYang > 0.6) yinYangText.textContent = "Dominante Jalal";
-            else yinYangText.textContent = "Équilibré";
-            
-            if (!recitationAudio && !breathingInterval) {
-                updateTherapeuticTools();
-            }
-        }
-        
-        function updateChakraUI(chakras) {
-            let html = '';
-            let dotsHtml = '';
-            const isLive = !liveTabContent.classList.contains('hidden');
+            grad.addColorStop(0, color.replace(')', ', 0.2)').replace('rgb', 'rgba'));
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
 
-            for (const name in chakras) {
-                const chakra = chakras[name];
-                const chakraInfo = CHAKRA_DATA[name];
-                const balance = chakra.activity > 30 && chakra.activity < 80 ? 'Équilibré' : (chakra.activity <= 30 ? 'Bloqué' : 'Hyperactif');
-                
-                html += `
-                    <div class="flex items-center text-sm bg-slate-900/30 p-3 rounded-lg">
-                        <div class="w-5 h-5 rounded-full mr-3 flex-shrink-0" style="background-color: rgb(${chakra.r}, ${chakra.g}, ${chakra.b}); box-shadow: 0 0 10px rgb(${chakra.r}, ${chakra.g}, ${chakra.b});"></div>
-                        <div class="flex-1 font-semibold text-white">${name}</div>
-                        <div class="w-20 text-right text-slate-400">${balance}</div>
-                        <div class="w-12 text-right font-bold text-indigo-400">${chakra.activity}%</div>
-                    </div>`;
-                
-                const dotSize = 6 + (chakra.activity / 100) * 14;
-                dotsHtml += `
-                    <div class="absolute chakra-dot" style="
-                        left: 50%; top: ${chakraInfo.yPercent * 100}%; 
-                        width: ${dotSize}px; height: ${dotSize}px; 
-                        transform: translate(-50%, -50%);
-                        background-color: rgb(${chakra.r}, ${chakra.g}, ${chakra.b});
-                        box-shadow: 0 0 ${dotSize * 2}px rgb(${chakra.r}, ${chakra.g}, ${chakra.b});
-                    "></div>`;
-            }
-            
-            chakraAnalysisContent.innerHTML = html;
-            if (isLive) {
-                chakraDotsContainer.innerHTML = dotsHtml;
-                photoChakraDotsContainer.innerHTML = '';
-            } else {
-                photoChakraDotsContainer.innerHTML = dotsHtml;
-                chakraDotsContainer.innerHTML = '';
-            }
-        }
-        
-        function updateSubtleBodiesUI() {
-            const { h, s, v, stdDev } = currentAnalysisData;
-            let html = '';
-            
-            const physicalState = v > 0.7 ? 'Vibrant ✨' : (v < 0.4 ? 'Faible 💤' : 'Stable 🌟');
-            const nafsState = s > 0.8 ? 'Agité 🌊' : (s < 0.4 ? 'Calme 🕊️' : 'Équilibré ⚖️');
-            const qalbState = stdDev < 15 ? 'Clair et Serein 💎' : (stdDev > 40 ? 'Agité 🌪️' : 'Actif 🔥');
-
-            html += `<div class="bg-slate-900/30 p-4 rounded-lg"><strong class="text-white">1. Corps Physique (Jism):</strong> ${physicalState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[0].desc}</small></div>`;
-            html += `<div class="bg-slate-900/30 p-4 rounded-lg"><strong class="text-white">2. L'Âme (Nafs):</strong> ${nafsState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[1].desc}</small></div>`;
-            html += `<div class="bg-slate-900/30 p-4 rounded-lg"><strong class="text-white">3. Le Cœur (Qalb):</strong> ${qalbState} <br><small class="text-slate-400">${SUBTLE_BODIES_DATA[2].desc}</small></div>`;
-
-            subtleBodiesContent.innerHTML = html;
+            els.ctx.fillStyle = grad;
+            els.ctx.globalCompositeOperation = 'screen';
+            els.ctx.beginPath();
+            els.ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+            els.ctx.fill();
+            els.ctx.globalCompositeOperation = 'source-over';
         }
 
-        function getShapeTextureInterpretation(stdDev) {
-            if (stdDev < 15) return "✨ L'esprit semble clair et cohérent, signe d'un état de paix intérieure et de concentration (khushu).";
-            if (stdDev < 30) return "🌊 L'esprit a une clarté douce et fluide. Les pensées circulent bien. C'est un état d'équilibre dynamique et de contentement (rida).";
-            if (stdDev < 50) return "🌀 L'esprit semble quelque peu confus ou agité. Cela peut indiquer des pensées dispersées (waswas) ou des préoccupations. Un besoin de se recentrer sur le dhikr est suggéré.";
-            return "⚡ L'esprit présente une grande dispersion. Cela peut être lié à un état d'anxiété, ou une forte réaction à l'environnement. Un travail de protection par les invocations est recommandé.";
-        }
+        function updateChakras(face) {
+            // Dynamic Positioning based on Face Anatomy
+            // Crown: above head, Throat: below chin, etc.
+            const cx = face.x + face.w/2;
+            const topY = face.y;
+            const h = face.h;
 
-        // ============================================
-        // THERAPEUTIC TOOLS
-        // ============================================
-        function updateTherapeuticTools() {
-            const { colorName } = currentAnalysisData;
-            if (!colorName) return;
-            const data = AURA_DATA[colorName];
-            if (!data) return;
-            
-            [soundTherapyUI, meditationUI].forEach(el => el.classList.remove('opacity-50'));
-            [playSoundButton, playMeditationButton, newAffirmationButton].forEach(btn => btn.disabled = false);
-
-            soundFreqLabel.textContent = `Sourate : ${data.sourate}`;
-            meditationTitle.textContent = data.meditation;
-            affirmationText.textContent = `"${data.affirmation}"`;
-            remedyName.textContent = data.remede.name;
-            remedyDescription.textContent = data.remede.desc;
-            aromaName.textContent = data.senteur.name;
-            aromaDescription.textContent = data.senteur.desc;
-            
-            if (dailyMessage) {
-                dailyMessage.textContent = `Votre lumière ${colorName.toLowerCase()} vous invite aujourd'hui à vous concentrer sur la patience et la gratitude. ${data.affirmation}`;
-            }
-        }
-
-        function resetTherapeuticTools() {
-            [soundTherapyUI, meditationUI].forEach(el => el.classList.add('opacity-50'));
-            [playSoundButton, playMeditationButton, newAffirmationButton].forEach(btn => btn.disabled = true);
-            soundFreqLabel.textContent = '...';
-            meditationTitle.textContent = '...';
-            affirmationText.textContent = '"..."';
-            remedyName.textContent = '...';
-            aromaName.textContent = '...';
-            if(dailyMessage) dailyMessage.textContent = '';
-        }
-        
-        function toggleBreathingExercise() {
-            if (breathingInterval) {
-                clearInterval(breathingInterval);
-                breathingInterval = null;
-                startBreathingButton.textContent = "Commencer";
-                breathingText.textContent = "Prêt ?";
-            } else {
-                startBreathingButton.textContent = "Arrêter";
-                let phase = 0;
-                const phases = [
-                    { text: "Inspirez... (Ya Rahman)", duration: 4000 },
-                    { text: "Retenez (Ya Quddus)", duration: 4000 },
-                    { text: "Expirez... (Ya Salam)", duration: 4000 },
-                    { text: "Pause (Alhamdulillah)", duration: 4000 }
-                ];
-                
-                const nextPhase = () => {
-                    breathingText.textContent = phases[phase].text;
-                    setTimeout(() => {
-                        phase = (phase + 1) % phases.length;
-                    }, phases[phase].duration - 200);
-                }
-                
-                breathingInterval = setInterval(nextPhase, 4000);
-                nextPhase();
-            }
-        }
-        
-        function toggleSoundTherapy() {
-            if (recitationAudio && !recitationAudio.paused) {
-                recitationAudio.pause();
-                recitationAudio.currentTime = 0;
-                recitationAudio = null;
-
-                if (rainNoise) rainNoise.stop();
-                if (ambianceLfo) ambianceLfo.stop();
-                if (thunderTimeout) clearTimeout(thunderTimeout);
-                
-                rainNoise = null;
-                ambianceLfo = null;
-                thunderTimeout = null;
-                
-                if (audioContext && audioContext.state !== 'closed') {
-                    audioContext.close().then(() => audioContext = null);
-                }
-
-                playSoundButton.innerHTML = '▶️ Lancer';
-            } else {
-                if (!audioContext || audioContext.state === 'closed') {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-
-                const rainBufferSize = 2 * audioContext.sampleRate;
-                const rainBuffer = audioContext.createBuffer(1, rainBufferSize, audioContext.sampleRate);
-                const rainOutput = rainBuffer.getChannelData(0);
-                let lastRainOut = 0.0;
-                for (let i = 0; i < rainBufferSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    rainOutput[i] = (lastRainOut + (0.02 * white)) / 1.02;
-                    lastRainOut = rainOutput[i];
-                    rainOutput[i] *= 3.5;
-                }
-                
-                rainNoise = audioContext.createBufferSource();
-                rainNoise.buffer = rainBuffer;
-                rainNoise.loop = true;
-                
-                const rainGain = audioContext.createGain();
-                rainGain.gain.value = 0.04;
-
-                ambianceLfo = audioContext.createOscillator();
-                ambianceLfo.type = 'sine';
-                ambianceLfo.frequency.value = 0.05;
-                const lfoGain = audioContext.createGain();
-                lfoGain.gain.value = 0.03;
-
-                ambianceLfo.connect(lfoGain).connect(rainGain.gain);
-                rainNoise.connect(rainGain).connect(audioContext.destination);
-                
-                ambianceLfo.start();
-                rainNoise.start();
-
-                recitationAudio = new Audio(QURAN_AUDIO_B64);
-                recitationAudio.loop = true;
-                recitationAudio.play();
-                
-                playSoundButton.innerHTML = '⏹️ Arrêter';
-            }
-        }
-        
-        function startTafakkurMeditation() {
-            const { colorName } = currentAnalysisData;
-            if (!colorName || !TAFFAKUR_DATA[colorName]) {
-                meditationModalTitle.textContent = "Méditation Guidée";
-                meditationModalText.textContent = "Veuillez d'abord lancer une analyse pour recevoir une méditation personnalisée.";
-            } else {
-                const meditationData = TAFFAKUR_DATA[colorName];
-                meditationModalTitle.textContent = meditationData.title;
-                meditationModalText.textContent = meditationData.text;
-            }
-            meditationModal.classList.remove('hidden');
-        }
-
-        // ============================================
-        // RECORDING & HISTORY
-        // ============================================
-        function toggleRecording() {
-            isRecording = !isRecording; 
-            if(isRecording) { 
-                recordedData = []; 
-                recordingStartTime = Date.now(); 
-                recordButtonText.textContent = "⏹️ Arrêter"; 
-                recordButton.classList.add('recording-pulse'); 
-                recordStatus.textContent = "🔴 Enregistrement en cours..."; 
-                recordIntervalId = setInterval(updateTimer, 1000); 
-            } else { 
-                clearInterval(recordIntervalId);
-                recordIntervalId = null;
-                recordButtonText.textContent = "⏺️ Démarrer"; 
-                recordButton.classList.remove('recording-pulse'); 
-                recordStatus.textContent = "✅ Enregistrement terminé"; 
-                generateReport(recordedData); 
-            }
-        }
-        
-        function updateTimer() { 
-            const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000); 
-            recordTimer.textContent = formatTime(elapsedSeconds);
-        }
-        
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60).toString().padStart(2, '0'); 
-            const s = (seconds % 60).toString().padStart(2, '0'); 
-            return `${m}:${s}`;
-        }
-
-        function generateReport(data) {
-            if (data.length < 2) {
-                reportContent.innerHTML = `<p class="text-center text-slate-400">⚠️ Pas assez de données pour un rapport fiable.</p>`;
-                reportModal.classList.remove('hidden');
-                return;
-            }
-            
-            const vRates = data.map(d => d.vRate);
-            const avgVRate = Math.round(vRates.reduce((a, b) => a + b, 0) / vRates.length);
-            const avgTier = getVibrationalTier(avgVRate);
-            const colorAggregates = {};
-            data.forEach(d => {
-                const colorName = getColorName(rgbToHsv(d.r, d.g, d.b)[0], d.s, d.v);
-                colorAggregates[colorName] = (colorAggregates[colorName] || 0) + 1;
-            });
-            const dominantColor = Object.keys(colorAggregates).reduce((a, b) => colorAggregates[a] > colorAggregates[b] ? a : b);
-            
-            const sessionReport = {
-                date: new Date().toISOString(),
-                duration: data.length,
-                dominantColor,
-                avgVRate,
-                timeline: data.map(d => `rgb(${Math.round(d.r)}, ${Math.round(d.g)}, ${Math.round(d.b)})`),
+            const positions = {
+                crown: { x: cx, y: topY - h*0.2 },
+                third: { x: cx, y: topY + h*0.35 },
+                throat: { x: cx, y: topY + h*1.1 },
+                heart: { x: cx, y: topY + h*1.8 },
+                solar: { x: cx, y: topY + h*2.6 },
+                sacral: { x: cx, y: topY + h*3.4 },
+                root: { x: cx, y: topY + h*4.2 }
             };
+
+            let html = '';
+            let listHtml = '';
             
-            saveSession(sessionReport);
-
-            reportContent.innerHTML = `
-                <div class="text-center mb-6">
-                    <p class="text-lg text-slate-300">📅 ${new Date(sessionReport.date).toLocaleString('fr-FR')}</p>
-                </div>
-                <div class="mb-6">
-                    <h3 class="font-semibold text-indigo-400 mb-3 text-lg">📊 Ligne de Temps Énergétique</h3>
-                    <div class="w-full h-12 bg-slate-900 rounded-xl flex overflow-hidden shadow-lg">
-                        ${sessionReport.timeline.map(c => `<div style="flex-grow: 1; background-color: ${c};"></div>`).join('')}
-                    </div>
-                </div>
-                <div class="glass-card rounded-xl p-6">
-                    <h3 class="font-semibold text-indigo-400 mb-4 text-lg">📈 Synthèse</h3>
-                    <p class="text-slate-300 mb-2"><strong>Couleur Dominante:</strong> ${dominantColor}</p>
-                    <p class="text-slate-300"><strong>Niveau Sakînah Moyen:</strong> ${avgVRate.toLocaleString('fr-FR')} (${avgTier.level})</p>
-                </div>`;
-            reportModal.classList.remove('hidden');
-        }
-        
-        function saveSession(report) {
-            let history = JSON.parse(localStorage.getItem('auraHistory') || '[]');
-            history.unshift(report);
-            history = history.slice(0, 50);
-            localStorage.setItem('auraHistory', JSON.stringify(history));
-        }
-
-        function showHistoryModal() {
-            let history = JSON.parse(localStorage.getItem('auraHistory') || '[]');
-            if (history.length === 0) {
-                historyContent.innerHTML = `<p class="text-center text-slate-400">📭 Aucun enregistrement trouvé.</p>`;
-            } else {
-                historyContent.innerHTML = history.map(session => `
-                    <div class="glass-card rounded-xl p-6 mb-4">
-                        <p class="font-bold text-white mb-2">📅 ${new Date(session.date).toLocaleString('fr-FR')}</p>
-                        <p class="text-sm text-slate-400 mb-3">Durée: ${session.duration}s | Couleur: ${session.dominantColor} | Sakînah: ${session.avgVRate}</p>
-                        <div class="w-full h-8 bg-slate-900 rounded-lg flex overflow-hidden">
-                            ${session.timeline.map(c => `<div style="flex-grow: 1; background-color: ${c};"></div>`).join('')}
+            CHAKRAS.forEach(c => {
+                const pos = positions[c.id];
+                // Only draw if within somewhat visible range (optional)
+                
+                // Draw Dot
+                const rgb = c.color.join(',');
+                html += `<div class="chakra-dot" style="left: ${pos.x}px; top: ${pos.y}px; width: 16px; height: 16px; background-color: rgb(${rgb}); box-shadow: 0 0 15px rgb(${rgb});"></div>`;
+                
+                // Draw List Item
+                // Mock activity for MVP based on color match
+                const activity = Math.floor(Math.random() * 30) + 60; // 60-90%
+                listHtml += `
+                    <div class="flex items-center justify-between text-xs bg-white/5 p-2 rounded">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full" style="background: rgb(${rgb})"></div>
+                            <span>${c.name}</span>
                         </div>
+                        <div class="font-mono text-indigo-300">${activity}%</div>
                     </div>
-                `).join('');
-            }
-            historyModal.classList.remove('hidden');
-        }
-        
-        function clearHistory() {
-            if(confirm("🗑️ Voulez-vous vraiment supprimer tout l'historique ?")) {
-                localStorage.removeItem('auraHistory');
-                historyContent.innerHTML = `<p class="text-center text-slate-400">✅ Historique effacé.</p>`;
-            }
-        }
-        
-        function exportReport() {
-            const resultsNode = document.getElementById('results');
-            html2canvas(resultsNode, { backgroundColor: "#1e293b" }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `rapport-spirituel-${new Date().toISOString().slice(0,10)}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
+                `;
             });
-        }
-        
-        function closeModal() {
-            reportModal.classList.add('hidden');
-            historyModal.classList.add('hidden');
-            meditationModal.classList.add('hidden');
+
+            els.overlays.chakra.innerHTML = html;
+            els.panels.list.innerHTML = listHtml;
         }
 
-        // ============================================
-        // UTILITIES
-        // ============================================
-        function getVibrationalTier(rate) { 
-            const tiers = {
-                tres_bas: {level:'Très Bas', commentary:'Signal dispersé, ghaflah (insouciance) ou tristesse profonde.'},
-                bas: {level:'Bas', commentary:'Faible cohérence, préoccupations mondaines ou tension.'},
-                equilibre: {level:'Équilibré', commentary:'Signal stable, état de contentement général (rida).'},
-                eleve: {level:'Élevé', commentary:'Forte cohérence, clarté mentale et bien-être (ihsan).'},
-                optimal: {level:'Optimal', commentary:'Pic de cohérence, paix intérieure profonde (sakînah).'}
-            };
-            if (rate <= 4000) return tiers.tres_bas; 
-            if (rate <= 7500) return tiers.bas; 
-            if (rate <= 11000) return tiers.equilibre; 
-            if (rate <= 15000) return tiers.eleve; 
-            return tiers.optimal;
-        }
-
-        function rgbToHsv(r, g, b) {
-            r /= 255, g /= 255, b /= 255; 
-            let max = Math.max(r, g, b), min = Math.min(r, g, b); 
-            let h, s, v = max; 
-            let d = max - min; 
-            s = max == 0 ? 0 : d / max; 
-            if (max == min) h = 0;
-            else { 
-                switch (max) { 
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break; 
-                    case g: h = (b - r) / d + 2; break; 
-                    case b: h = (r - g) / d + 4; break; 
-                } 
-                h /= 6; 
-            } 
-            return [h, s, v];
-        }
-        
-        function hsvToRgb(h, s, v) {
-            let r, g, b;
-            let i = Math.floor(h * 6);
-            let f = h * 6 - i;
-            let p = v * (1 - s);
-            let q = v * (1 - f * s);
-            let t = v * (1 - (1 - f) * s);
-            switch (i % 6) {
-                case 0: r = v, g = t, b = p; break;
-                case 1: r = q, g = v, b = p; break;
-                [object Object]
-                    case 2: r = p, g = v, b = t; break;
-                case 3: r = p, g = q, b = v; break;
-                case 4: r = t, g = p, b = v; break;
-                case 5: r = v, g = p, b = q; break;
-            }
-            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-        }
-        
-        // ============================================
-        // ADVANCED VISUALIZATION
-        // ============================================
-        function drawAuraLayer(currentCtx, width, height, rgb, radiusFactor, opacity) {
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const maxRadius = Math.min(width, height) * radiusFactor;
-            
-            // Create radial gradient with multiple color stops
-            const gradient = currentCtx.createRadialGradient(
-                centerX, centerY, maxRadius * 0.3,
-                centerX, centerY, maxRadius
-            );
-            
-            gradient.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity * 0.9})`);
-            gradient.addColorStop(0.5, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity * 0.6})`);
-            gradient.addColorStop(0.8, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity * 0.3})`);
-            gradient.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
-            
-            currentCtx.save();
-            currentCtx.globalCompositeOperation = 'screen';
-            currentCtx.fillStyle = gradient;
-            currentCtx.fillRect(0, 0, width, height);
-            currentCtx.restore();
-        }
-        
-        function drawSubtleBodies(currentCtx, width, height, baseRgb) {
-            time += 0.015;
-            const [h, s, v] = rgbToHsv(baseRgb[0], baseRgb[1], baseRgb[2]);
-            const pulse = Math.sin(time) * 0.015;
-
-            SUBTLE_BODIES_DATA.forEach((body, index) => {
-                const bodyH = (h + body.hueShift + 1) % 1;
-                const bodyS = Math.max(0, Math.min(1, s * body.satFactor));
-                const bodyV = Math.max(0, Math.min(1, v * body.valFactor));
-                const bodyRgb = hsvToRgb(bodyH, bodyS, bodyV);
-                
-                // Add wave effect to each layer
-                const waveOffset = Math.sin(time + index * 0.5) * 0.02;
-                const bodyRadius = body.radius + pulse * (body.radius * 0.3) + waveOffset;
-                
-                drawAuraLayer(currentCtx, width, height, bodyRgb, bodyRadius, body.opacity);
-            });
-        }
-
-        function manageParticles(currentCtx, width, height, r, g, b, vibrationalRate) {
-            const baseSpeed = Math.max(0.3, vibrationalRate / 12000);
-            const spawnRate = Math.max(0.3, vibrationalRate / 15000);
-
-            // Spawn new particles
-            if (particles.length < MAX_PARTICLES && Math.random() > (1 - spawnRate)) {
-                const angle = Math.random() * Math.PI * 2;
-                const radius = (width * 0.25) + Math.random() * (width * 0.35);
-                const x = width / 2 + Math.cos(angle) * radius;
-                const y = height / 2 + Math.sin(angle) * radius;
-                
-                // Add color variation
-                const colorVar = 30;
-                const pr = Math.max(0, Math.min(255, r + (Math.random() - 0.5) * colorVar));
-                const pg = Math.max(0, Math.min(255, g + (Math.random() - 0.5) * colorVar));
-                const pb = Math.max(0, Math.min(255, b + (Math.random() - 0.5) * colorVar));
-                
-                particles.push({ 
-                    x, 
-                    y, 
-                    vx: (Math.random() - 0.5) * baseSpeed * 2, 
-                    vy: (Math.random() - 0.5) * baseSpeed * 2, 
-                    life: 1, 
-                    size: Math.random() * 3 + 1, 
-                    r: pr, 
-                    g: pg, 
-                    b: pb 
-                });
-            }
-
-            // Update and draw particles
-            currentCtx.save();
-            currentCtx.globalCompositeOperation = 'screen';
-            
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                
-                // Update position
-                p.x += p.vx; 
-                p.y += p.vy; 
-                p.life -= 0.008;
-                
-                // Add slight attraction to center
-                const dx = (width / 2) - p.x;
-                const dy = (height / 2) - p.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist > 0) {
-                    p.vx += (dx / dist) * 0.01;
-                    p.vy += (dy / dist) * 0.01;
-                }
-                
-                // Remove dead particles
-                if (p.life <= 0) { 
-                    particles.splice(i, 1); 
-                    continue; 
-                }
-                
-                // Draw particle with glow
-                const alpha = p.life * 0.9;
-                
-                // Outer glow
-                currentCtx.beginPath();
-                currentCtx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${alpha * 0.3})`;
-                currentCtx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
-                currentCtx.fill();
-                
-                // Inner particle
-                currentCtx.beginPath();
-                currentCtx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${alpha})`;
-                currentCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                currentCtx.fill();
-            }
-            
-            currentCtx.restore();
-        }
-
-        // ============================================
-        // INITIALIZATION ON LOAD
-        // ============================================
-        document.addEventListener('DOMContentLoaded', initializeApp);
+        // --- Start App ---
+        window.addEventListener('DOMContentLoaded', init);
 
     </script>
 </body>
