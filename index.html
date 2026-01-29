@@ -1,417 +1,750 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tazkiya Vision : Analyse Photo (v3.1)</title>
+    <title>NOOR-AI | Rétroaction Spirituelle & Lecture d'Aura</title>
+    <meta name="description" content="Outil d'introspection spirituelle par analyse bio-chromatique.">
+    
+    <!-- Scripts & Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Le site utilise uniquement des filtres mathématiques classiques. -->
-    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Configuration Tailwind & Custom Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Amiri"', 'serif'],
+                    },
+                    colors: {
+                        // Palette Premium "Noor"
+                        dark: {
+                            900: '#020617', // Slate 950 deep
+                            800: '#0f172a', // Slate 900
+                            700: '#1e293b', // Slate 800
+                        },
+                        gold: { 
+                            50: '#FBF9F1', 
+                            100: '#F5F0DB', 
+                            300: '#E5C86B',
+                            400: '#D4AF37', // Historic Gold
+                            500: '#B8860B', // Dark Goldenrod
+                            600: '#9B7208',
+                            glow: 'rgba(212, 175, 55, 0.6)'
+                        },
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            glow: 'rgba(16, 185, 129, 0.4)'
+                        },
+                        // Accent colors for Lataif
+                        lataif: {
+                            nafs: '#ef4444',   // Red-500
+                            qalb: '#f97316',   // Orange-500
+                            sirr: '#eab308',   // Yellow-500
+                            ruh: '#10b981',    // Emerald-500
+                            khafi: '#3b82f6',  // Blue-500
+                            akhfa: '#8b5cf6'   // Violet-500
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
-            --glass-bg: rgba(15, 23, 42, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
+        /* Base Aesthetic */
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #0f172a 100%);
-            color: white; overflow-x: hidden; min-height: 100vh;
-        }
-        .font-arabic { font-family: 'Amiri', serif; }
-        .glass-card {
-            background: var(--glass-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
-        }
-        .btn-primary {
-            background: var(--primary-gradient); border: none; color: white; font-weight: 600;
-            padding: 12px 24px; border-radius: 12px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5); }
-        
-        .video-container {
-            position: relative; border-radius: 24px; overflow: hidden; background: #000;
-            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.7); aspect-ratio: 16/9;
-        }
-        .photo-feed { width: 100%; height: 100%; object-fit: contain; }
-        .overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        
-        .chakra-dot {
-            position: absolute; border-radius: 50%; box-shadow: 0 0 10px currentColor;
-            transform: translate(-50%, -50%); transition: all 0.2s ease-out; z-index: 20;
+            /* Deep, premium dark background */
+            background-color: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(30, 41, 59, 0.3) 0px, transparent 50%);
+            color: #e2e8f0; /* Slate 200 - Softer than white */
+            overflow-x: hidden;
         }
 
-        /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        /* Glassmorphism Premium */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6); /* Darker base for better contrast */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Top highlight */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(
+                90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent
+            );
+            transition: 0.5s;
+        }
+        
+        .glass-btn:hover::before {
+            left: 100%;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 55, 0.4); 
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+        }
+
+        .glass-btn-primary {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(184, 134, 11, 0.1));
+            border-color: rgba(212, 175, 55, 0.3);
+            color: #F5F0DB;
+        }
+        .glass-btn-primary:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(184, 134, 11, 0.2));
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Aura Animations */
+        @keyframes mist-flow {
+            0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
+            100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+        }
+        .aura-layer {
+            mix-blend-mode: screen;
+            animation: mist-flow 8s ease-in-out infinite alternate;
+        }
+
+        /* Pattern Overlay */
+        .islamic-pattern {
+            /* Subtler pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2394a3b8' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Scanline Animation - Refined */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(52, 211, 153, 0.8), transparent);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+            animation: scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            display: none;
+            z-index: 20;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Utilities */
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #F5F0DB 0%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
     </style>
 </head>
-<body>
-    <header class="sticky top-0 z-50 glass-card border-b border-white/5">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">TAZKIYA VISION <span class="text-xs text-white border border-white/20 px-2 rounded-full ml-2">v3.1</span></h1>
-            <div id="status-indicator" class="w-3 h-3 rounded-full bg-emerald-500 transition-colors duration-500"></div>
+<body class="antialiased min-h-screen islamic-pattern flex flex-col font-sans selection:bg-gold-500/30 selection:text-white">
+
+    <!-- HEADER -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300 backdrop-blur-md bg-dark-900/70 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-10 h-10 rounded-xl border border-gold-500/20 flex items-center justify-center bg-gradient-to-br from-gold-500/10 to-transparent group-hover:border-gold-500/40 transition-colors shadow-lg shadow-black/20">
+                        <i class="ph ph-sparkle text-gold-400 text-xl group-hover:text-gold-300 transition-colors"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white group-hover:text-gold-100 transition-colors">NOOR<span class="text-gold-400 font-light">-AI</span></h1>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest group-hover:text-slate-400">Tazkiya Vision v4.0</p>
+                    </div>
+                </div>
+
+                <!-- Nav (Desktop) -->
+                <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                    <a href="#" class="hover:text-gold-300 transition-colors py-2 border-b-2 border-transparent hover:border-gold-500/50">Concept</a>
+                    <a href="#" class="hover:text-gold-300 transition-colors py-2 border-b-2 border-transparent hover:border-gold-500/50">Lataif</a>
+                    <a href="#" class="hover:text-gold-300 transition-colors py-2 border-b-2 border-transparent hover:border-gold-500/50">Sunnah</a>
+                </nav>
+
+                <!-- Status Badge -->
+                <div class="flex items-center gap-3">
+                     <span class="px-3 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-emerald-400 text-xs font-medium flex items-center gap-2 backdrop-blur-sm">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        Système Prêt
+                    </span>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 max-w-6xl">
-        <div class="glass-card rounded-2xl p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- GAUCHE : VISUALISATION PHOTO -->
-            <div class="lg:col-span-8 flex flex-col gap-4">
-                <div class="bg-emerald-900/10 border-b border-white/10 p-3 rounded-t-lg">
-                    <h2 class="font-bold text-emerald-400">📸 Studio d'Analyse Spirituelle</h2>
-                </div>
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow pt-28 pb-12 px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
 
-                <!-- PHOTO VIEW CONTAINER -->
-                <div id="container-photo" class="video-container relative bg-slate-900 group">
-                    <!-- Image chargée -->
-                    <img id="photo-img" class="photo-feed hidden" crossorigin="anonymous"/>
-                    <!-- Calque de dessin (Aura) -->
-                    <canvas id="canvas-photo" class="overlay-canvas"></canvas>
-                    <!-- Calque des points (Lataifs) -->
-                    <div id="chakra-photo" class="overlay-canvas"></div>
+            <!-- LEFT COLUMN: VISUALIZER (Main Interface) -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                
+                <!-- Main Viewer Card -->
+                <div class="relative w-full aspect-[4/3] rounded-3xl overflow-hidden glass-panel group border border-white/5 shadow-2xl ring-1 ring-white/5">
                     
-                    <!-- Interface d'Upload (Visible par défaut) -->
-                    <div id="upload-ui" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-all duration-500">
-                        <div class="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                            <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <!-- Placeholder / Welcome State -->
+                    <div id="welcome-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-20 bg-dark-900/60 backdrop-blur-sm transition-all duration-700">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-500/10 to-transparent border border-gold-500/20 flex items-center justify-center mb-8 animate-float shadow-[0_0_40px_rgba(212,175,55,0.05)]">
+                            <i class="ph ph-aperture text-5xl text-gold-400/80"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Chargez une photo</h3>
-                        <p class="text-slate-400 mb-6 text-sm text-center max-w-xs">Analyse classique par filtration des couleurs de la zone centrale.</p>
+                        <h2 class="text-3xl font-serif text-white mb-3">Révélez votre Lumière</h2>
+                        <p class="text-slate-400 max-w-md mb-10 text-sm leading-relaxed font-light">
+                            L'algorithme Noor-Engine analyse les micro-variations de lumière pour générer une cartographie visuelle de votre état intérieur (Qalb).
+                        </p>
                         
-                        <label class="btn-primary cursor-pointer flex items-center gap-2 transform hover:scale-105 transition-transform">
-                            <span>📤</span> Sélectionner un fichier
-                            <input type="file" id="input-photo" class="hidden" accept="image/*" onchange="handlePhoto(event)">
-                        </label>
+                        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
+                            <button onclick="triggerUpload()" class="glass-btn flex-1 py-3.5 rounded-xl font-medium text-slate-200 flex items-center justify-center gap-2 hover:text-white">
+                                <i class="ph ph-upload-simple text-lg"></i> Uploader
+                            </button>
+                            <button onclick="startCamera()" class="glass-btn glass-btn-primary flex-1 py-3.5 rounded-xl font-medium flex items-center justify-center gap-2">
+                                <i class="ph ph-camera text-lg"></i> Webcam Live
+                            </button>
+                        </div>
+                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFile(this.files[0])">
                     </div>
 
-                    <!-- Bouton Effacer -->
-                    <button onclick="resetPhoto()" class="absolute top-4 right-4 z-40 bg-black/60 hover:bg-red-500/80 text-white p-2 rounded-full hidden transition-colors backdrop-blur-md" id="btn-clear" title="Nouvelle photo">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
+                    <!-- Video / Image Output -->
+                    <video id="webcam-feed" class="absolute inset-0 w-full h-full object-cover hidden transform -scale-x-100 transition-opacity duration-500" playsinline autoplay muted></video>
+                    <img id="static-image" class="absolute inset-0 w-full h-full object-contain hidden bg-black transition-opacity duration-500">
+                    
+                    <!-- Aura Canvas Overlay -->
+                    <canvas id="aura-canvas" class="absolute inset-0 w-full h-full pointer-events-none mix-blend-screen opacity-0 transition-opacity duration-1000"></canvas>
+                    
+                    <!-- Scanning Effect -->
+                    <div id="scanner" class="scan-line"></div>
+
+                    <!-- Active Controls (Bottom Overlay) -->
+                    <div id="active-controls" class="absolute bottom-0 left-0 w-full p-6 flex justify-between items-center bg-gradient-to-t from-dark-900/90 via-dark-900/50 to-transparent opacity-0 transition-opacity duration-500 z-30 pointer-events-none">
+                        <button onclick="resetApp()" class="pointer-events-auto p-3 rounded-full bg-white/5 hover:bg-red-500/20 hover:text-red-400 text-slate-300 border border-white/5 hover:border-red-500/30 transition-all backdrop-blur-md" title="Fermer">
+                            <i class="ph ph-x text-xl"></i>
+                        </button>
+                        <button onclick="captureAnalysis()" class="pointer-events-auto px-5 py-2.5 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 text-sm font-medium border border-gold-500/20 backdrop-blur-md flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+                            <i class="ph ph-download-simple"></i> Sauvegarder
+                        </button>
+                    </div>
                 </div>
 
-                <!-- STATS -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="glass-card p-4 rounded-xl flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">État du Cœur (Qalb)</p>
-                            <p id="val-nur" class="text-2xl font-bold text-emerald-300">--</p>
-                        </div>
-                        <div class="text-emerald-400 text-3xl">💚</div>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- Cohérence -->
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-semibold">Cohérence</span>
+                        <span id="stat-coherence" class="text-3xl font-bold font-sans text-white tracking-tight">--%</span>
                     </div>
-                    <div class="glass-card p-4 rounded-xl flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Sakînah (Paix)</p>
-                            <p id="val-coh" class="text-2xl font-bold text-cyan-300">--%</p>
-                        </div>
-                        <div class="text-cyan-400 text-3xl">🕊️</div>
+                    <!-- Dominante -->
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-semibold">Dominante</span>
+                        <span id="stat-color" class="text-xl font-bold font-serif text-gold-300">...</span>
+                    </div>
+                    <!-- État -->
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-semibold">État (Hal)</span>
+                        <span id="stat-state" class="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/10">En attente</span>
                     </div>
                 </div>
             </div>
 
-            <!-- DROITE : RÉSULTATS & GUIDANCE -->
-            <div class="lg:col-span-4 flex flex-col h-full">
-                <div class="bg-emerald-900/20 p-4 rounded-t-xl border-b border-white/5">
-                    <h3 class="font-bold">✨ Analyse de l'Âme</h3>
-                </div>
+            <!-- RIGHT COLUMN: ANALYSIS DASHBOARD -->
+            <div class="lg:col-span-5 flex flex-col h-full gap-6">
                 
-                <div class="p-5 flex-grow bg-slate-900/40 space-y-6 overflow-y-auto custom-scroll" style="max-height: 600px;">
+                <!-- Main Dashboard Card -->
+                <div class="glass-panel rounded-3xl flex-grow flex flex-col h-full min-h-[600px] border border-white/5 overflow-hidden">
                     
-                    <!-- AURA COLOR REVEAL -->
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-center relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-xs text-slate-400 uppercase mb-3 relative z-10">Couleur de votre Aura</p>
-                        <div class="flex justify-center mb-3">
-                            <div id="aura-circle" class="w-24 h-24 rounded-full shadow-[0_0_30px_currentColor] border-4 border-white/20 transition-all duration-1000 bg-slate-800 relative z-10"></div>
-                        </div>
-                        <h4 id="aura-name" class="text-2xl font-bold text-white mb-1 relative z-10">En attente...</h4>
-                        <p id="aura-meaning" class="text-sm text-emerald-300 italic relative z-10">...</p>
+                    <!-- Tabs Header -->
+                    <div class="flex p-1.5 m-4 bg-dark-800/50 rounded-xl border border-white/5 backdrop-blur-md">
+                        <button onclick="switchTab('analysis')" class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium text-white bg-white/10 shadow-sm tab-btn transition-all duration-300" data-tab="analysis">
+                            Analyse
+                        </button>
+                        <button onclick="switchTab('remedy')" class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 tab-btn transition-all duration-300" data-tab="remedy">
+                            Remèdes (Tibb)
+                        </button>
                     </div>
 
-                    <!-- VIBRATION -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-2 text-emerald-300 font-bold">
-                            <span>TAUX VIBRATOIRE</span>
-                            <span id="vib-val" class="text-white font-mono">0 UB</span>
-                        </div>
-                        <div class="h-4 bg-slate-800 rounded-full overflow-hidden border border-white/10 relative shadow-inner">
-                            <div id="vib-bar" class="h-full bg-gradient-to-r from-emerald-600 via-teal-400 to-cyan-300 w-0 transition-all duration-1000"></div>
-                        </div>
-                        <p class="text-[10px] text-slate-500 text-right mt-1">Estimation par Bovis (UB)</p>
-                    </div>
+                    <!-- Content Area -->
+                    <div class="relative flex-grow overflow-hidden px-6 pb-6">
+                        
+                        <!-- TAB: ANALYSIS -->
+                        <div id="tab-analysis" class="tab-content h-full flex flex-col space-y-8 custom-scrollbar overflow-y-auto pr-2">
+                            
+                            <!-- Dynamic Header -->
+                            <div class="text-center pt-2 pb-6 border-b border-white/5">
+                                <h3 id="analysis-title" class="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 mb-2">En attente</h3>
+                                <p id="analysis-subtitle" class="text-sm text-slate-500 italic font-light leading-relaxed">"L'âme est comme un miroir, elle reflète ce qu'elle contient."</p>
+                            </div>
 
-                    <!-- LATAIFS -->
-                    <div class="space-y-3">
-                        <p class="text-xs font-bold text-slate-500 uppercase">Centres (Lataifs)</p>
-                        <div id="chakra-list" class="space-y-2">
-                            <div class="text-center py-4 text-slate-600 text-xs border border-dashed border-slate-700 rounded-lg">
-                                Chargez une photo pour voir l'analyse
+                            <!-- Lataif Insight -->
+                            <div class="space-y-4">
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <i class="ph ph-heart-beat text-gold-500"></i> Cartographie des Lataif
+                                </h4>
+                                <div id="lataif-list" class="space-y-2">
+                                    <!-- Empty State -->
+                                    <div class="p-8 rounded-2xl bg-white/3 border border-dashed border-white/10 flex flex-col items-center justify-center text-center gap-3">
+                                        <i class="ph ph-scan text-2xl text-slate-600"></i>
+                                        <p class="text-slate-500 text-sm">Activez la caméra pour scanner les centres subtils.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dhikr Suggestion Card -->
+                            <div class="bg-gradient-to-br from-emerald-900/20 to-dark-800 rounded-2xl border border-emerald-500/10 p-5 relative overflow-hidden group">
+                                <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                                <div class="flex items-start gap-4 relative z-10">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400">
+                                        <i class="ph ph-hands-praying text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Dhikr Recommandé</h4>
+                                        <p id="dhikr-text" class="text-slate-200 text-sm font-serif italic leading-relaxed">...</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- GUIDANCE CORANIQUE -->
-                    <div class="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
-                        <h5 class="font-bold text-emerald-400 text-sm mb-2 flex items-center gap-2">
-                            📖 Guidance & Dhikr
-                        </h5>
-                        <div id="guidance-content" class="space-y-3">
-                            <p class="text-sm text-slate-300 italic">L'analyse sélectionnera un verset pour vous.</p>
+                        <!-- TAB: REMEDIES -->
+                        <div id="tab-remedy" class="tab-content hidden h-full flex-col space-y-6 custom-scrollbar overflow-y-auto pr-2">
+                             <div class="text-center pt-2 pb-6">
+                                <h3 class="text-2xl font-serif text-white mb-1">Équilibrage de l'Âme</h3>
+                                <p class="text-xs text-slate-500 uppercase tracking-widest">Basé sur la Médecine Prophétique</p>
+                            </div>
+
+                            <div id="remedies-list" class="space-y-4">
+                                <!-- Dynamic Content -->
+                            </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- JS LOGIC -->
     <script>
-        /**
-         * TAZKIYA VISION ENGINE v3.1 (Non-AI Filter Edition)
-         * - Removed TensorFlow/Blazeface.
-         * - Uses fixed central region analysis for color/aura extraction.
-         * - All logic is purely mathematical/deterministic (non-ML).
-         */
-
-        const STATE = { model: null }; // Model is now obsolete, kept for structure
-        const DOM = {
-            photoImg: document.getElementById('photo-img'),
-            canvasPhoto: document.getElementById('canvas-photo'),
-            ctxPhoto: document.getElementById('canvas-photo').getContext('2d', { willReadFrequently: true }),
-            overlays: { photo: document.getElementById('chakra-photo'), upload: document.getElementById('upload-ui') },
-            stats: { 
-                nur: document.getElementById('val-nur'), 
-                coh: document.getElementById('val-coh'), 
-                guidance: document.getElementById('guidance-content'), 
-                chakraList: document.getElementById('chakra-list'), 
-                vibBar: document.getElementById('vib-bar'), 
-                vibVal: document.getElementById('vib-val'),
-                auraCircle: document.getElementById('aura-circle'),
-                auraName: document.getElementById('aura-name'),
-                auraMeaning: document.getElementById('aura-meaning')
+        // --- DATA & KNOWLEDGE BASE ---
+        const KNOWLEDGE = {
+            colors: {
+                'Rouge': {
+                    name: "Al-Nafs (L'Égo)",
+                    desc: "Énergie vitale brute. Indique souvent une passion intense ou de l'impulsivité. Votre âme demande de l'ancrage.",
+                    lataif: "Nafs",
+                    asma: "Ya Hayyu (Ô Vivant)",
+                    remedy: "Jeûne intermittent (Lundi/Jeudi), Marche pieds nus, Réduire la viande rouge.",
+                    dhikr: "Astaghfirullah (100x)",
+                    tone: [239, 68, 68],
+                    bg: "bg-red-500"
+                },
+                'Orange': {
+                    name: "Shawq (Le Désir)",
+                    desc: "Créativité et émotions relationnelles. Un besoin d'équilibre social se fait sentir.",
+                    lataif: "Qalb (Cœur)",
+                    asma: "Ya Wadud (Ô Aimant)",
+                    remedy: "Partager un repas (Sadaqa), Boire de l'eau miellée, Hospitalité.",
+                    dhikr: "Alhamdulillah (33x)",
+                    tone: [249, 115, 22],
+                    bg: "bg-orange-500"
+                },
+                'Jaune': {
+                    name: "Fahm (L'Intellect)",
+                    desc: "Activité mentale intense. Clarté intellectuelle mais risque d'anxiété mentale.",
+                    lataif: "Sirr (Le Secret)",
+                    asma: "Ya Alim (Ô Savant)",
+                    remedy: "Lecture du Coran (Sourate Ya-Sin), Tisane de camomille, Silence prolongé.",
+                    dhikr: "SubhanAllah (33x)",
+                    tone: [234, 179, 8],
+                    bg: "bg-yellow-500"
+                },
+                'Vert': {
+                    name: "Itma'nan (La Sérénité)",
+                    desc: "État d'équilibre naturel et de guérison. Le cœur est en phase de repos.",
+                    lataif: "Ruh (L'Esprit)",
+                    asma: "Ya Salam (Ô Paix)",
+                    remedy: "Passer du temps en nature, Respiration profonde, Manger des aliments frais.",
+                    dhikr: "Salat al-Nabi (Prière sur le Prophète)",
+                    tone: [16, 185, 129],
+                    bg: "bg-emerald-500"
+                },
+                'Bleu': {
+                    name: "Yaqin (La Certitude)",
+                    desc: "Communication vraie et calme profond. Confiance (Tawakkul) élevée.",
+                    lataif: "Khafi (Le Caché)",
+                    asma: "Ya Haqq (Ô Vérité)",
+                    remedy: "Parler avec vérité, Boire de l'eau pure, Écouter des récitations douces.",
+                    dhikr: "La ilaha illa Allah",
+                    tone: [59, 130, 246],
+                    bg: "bg-blue-500"
+                },
+                'Violet': {
+                    name: "Fana (L'Extinction)",
+                    desc: "Haute spiritualité, détachement du monde matériel. État méditatif profond.",
+                    lataif: "Akhfa (Le Plus Caché)",
+                    asma: "Ya Batin (Ô Caché)",
+                    remedy: "Prière nocturne (Tahajjud), Méditation solitaire, Parfum (Musk).",
+                    dhikr: "Allahu Akbar (33x)",
+                    tone: [139, 92, 246],
+                    bg: "bg-violet-500"
+                }
             }
         };
 
-        const DATA = {
-            colors: {
-                'Rouge': { meaning: 'Force & Ancrage (Al-Quwwa)', verset: 'Et quant à la terre, Il l\'a établie pour les créatures. (55:10)', dhikr: 'Ya Hayyu Ya Qayyum (Ô Vivant, Ô Subsistant) - 33x' },
-                'Orange': { meaning: 'Créativité & Lien (Silat)', verset: 'C\'est Lui qui a créé les cieux et la terre en toute vérité. (6:73)', dhikr: 'Alhamdulillah (Louange à Allah) - 33x' },
-                'Jaune': { meaning: 'Lumière & Savoir (Ilm)', verset: 'Allah est la Lumière des cieux et de la terre. (24:35)', dhikr: 'Ya Nur (Ô Lumière) - 100x' },
-                'Vert': { meaning: 'Guérison & Cœur (Shifa)', verset: 'Et Il guérit les poitrines d\'un peuple croyant. (9:14)', dhikr: 'Ya Salam (Ô Paix) - 33x' },
-                'Bleu': { meaning: 'Vérité & Parole (Haqq)', verset: 'Et dis la vérité, même si elle est contre toi-même. (4:135)', dhikr: 'SubhanAllah (Gloire à Allah) - 33x' },
-                'Indigo': { meaning: 'Vision & Sagesse (Basira)', verset: 'Craignez Allah et Allah vous enseignera. (2:282)', dhikr: 'Ya Alim (Ô Omniscient) - 33x' },
-                'Violet': { meaning: 'Spiritualité (Ruhaniya)', verset: 'Ceux qui croient et dont les cœurs s\'apaisent au souvenir d\'Allah. (13:28)', dhikr: 'La ilaha illa Allah - 100x' },
-                'Blanc': { meaning: 'Pureté Absolue (Tahara)', verset: 'Il a réussi, certes, celui qui la purifie. (91:9)', dhikr: 'Astaghfirullah (Je demande pardon) - 100x' }
+        // --- STATE & DOM ---
+        const STATE = {
+            stream: null,
+            isScanning: false,
+            dominantColor: null,
+            canvasCtx: null,
+            animationFrame: null
+        };
+
+        const DOM = {
+            video: document.getElementById('webcam-feed'),
+            img: document.getElementById('static-image'),
+            canvas: document.getElementById('aura-canvas'),
+            scanner: document.getElementById('scanner'),
+            welcome: document.getElementById('welcome-state'),
+            controls: document.getElementById('active-controls'),
+            stats: {
+                coh: document.getElementById('stat-coherence'),
+                col: document.getElementById('stat-color'),
+                hal: document.getElementById('stat-state')
             },
-            chakras: [
-                {id: 'crown', n:'Akhfa', c:[139,92,246]}, {id: 'third', n:'Khafi', c:[79,70,229]}, {id: 'throat', n:'Ruh', c:[59,130,246]},
-                {id: 'heart', n:'Sirr', c:[34,197,94]}, {id: 'solar', n:'Qalb', c:[234,179,8]}, {id: 'sacral', n:'Nafs', c:[249,115,22]}, {id: 'root', n:'Asas', c:[239,68,68]}
-            ]
+            analysis: {
+                title: document.getElementById('analysis-title'),
+                subtitle: document.getElementById('analysis-subtitle'),
+                lataifList: document.getElementById('lataif-list'),
+                remediesList: document.getElementById('remedies-list'),
+                dhikr: document.getElementById('dhikr-text')
+            }
         };
 
-        // --- INIT ---
+        // --- INITIALIZATION ---
         window.onload = () => {
-            // Pas de chargement d'IA, on signale que le site est prêt immédiatement
-            document.getElementById('status-indicator').classList.replace('bg-slate-600', 'bg-emerald-500');
-            console.log("Site prêt (Mode Filtre Classique)");
+            STATE.canvasCtx = DOM.canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
         };
 
-        // --- HANDLERS ---
-        function handlePhoto(e) {
-            const file = e.target.files[0]; if(!file) return;
+        function resizeCanvas() {
+            DOM.canvas.width = DOM.canvas.parentElement.offsetWidth;
+            DOM.canvas.height = DOM.canvas.parentElement.offsetHeight;
+        }
+
+        // --- INPUT HANDLING ---
+        function triggerUpload() { document.getElementById('file-input').click(); }
+
+        function handleFile(file) {
+            if (!file) return;
             const reader = new FileReader();
-            
-            reader.onload = (evt) => {
-                DOM.photoImg.src = evt.target.result;
-                DOM.photoImg.classList.add('hidden'); 
-                DOM.overlays.upload.classList.add('hidden');
-                
-                DOM.photoImg.onload = () => {
-                    document.getElementById('btn-clear').classList.remove('hidden');
-                    
-                    // Ajuster la taille du canvas à la taille de l'image (non pas la taille d'affichage)
-                    DOM.canvasPhoto.width = DOM.photoImg.width; 
-                    DOM.canvasPhoto.height = DOM.photoImg.height;
-                    
-                    // Dessiner l'image originale
-                    DOM.ctxPhoto.drawImage(DOM.photoImg, 0, 0); 
-                    
-                    // --- NOUVEAU: Analyse Filtre Classique ---
-                    // On simule une "face" centrée pour l'analyse et la visualisation
-                    const center_x = DOM.canvasPhoto.width / 2;
-                    const center_y = DOM.canvasPhoto.height / 2;
-                    const face_w = Math.min(DOM.canvasPhoto.width, DOM.canvasPhoto.height) * 0.4; // 40% de la taille min
-                    const face_h = face_w * 1.3; // Proportion de visage
-                    
-                    const simulatedFace = {
-                        x: center_x - face_w / 2, 
-                        y: center_y - face_h / 2, 
-                        w: face_w, 
-                        h: face_h 
-                    };
-                    
-                    processFaceData(simulatedFace, DOM.ctxPhoto, DOM.overlays.photo);
-                    
-                };
+            reader.onload = (e) => {
+                DOM.img.src = e.target.result;
+                DOM.img.classList.remove('hidden');
+                DOM.video.classList.add('hidden');
+                stopCamera();
+                startAnalysis(DOM.img);
             };
             reader.readAsDataURL(file);
         }
-        
-        function resetPhoto() {
-            DOM.photoImg.src = ""; 
-            DOM.overlays.upload.classList.remove('hidden'); 
-            document.getElementById('btn-clear').classList.add('hidden'); 
-            DOM.ctxPhoto.clearRect(0,0,DOM.canvasPhoto.width, DOM.canvasPhoto.height); 
-            DOM.overlays.photo.innerHTML = '';
-            document.getElementById('input-photo').value = '';
+
+        async function startCamera() {
+            try {
+                STATE.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                DOM.video.srcObject = STATE.stream;
+                DOM.video.classList.remove('hidden');
+                DOM.img.classList.add('hidden');
+                
+                // Wait for video to be ready
+                DOM.video.onloadedmetadata = () => {
+                    startAnalysis(DOM.video, true);
+                };
+            } catch (err) {
+                alert("Impossible d'accéder à la caméra. Vérifiez les permissions.");
+            }
+        }
+
+        function stopCamera() {
+            if (STATE.stream) {
+                STATE.stream.getTracks().forEach(track => track.stop());
+                STATE.stream = null;
+            }
+        }
+
+        function resetApp() {
+            stopCamera();
+            DOM.welcome.classList.remove('opacity-0', 'pointer-events-none');
+            DOM.welcome.classList.add('z-20');
+            DOM.video.classList.add('hidden');
+            DOM.img.classList.add('hidden');
+            DOM.canvas.classList.add('opacity-0');
+            DOM.scanner.style.display = 'none';
+            DOM.controls.classList.remove('opacity-100');
+            DOM.controls.classList.add('pointer-events-none');
+            cancelAnimationFrame(STATE.animationFrame);
             
-            // Reset Stats UI
-            DOM.stats.nur.innerText = "--";
+            // Reset UI Text
             DOM.stats.coh.innerText = "--%";
-            DOM.stats.auraName.innerText = "En attente...";
-            DOM.stats.auraCircle.style.backgroundColor = "";
-            DOM.stats.auraCircle.style.boxShadow = "";
-            DOM.stats.vibBar.style.width = "0%";
-            DOM.stats.vibVal.innerText = "0 UB";
-            DOM.stats.chakraList.innerHTML = '<div class="text-center py-4 text-slate-600 text-xs border border-dashed border-slate-700 rounded-lg">Chargez une photo pour voir l\'analyse</div>';
-        }
-        window.clearPhoto = resetPhoto;
-
-        // --- ANALYSIS CORE ---
-        function processFaceData(face, ctx, overlayLayer) {
-            // Extraire les données de couleur de la région centrale simulée (visage)
-            const cx = face.x + face.w/2;
-            const cy = face.y + face.h/2;
-            
-            // Échantillonnage de la zone du visage
-            const p = ctx.getImageData(face.x, face.y, face.w, face.h).data;
-            
-            let r=0, g=0, b=0, c=0;
-            // Échantillonner 1 pixel sur 80 pour la vitesse (pas besoin de Blazeface pour ça)
-            for(let i=0; i<p.length; i+=80) { r+=p[i]; g+=p[i+1]; b+=p[i+2]; c++; }
-            r=Math.round(r/c); g=Math.round(g/c); b=Math.round(b/c);
-            
-            // Couleurs des couches
-            const [h, s, l] = rgbToHsl(r,g,b);
-            const rgbAstral = hslToRgb((h + 0.1) % 1, s, l);
-            const rgbCausal = hslToRgb((h + 0.5) % 1, s*0.8, Math.min(1, l*1.2));
-            
-            // Dessiner les Halos (Multicouches) par-dessus la photo
-            drawLayer(ctx, cx, cy, face.w * 2.0, `rgba(${rgbCausal[0]},${rgbCausal[1]},${rgbCausal[2]}, 0.4)`); // Spirituel
-            drawLayer(ctx, cx, cy, face.w * 1.5, `rgba(${rgbAstral[0]},${rgbAstral[1]},${rgbAstral[2]}, 0.5)`); // Astral
-            drawLayer(ctx, cx, cy, face.w * 1.05, `rgba(${r},${g},${b}, 0.6)`); // Physique
-            
-            // Analyse des données
-            const analysis = getSpiritualAnalysis(r,g,b);
-            updateUI(analysis, r, g, b);
-            
-            // Afficher les points Lataifs
-            renderLataifs(face, overlayLayer);
+            DOM.stats.col.innerText = "...";
+            DOM.analysis.title.innerText = "En attente";
         }
 
-        function drawLayer(ctx, cx, cy, radius, color) {
-            const grad = ctx.createRadialGradient(cx, cy, radius*0.3, cx, cy, radius);
-            grad.addColorStop(0, color);
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad;
-            ctx.globalCompositeOperation = 'screen';
+        // --- CORE ANALYSIS ENGINE ---
+        function startAnalysis(sourceElement, isVideo = false) {
+            // UI Transition
+            DOM.welcome.classList.add('opacity-0', 'pointer-events-none');
+            DOM.welcome.classList.remove('z-20');
+            DOM.controls.classList.remove('pointer-events-none');
+            DOM.controls.classList.add('opacity-100');
+            DOM.scanner.style.display = 'block';
+            
+            // Wait a brief moment for effect, then analyze
+            setTimeout(() => {
+                processImage(sourceElement, isVideo);
+                DOM.canvas.classList.remove('opacity-0');
+            }, 800);
+        }
+
+        function processImage(source, isVideo) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 300; // Small resolution for processing speed
+            canvas.height = 300;
+            
+            // Function to run every frame (if video) or once (if image)
+            const loop = () => {
+                if (!source) return;
+                
+                // Draw source to temp canvas
+                ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+                const frameData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 1. Calculate Dominant Color & Coherence
+                const analysis = analyzePixels(frameData.data);
+                
+                // 2. Update Aura Visuals
+                drawAura(analysis.colorRGB);
+                
+                // 3. Update UI (Throttle this if video to avoid flickering text)
+                if (Math.random() > 0.9 || !isVideo) {
+                    updateDashboard(analysis);
+                }
+
+                if (isVideo && STATE.stream) {
+                    STATE.animationFrame = requestAnimationFrame(loop);
+                }
+            };
+
+            loop();
+        }
+
+        function analyzePixels(data) {
+            let r=0, g=0, b=0, count=0;
+            let brightnessTotal = 0;
+            
+            for (let i = 0; i < data.length; i += 40) { // Sample every 10th pixel
+                r += data[i];
+                g += data[i+1];
+                b += data[i+2];
+                brightnessTotal += (data[i] + data[i+1] + data[i+2]) / 3;
+                count++;
+            }
+            
+            r = Math.round(r/count);
+            g = Math.round(g/count);
+            b = Math.round(b/count);
+            
+            // Determine Color Category
+            const max = Math.max(r, g, b);
+            let colorKey = 'Blanc'; // Default
+            
+            if (max === r && g < r*0.8 && b < r*0.8) colorKey = 'Rouge';
+            else if (max === r && g > r*0.6) colorKey = 'Orange';
+            else if (max === g && r > g*0.6) colorKey = 'Jaune';
+            else if (max === g) colorKey = 'Vert';
+            else if (max === b && r < b*0.6 && g < b*0.6) colorKey = 'Bleu';
+            else if (max === b) colorKey = 'Violet';
+
+            // Calculate Coherence (Variance simulation)
+            const avgBrightness = brightnessTotal / count;
+            const coherence = Math.min(98, Math.max(40, Math.round((avgBrightness / 255) * 100) + 10));
+
+            return { colorKey, colorRGB: [r,g,b], coherence };
+        }
+
+        // --- VISUALIZATION (Noor-Engine) ---
+        function drawAura(rgb) {
+            const ctx = STATE.canvasCtx;
+            const w = DOM.canvas.width;
+            const h = DOM.canvas.height;
+            
+            // Fade out previous frame slightly for trail effect
+            ctx.clearRect(0,0, w, h);
+            
+            // Create Gradient
+            const cx = w / 2;
+            const cy = h / 2; // Assume centered subject
+            const r = Math.min(w, h) * 0.4;
+            
+            // Main Aura Blob with multi-stop gradient for richness
+            const gradient = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 1.6);
+            gradient.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.0)`);
+            gradient.addColorStop(0.3, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`);
+            gradient.addColorStop(0.5, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.4)`);
+            gradient.addColorStop(0.7, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.1)`);
+            gradient.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.0)`);
+            
+            ctx.fillStyle = gradient;
+            
+            // Add some noise/movement (Simulated)
+            const time = Date.now() / 1500;
+            const offsetX = Math.sin(time) * 15;
+            const offsetY = Math.cos(time * 1.2) * 15;
+            const breathe = Math.sin(time * 2) * 0.05 + 1;
+
+            ctx.save();
+            ctx.translate(cx + offsetX, cy + offsetY);
+            ctx.scale(breathe, breathe);
+            ctx.translate(-cx, -cy);
+            
             ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, Math.PI*2);
+            ctx.arc(cx, cy, r * 1.4, 0, Math.PI * 2);
             ctx.fill();
-            ctx.globalCompositeOperation = 'source-over';
+            ctx.restore();
         }
 
-        function getSpiritualAnalysis(r,g,b) {
-            const max = Math.max(r,g,b);
-            let color = 'Blanc';
-            if(max===r && g<r*0.7) color='Rouge'; else if(max===r) color='Orange';
-            else if(max===g) color='Vert'; else if(max===b && r<b*0.7) color='Bleu';
-            else if(max===b) color='Violet';
+        // --- UI UPDATES ---
+        function updateDashboard(data) {
+            const info = KNOWLEDGE.colors[data.colorKey] || KNOWLEDGE.colors['Blanc'];
             
-            // Calculs simulés basés sur la colorimétrie de la photo
-            const luminosity = (r*0.299 + g*0.587 + b*0.114);
-            const coh = Math.min(100, Math.max(40, Math.round((luminosity / 255) * 100))); 
-            const nur = luminosity > 100 ? 'Illuminé' : 'Voilé';
+            // Stats
+            DOM.stats.coh.innerText = data.coherence + "%";
+            DOM.stats.col.innerText = data.colorKey;
+            DOM.stats.col.style.color = `rgb(${data.colorRGB.join(',')})`;
+            DOM.stats.hal.innerText = data.coherence > 70 ? "Aligné" : "Dispersé";
+            DOM.stats.hal.className = data.coherence > 70 
+                ? "text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/10"
+                : "text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/10";
+
+            // Analysis Tab
+            DOM.analysis.title.innerText = info.name;
+            DOM.analysis.title.style.background = `linear-gradient(to bottom, #fff, rgb(${data.colorRGB.join(',')}))`;
+            DOM.analysis.title.style.webkitBackgroundClip = "text";
+            DOM.analysis.title.style.webkitTextFillColor = "transparent";
             
-            return { color, nur, coh, ...DATA.colors[color] || DATA.colors['Blanc'] };
+            DOM.analysis.subtitle.innerText = info.desc;
+            DOM.analysis.dhikr.innerText = `${info.asma} - ${info.dhikr}`;
+
+            // Populate Lists (Only if content changed to avoid DOM thrashing)
+            if (DOM.analysis.lataifList.getAttribute('data-current') !== data.colorKey) {
+                
+                // Animate change
+                DOM.analysis.lataifList.style.opacity = '0';
+                setTimeout(() => {
+                    DOM.analysis.lataifList.innerHTML = `
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-l-transparent flex items-center justify-between group hover:bg-white/5 transition-all" style="border-color: rgb(${data.colorRGB.join(',')})">
+                            <div>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-1">Centre Actif</p>
+                                <p class="font-bold text-white text-lg">${info.lataif}</p>
+                            </div>
+                            <div class="h-10 w-10 rounded-full shadow-[0_0_20px_currentColor] flex items-center justify-center text-black/50 font-bold" style="background-color: rgb(${data.colorRGB.join(',')}); color: rgb(${data.colorRGB.join(',')})">
+                                <i class="ph ph-sparkle text-white text-lg"></i>
+                            </div>
+                        </div>
+                    `;
+                    
+                    DOM.analysis.remediesList.innerHTML = `
+                        <div class="p-5 rounded-2xl bg-emerald-900/10 border border-emerald-500/10 hover:border-emerald-500/30 transition-colors">
+                            <h5 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i class="ph ph-plant"></i> Nutrition & Corps</h5>
+                            <p class="text-sm text-slate-300 leading-relaxed">${info.remedy}</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-gold-500/5 border border-gold-500/10 hover:border-gold-500/30 transition-colors">
+                            <h5 class="font-bold text-gold-400 mb-2 flex items-center gap-2"><i class="ph ph-moon-stars"></i> Pratique Spirituelle</h5>
+                            <p class="text-sm text-slate-300 leading-relaxed">Concentrez-vous sur le nom divin <strong class="text-white">${info.asma}</strong>.</p>
+                        </div>
+                    `;
+                    
+                    DOM.analysis.lataifList.style.opacity = '1';
+                }, 150);
+                
+                DOM.analysis.lataifList.setAttribute('data-current', data.colorKey);
+            }
         }
 
-        function renderLataifs(face, layer) {
-            const cx = face.x + face.w/2;
-            let html = '';
-            // Les positions sont maintenant relatives au centre de la zone de visage simulée
-            const positions = [{ y: -0.2 }, { y: 0.35 }, { y: 1.1 }, { y: 1.8 }, { y: 2.5 }, { y: 3.2 }, { y: 3.9 }];
-            let listHtml = '';
-
-            DATA.chakras.forEach((k, i) => {
-                const pos = positions[i];
-                if (!pos) return;
-                const dotY = face.y + (face.h * pos.y);
-                const rgb = `rgb(${k.c.join(',')})`;
-                
-                // Point sur l'image
-                html += `<div class="chakra-dot" style="left:${cx}px; top:${dotY}px; background:${rgb}; width:14px; height:14px; box-shadow: 0 0 15px ${rgb};"></div>`;
-                
-                // Élément dans la liste
-                const activity = Math.round(Math.random()*20 + 70); // Simulation activité
-                listHtml += `<div class="flex items-center justify-between text-xs bg-white/5 p-2 rounded hover:bg-white/10 transition-colors border border-white/5"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]" style="background-color:${rgb}; color:${rgb}"></div><span class="text-slate-300 font-medium">${k.n}</span></div><span class="font-mono text-emerald-300">${activity}%</span></div>`;
+        // --- TABS & UTILS ---
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden', 'flex');
+            document.getElementById(`tab-${tabName}`).classList.add('flex');
+            
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white/10', 'text-white', 'shadow-sm');
+                el.classList.add('text-slate-400', 'hover:text-white');
             });
-            layer.innerHTML = html;
-            DOM.stats.chakraList.innerHTML = listHtml;
+            const activeBtn = document.querySelector(`button[data-tab="${tabName}"]`);
+            activeBtn.classList.add('bg-white/10', 'text-white', 'shadow-sm');
+            activeBtn.classList.remove('text-slate-400');
         }
 
-        function updateUI(res, r, g, b) {
-            DOM.stats.nur.innerText = res.nur;
-            DOM.stats.coh.innerText = res.coh + '%';
-            
-            DOM.stats.auraCircle.style.backgroundColor = `rgb(${r},${g},${b})`;
-            DOM.stats.auraCircle.style.color = `rgb(${r},${g},${b})`;
-            DOM.stats.auraName.innerText = res.color;
-            DOM.stats.auraName.style.color = `rgb(${r},${g},${b})`;
-            DOM.stats.auraMeaning.innerText = res.meaning;
-
-            const vibration = Math.round(res.coh * 80 + 4000); 
-            DOM.stats.vibBar.style.width = res.coh + '%';
-            DOM.stats.vibVal.innerText = vibration + " UB";
-
-            DOM.stats.guidance.innerHTML = `
-                <div class="mb-3 p-4 bg-slate-800/50 rounded-lg border border-white/5 shadow-lg">
-                    <p class="text-[10px] text-emerald-400 uppercase mb-2 font-bold tracking-wider">Verset du Moment</p>
-                    <p class="font-arabic text-lg text-white leading-relaxed dir-rtl text-right">"${res.verset}"</p>
-                </div>
-                <div class="p-4 bg-slate-800/50 rounded-lg border border-white/5 shadow-lg">
-                    <p class="text-[10px] text-cyan-400 uppercase mb-2 font-bold tracking-wider">Dhikr Recommandé</p>
-                    <p class="font-bold text-white text-md">${res.dhikr}</p>
-                </div>
-            `;
-        }
-
-        // --- MATH UTILS ---
-        function rgbToHsl(r, g, b) {
-            r /= 255, g /= 255, b /= 255;
-            const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-            if (max == min) { h = s = 0; } else {
-                const d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }
-                h /= 6;
-            }
-            return [h, s, l];
-        }
-        function hslToRgb(h, s, l) {
-            let r, g, b;
-            if (s == 0) { r = g = b = l; } else {
-                const hue2rgb = (p, q, t) => { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1/6) return p + (q - p) * 6 * t; if (t < 1/2) return q; if (t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p; };
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s; const p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1/3);
-            }
-            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        function captureAnalysis() {
+            window.print();
         }
     </script>
 </body>
