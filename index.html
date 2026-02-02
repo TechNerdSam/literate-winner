@@ -1,72 +1,54 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" class="scroll-smooth antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOOR-AI | Rétroaction Spirituelle & Lecture d'Aura</title>
-    <meta name="description" content="Outil d'introspection spirituelle par analyse bio-chromatique.">
-    
-    <!-- Scripts & Styles -->
+    <title>NOOR-AI | Lataif-e-Sitta & Muraqaba</title>
+    <meta name="description" content="Outil de Muhasaba (introspection) basé sur la science des Lataif et le bio-feedback.">
+
+    <!-- Scripts & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400;500;600&family=Geist:wght@100..900&display=swap" rel="stylesheet">
 
-    <!-- Configuration Tailwind & Custom Styles -->
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Geist"', 'sans-serif'],
                         serif: ['"Amiri"', 'serif'],
+                        display: ['"Cinzel"', 'serif'],
                     },
                     colors: {
-                        // Palette Premium "Noor"
-                        dark: {
-                            900: '#020617', // Slate 950 deep
-                            800: '#0f172a', // Slate 900
-                            700: '#1e293b', // Slate 800
+                        void: '#06140e',
+                        gold: '#D4AF37',
+                        glass: {
+                            base: 'rgba(20, 30, 25, 0.7)',
+                            border: 'rgba(212, 175, 55, 0.15)',
                         },
-                        gold: { 
-                            50: '#FBF9F1', 
-                            100: '#F5F0DB', 
-                            300: '#E5C86B',
-                            400: '#D4AF37', // Historic Gold
-                            500: '#B8860B', // Dark Goldenrod
-                            600: '#9B7208',
-                            glow: 'rgba(212, 175, 55, 0.6)'
-                        },
-                        emerald: {
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                            glow: 'rgba(16, 185, 129, 0.4)'
-                        },
-                        // Accent colors for Lataif
                         lataif: {
-                            nafs: '#ef4444',   // Red-500
-                            qalb: '#f97316',   // Orange-500
-                            sirr: '#eab308',   // Yellow-500
-                            ruh: '#10b981',    // Emerald-500
-                            khafi: '#3b82f6',  // Blue-500
-                            akhfa: '#8b5cf6'   // Violet-500
+                            qalb: '#F1C40F',  
+                            ruh: '#E74C3C',   
+                            sirr: '#ECF0F1',  
+                            khafi: '#2ECC71', 
+                            akhfa: '#9B59B6', 
+                            nafs: '#3498DB'   
                         }
                     },
                     animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'scan': 'scan 6s linear infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'spin-slow': 'spin 12s linear infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'shimmer': 'shimmer 2.5s linear infinite',
                     },
                     keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        shimmer: {
-                            '0%': { backgroundPosition: '-1000px 0' },
-                            '100%': { backgroundPosition: '1000px 0' }
-                        }
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
+                        scan: { '0%': { top: '-10%' }, '100%': { top: '110%' } }
                     }
                 }
             }
@@ -74,678 +56,709 @@
     </script>
 
     <style>
-        /* Base Aesthetic */
-        body {
-            /* Deep, premium dark background */
-            background-color: #020617;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
-                radial-gradient(at 50% 100%, rgba(30, 41, 59, 0.3) 0px, transparent 50%);
-            color: #e2e8f0; /* Slate 200 - Softer than white */
-            overflow-x: hidden;
+        /* --- CORE STYLES --- */
+        body { background-color: #06140e; color: #F0F0F0; overflow-x: hidden; }
+        .fixed-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; pointer-events: none; }
+        .arabesque-overlay { 
+            opacity: 0.05; 
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='1'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
-
-        /* Glassmorphism Premium */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.6); /* Darker base for better contrast */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-                0 2px 4px -1px rgba(0, 0, 0, 0.06),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Top highlight */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #06140e; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }
+        .glass-card {
+            background: rgba(15, 25, 20, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            cursor: pointer;
         }
-
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(4px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .glass-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(
-                90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
-                transparent
-            );
-            transition: 0.5s;
-        }
-        
-        .glass-btn:hover::before {
-            left: 100%;
-        }
-
-        .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(212, 175, 55, 0.4); 
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
-        }
-
-        .glass-btn-primary {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(184, 134, 11, 0.1));
+        .glass-card:hover {
+            background: rgba(20, 35, 30, 0.7);
             border-color: rgba(212, 175, 55, 0.3);
-            color: #F5F0DB;
+            transform: translateY(-2px);
         }
-        .glass-btn-primary:hover {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(184, 134, 11, 0.2));
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        .text-gold {
+            background: linear-gradient(to right, #F7DC6F, #D4AF37, #F1C40F);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        /* Aura Animations */
-        @keyframes mist-flow {
-            0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
-            50% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
-            100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
-        }
-        .aura-layer {
-            mix-blend-mode: screen;
-            animation: mist-flow 8s ease-in-out infinite alternate;
-        }
-
-        /* Pattern Overlay */
-        .islamic-pattern {
-            /* Subtler pattern */
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2394a3b8' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        /* Scanline Animation - Refined */
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(52, 211, 153, 0.8), transparent);
-            box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
-            animation: scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            display: none;
-            z-index: 20;
-        }
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        /* Utilities */
-        .text-gradient-gold {
-            background: linear-gradient(135deg, #F5F0DB 0%, #D4AF37 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        video, #ar-overlay { transform: scaleX(-1); }
+        .bismillah { font-family: 'Amiri', serif; font-size: 2rem; color: rgba(212, 175, 55, 0.8); margin-bottom: 1.5rem; }
+        .tasbih-btn:active { transform: scale(0.95); }
     </style>
 </head>
-<body class="antialiased min-h-screen islamic-pattern flex flex-col font-sans selection:bg-gold-500/30 selection:text-white">
+<body class="selection:bg-emerald-700 selection:text-white">
 
-    <!-- HEADER -->
-    <header class="fixed w-full top-0 z-50 transition-all duration-300 backdrop-blur-md bg-dark-900/70 border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-3 group cursor-pointer">
-                    <div class="w-10 h-10 rounded-xl border border-gold-500/20 flex items-center justify-center bg-gradient-to-br from-gold-500/10 to-transparent group-hover:border-gold-500/40 transition-colors shadow-lg shadow-black/20">
-                        <i class="ph ph-sparkle text-gold-400 text-xl group-hover:text-gold-300 transition-colors"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight text-white group-hover:text-gold-100 transition-colors">NOOR<span class="text-gold-400 font-light">-AI</span></h1>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest group-hover:text-slate-400">Tazkiya Vision v4.0</p>
-                    </div>
-                </div>
+    <!-- 1. BACKGROUND LAYERS -->
+    <div class="fixed-bg">
+        <canvas id="aura-bg" class="w-full h-full opacity-40 mix-blend-screen"></canvas>
+        <div class="absolute inset-0 bg-gradient-to-b from-void via-transparent to-void"></div>
+        <div class="arabesque-overlay absolute inset-0 w-full h-full"></div>
+    </div>
 
-                <!-- Nav (Desktop) -->
-                <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-                    <a href="#" class="hover:text-gold-300 transition-colors py-2 border-b-2 border-transparent hover:border-gold-500/50">Concept</a>
-                    <a href="#" class="hover:text-gold-300 transition-colors py-2 border-b-2 border-transparent hover:border-gold-500/50">Lataif</a>
-                    <a href="#" class="hover:text-gold-300 transition-colors py-2 border-b-2 border-transparent hover:border-gold-500/50">Sunnah</a>
-                </nav>
-
-                <!-- Status Badge -->
-                <div class="flex items-center gap-3">
-                     <span class="px-3 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-emerald-400 text-xs font-medium flex items-center gap-2 backdrop-blur-sm">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        Système Prêt
-                    </span>
-                </div>
+    <!-- 2. NAVIGATION -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="glass-card px-5 py-2 rounded-full flex items-center gap-3 group !cursor-default">
+                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_15px_#34D399]"></div>
+                <span class="font-display font-bold tracking-[0.2em] text-sm text-white group-hover:tracking-[0.3em] transition-all">NOOR</span>
+            </a>
+            <div class="hidden md:flex gap-4">
+                <a href="#concept" class="glass-card px-4 py-2 rounded-full text-xs font-mono uppercase text-white/60 hover:text-white hover:border-gold/50 transition-colors">Tazkiyah</a>
+                <a href="#scanner" class="glass-card px-4 py-2 rounded-full text-xs font-mono uppercase text-white/60 hover:text-white hover:border-gold/50 transition-colors">Scan des 6 Lataif</a>
+                <a href="#lataif" class="glass-card px-4 py-2 rounded-full text-xs font-mono uppercase text-white/60 hover:text-white hover:border-gold/50 transition-colors">Science Soufie</a>
             </div>
+            <button onclick="scrollToScanner()" class="glass-card w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-gold/50 transition-colors">
+                <i class="ph ph-moon-stars"></i>
+            </button>
         </div>
-    </header>
+    </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-grow pt-28 pb-12 px-4 sm:px-6">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
+    <!-- 3. CONTENT -->
+    <div class="relative z-10">
 
-            <!-- LEFT COLUMN: VISUALIZER (Main Interface) -->
-            <div class="lg:col-span-7 flex flex-col gap-6">
-                
-                <!-- Main Viewer Card -->
-                <div class="relative w-full aspect-[4/3] rounded-3xl overflow-hidden glass-panel group border border-white/5 shadow-2xl ring-1 ring-white/5">
-                    
-                    <!-- Placeholder / Welcome State -->
-                    <div id="welcome-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-20 bg-dark-900/60 backdrop-blur-sm transition-all duration-700">
-                        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-500/10 to-transparent border border-gold-500/20 flex items-center justify-center mb-8 animate-float shadow-[0_0_40px_rgba(212,175,55,0.05)]">
-                            <i class="ph ph-aperture text-5xl text-gold-400/80"></i>
-                        </div>
-                        <h2 class="text-3xl font-serif text-white mb-3">Révélez votre Lumière</h2>
-                        <p class="text-slate-400 max-w-md mb-10 text-sm leading-relaxed font-light">
-                            L'algorithme Noor-Engine analyse les micro-variations de lumière pour générer une cartographie visuelle de votre état intérieur (Qalb).
-                        </p>
-                        
-                        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-                            <button onclick="triggerUpload()" class="glass-btn flex-1 py-3.5 rounded-xl font-medium text-slate-200 flex items-center justify-center gap-2 hover:text-white">
-                                <i class="ph ph-upload-simple text-lg"></i> Uploader
-                            </button>
-                            <button onclick="startCamera()" class="glass-btn glass-btn-primary flex-1 py-3.5 rounded-xl font-medium flex items-center justify-center gap-2">
-                                <i class="ph ph-camera text-lg"></i> Webcam Live
-                            </button>
-                        </div>
-                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFile(this.files[0])">
-                    </div>
-
-                    <!-- Video / Image Output -->
-                    <video id="webcam-feed" class="absolute inset-0 w-full h-full object-cover hidden transform -scale-x-100 transition-opacity duration-500" playsinline autoplay muted></video>
-                    <img id="static-image" class="absolute inset-0 w-full h-full object-contain hidden bg-black transition-opacity duration-500">
-                    
-                    <!-- Aura Canvas Overlay -->
-                    <canvas id="aura-canvas" class="absolute inset-0 w-full h-full pointer-events-none mix-blend-screen opacity-0 transition-opacity duration-1000"></canvas>
-                    
-                    <!-- Scanning Effect -->
-                    <div id="scanner" class="scan-line"></div>
-
-                    <!-- Active Controls (Bottom Overlay) -->
-                    <div id="active-controls" class="absolute bottom-0 left-0 w-full p-6 flex justify-between items-center bg-gradient-to-t from-dark-900/90 via-dark-900/50 to-transparent opacity-0 transition-opacity duration-500 z-30 pointer-events-none">
-                        <button onclick="resetApp()" class="pointer-events-auto p-3 rounded-full bg-white/5 hover:bg-red-500/20 hover:text-red-400 text-slate-300 border border-white/5 hover:border-red-500/30 transition-all backdrop-blur-md" title="Fermer">
-                            <i class="ph ph-x text-xl"></i>
-                        </button>
-                        <button onclick="captureAnalysis()" class="pointer-events-auto px-5 py-2.5 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 text-sm font-medium border border-gold-500/20 backdrop-blur-md flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                            <i class="ph ph-download-simple"></i> Sauvegarder
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-3 gap-4">
-                    <!-- Cohérence -->
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-semibold">Cohérence</span>
-                        <span id="stat-coherence" class="text-3xl font-bold font-sans text-white tracking-tight">--%</span>
-                    </div>
-                    <!-- Dominante -->
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-semibold">Dominante</span>
-                        <span id="stat-color" class="text-xl font-bold font-serif text-gold-300">...</span>
-                    </div>
-                    <!-- État -->
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-semibold">État (Hal)</span>
-                        <span id="stat-state" class="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/10">En attente</span>
-                    </div>
+        <!-- HERO -->
+        <section class="min-h-screen flex flex-col items-center justify-center text-center px-4 relative" id="hero">
+            <div class="bismillah">بسم الله الرحمن الرحيم</div>
+            <div class="mb-8 relative animate-float">
+                <div class="absolute inset-0 bg-emerald-500/10 blur-3xl rounded-full"></div>
+                <div class="w-40 h-40 border border-gold/20 rounded-full flex items-center justify-center relative">
+                     <div class="absolute inset-0 border border-gold/10 rounded-full animate-spin-slow" style="animation-duration: 20s"></div>
+                     <i class="ph ph-heart text-6xl text-gold/80 relative z-10"></i>
                 </div>
             </div>
-
-            <!-- RIGHT COLUMN: ANALYSIS DASHBOARD -->
-            <div class="lg:col-span-5 flex flex-col h-full gap-6">
-                
-                <!-- Main Dashboard Card -->
-                <div class="glass-panel rounded-3xl flex-grow flex flex-col h-full min-h-[600px] border border-white/5 overflow-hidden">
-                    
-                    <!-- Tabs Header -->
-                    <div class="flex p-1.5 m-4 bg-dark-800/50 rounded-xl border border-white/5 backdrop-blur-md">
-                        <button onclick="switchTab('analysis')" class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium text-white bg-white/10 shadow-sm tab-btn transition-all duration-300" data-tab="analysis">
-                            Analyse
-                        </button>
-                        <button onclick="switchTab('remedy')" class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 tab-btn transition-all duration-300" data-tab="remedy">
-                            Remèdes (Tibb)
-                        </button>
-                    </div>
-
-                    <!-- Content Area -->
-                    <div class="relative flex-grow overflow-hidden px-6 pb-6">
-                        
-                        <!-- TAB: ANALYSIS -->
-                        <div id="tab-analysis" class="tab-content h-full flex flex-col space-y-8 custom-scrollbar overflow-y-auto pr-2">
-                            
-                            <!-- Dynamic Header -->
-                            <div class="text-center pt-2 pb-6 border-b border-white/5">
-                                <h3 id="analysis-title" class="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 mb-2">En attente</h3>
-                                <p id="analysis-subtitle" class="text-sm text-slate-500 italic font-light leading-relaxed">"L'âme est comme un miroir, elle reflète ce qu'elle contient."</p>
-                            </div>
-
-                            <!-- Lataif Insight -->
-                            <div class="space-y-4">
-                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                    <i class="ph ph-heart-beat text-gold-500"></i> Cartographie des Lataif
-                                </h4>
-                                <div id="lataif-list" class="space-y-2">
-                                    <!-- Empty State -->
-                                    <div class="p-8 rounded-2xl bg-white/3 border border-dashed border-white/10 flex flex-col items-center justify-center text-center gap-3">
-                                        <i class="ph ph-scan text-2xl text-slate-600"></i>
-                                        <p class="text-slate-500 text-sm">Activez la caméra pour scanner les centres subtils.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Dhikr Suggestion Card -->
-                            <div class="bg-gradient-to-br from-emerald-900/20 to-dark-800 rounded-2xl border border-emerald-500/10 p-5 relative overflow-hidden group">
-                                <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                                <div class="flex items-start gap-4 relative z-10">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400">
-                                        <i class="ph ph-hands-praying text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Dhikr Recommandé</h4>
-                                        <p id="dhikr-text" class="text-slate-200 text-sm font-serif italic leading-relaxed">...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TAB: REMEDIES -->
-                        <div id="tab-remedy" class="tab-content hidden h-full flex-col space-y-6 custom-scrollbar overflow-y-auto pr-2">
-                             <div class="text-center pt-2 pb-6">
-                                <h3 class="text-2xl font-serif text-white mb-1">Équilibrage de l'Âme</h3>
-                                <p class="text-xs text-slate-500 uppercase tracking-widest">Basé sur la Médecine Prophétique</p>
-                            </div>
-
-                            <div id="remedies-list" class="space-y-4">
-                                <!-- Dynamic Content -->
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+            <h1 class="text-5xl md:text-8xl font-display text-white mb-6 tracking-tight leading-none">
+                LUMIÈRE DES<br><span class="text-gold opacity-90">CŒURS</span>
+            </h1>
+            <p class="max-w-xl text-lg text-white/50 font-serif leading-relaxed mb-8">
+                Analyse des <strong>Lataif-e-Sitta</strong> (les 6 subtilités) pour aligner votre <em>Qalb</em>, <em>Ruh</em>, <em>Sirr</em>, <em>Khafi</em>, <em>Akhfa</em> et <em>Nafs</em>.
+            </p>
+            
+            <div class="bg-black/40 border border-gold/10 p-4 rounded-xl mb-10 max-w-lg mx-auto">
+                <p class="text-[11px] text-white/40 font-mono text-center leading-relaxed">
+                    <i class="ph ph-warning-circle text-gold"></i> <strong>AVERTISSEMENT :</strong> Ce site ne prétend pas dévoiler l'Invisible (*Al-Ghayb*). C'est un miroir physiologique pour l'aide au Dhikr.
+                </p>
             </div>
-        </div>
-    </main>
 
-    <!-- JS LOGIC -->
-    <script>
-        // --- DATA & KNOWLEDGE BASE ---
-        const KNOWLEDGE = {
-            colors: {
-                'Rouge': {
-                    name: "Al-Nafs (L'Égo)",
-                    desc: "Énergie vitale brute. Indique souvent une passion intense ou de l'impulsivité. Votre âme demande de l'ancrage.",
-                    lataif: "Nafs",
-                    asma: "Ya Hayyu (Ô Vivant)",
-                    remedy: "Jeûne intermittent (Lundi/Jeudi), Marche pieds nus, Réduire la viande rouge.",
-                    dhikr: "Astaghfirullah (100x)",
-                    tone: [239, 68, 68],
-                    bg: "bg-red-500"
-                },
-                'Orange': {
-                    name: "Shawq (Le Désir)",
-                    desc: "Créativité et émotions relationnelles. Un besoin d'équilibre social se fait sentir.",
-                    lataif: "Qalb (Cœur)",
-                    asma: "Ya Wadud (Ô Aimant)",
-                    remedy: "Partager un repas (Sadaqa), Boire de l'eau miellée, Hospitalité.",
-                    dhikr: "Alhamdulillah (33x)",
-                    tone: [249, 115, 22],
-                    bg: "bg-orange-500"
-                },
-                'Jaune': {
-                    name: "Fahm (L'Intellect)",
-                    desc: "Activité mentale intense. Clarté intellectuelle mais risque d'anxiété mentale.",
-                    lataif: "Sirr (Le Secret)",
-                    asma: "Ya Alim (Ô Savant)",
-                    remedy: "Lecture du Coran (Sourate Ya-Sin), Tisane de camomille, Silence prolongé.",
-                    dhikr: "SubhanAllah (33x)",
-                    tone: [234, 179, 8],
-                    bg: "bg-yellow-500"
-                },
-                'Vert': {
-                    name: "Itma'nan (La Sérénité)",
-                    desc: "État d'équilibre naturel et de guérison. Le cœur est en phase de repos.",
-                    lataif: "Ruh (L'Esprit)",
-                    asma: "Ya Salam (Ô Paix)",
-                    remedy: "Passer du temps en nature, Respiration profonde, Manger des aliments frais.",
-                    dhikr: "Salat al-Nabi (Prière sur le Prophète)",
-                    tone: [16, 185, 129],
-                    bg: "bg-emerald-500"
-                },
-                'Bleu': {
-                    name: "Yaqin (La Certitude)",
-                    desc: "Communication vraie et calme profond. Confiance (Tawakkul) élevée.",
-                    lataif: "Khafi (Le Caché)",
-                    asma: "Ya Haqq (Ô Vérité)",
-                    remedy: "Parler avec vérité, Boire de l'eau pure, Écouter des récitations douces.",
-                    dhikr: "La ilaha illa Allah",
-                    tone: [59, 130, 246],
-                    bg: "bg-blue-500"
-                },
-                'Violet': {
-                    name: "Fana (L'Extinction)",
-                    desc: "Haute spiritualité, détachement du monde matériel. État méditatif profond.",
-                    lataif: "Akhfa (Le Plus Caché)",
-                    asma: "Ya Batin (Ô Caché)",
-                    remedy: "Prière nocturne (Tahajjud), Méditation solitaire, Parfum (Musk).",
-                    dhikr: "Allahu Akbar (33x)",
-                    tone: [139, 92, 246],
-                    bg: "bg-violet-500"
-                }
-            }
-        };
+            <button onclick="scrollToScanner()" class="group glass-card px-10 py-5 rounded-full flex items-center gap-4 hover:bg-emerald-900/40 hover:text-white hover:border-gold transition-all">
+                <span class="font-mono text-xs font-bold tracking-widest uppercase text-gold">Entrer en Muraqaba</span>
+                <i class="ph ph-arrow-down group-hover:translate-y-1 transition-transform text-gold"></i>
+            </button>
+        </section>
 
-        // --- STATE & DOM ---
-        const STATE = {
-            stream: null,
-            isScanning: false,
-            dominantColor: null,
-            canvasCtx: null,
-            animationFrame: null
-        };
-
-        const DOM = {
-            video: document.getElementById('webcam-feed'),
-            img: document.getElementById('static-image'),
-            canvas: document.getElementById('aura-canvas'),
-            scanner: document.getElementById('scanner'),
-            welcome: document.getElementById('welcome-state'),
-            controls: document.getElementById('active-controls'),
-            stats: {
-                coh: document.getElementById('stat-coherence'),
-                col: document.getElementById('stat-color'),
-                hal: document.getElementById('stat-state')
-            },
-            analysis: {
-                title: document.getElementById('analysis-title'),
-                subtitle: document.getElementById('analysis-subtitle'),
-                lataifList: document.getElementById('lataif-list'),
-                remediesList: document.getElementById('remedies-list'),
-                dhikr: document.getElementById('dhikr-text')
-            }
-        };
-
-        // --- INITIALIZATION ---
-        window.onload = () => {
-            STATE.canvasCtx = DOM.canvas.getContext('2d');
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-        };
-
-        function resizeCanvas() {
-            DOM.canvas.width = DOM.canvas.parentElement.offsetWidth;
-            DOM.canvas.height = DOM.canvas.parentElement.offsetHeight;
-        }
-
-        // --- INPUT HANDLING ---
-        function triggerUpload() { document.getElementById('file-input').click(); }
-
-        function handleFile(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                DOM.img.src = e.target.result;
-                DOM.img.classList.remove('hidden');
-                DOM.video.classList.add('hidden');
-                stopCamera();
-                startAnalysis(DOM.img);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function startCamera() {
-            try {
-                STATE.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                DOM.video.srcObject = STATE.stream;
-                DOM.video.classList.remove('hidden');
-                DOM.img.classList.add('hidden');
+        <!-- SCANNER DASHBOARD -->
+        <section id="scanner" class="min-h-screen flex items-center justify-center py-20 px-4 relative">
+            <div class="max-w-[1600px] w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                // Wait for video to be ready
-                DOM.video.onloadedmetadata = () => {
-                    startAnalysis(DOM.video, true);
-                };
-            } catch (err) {
-                alert("Impossible d'accéder à la caméra. Vérifiez les permissions.");
-            }
-        }
-
-        function stopCamera() {
-            if (STATE.stream) {
-                STATE.stream.getTracks().forEach(track => track.stop());
-                STATE.stream = null;
-            }
-        }
-
-        function resetApp() {
-            stopCamera();
-            DOM.welcome.classList.remove('opacity-0', 'pointer-events-none');
-            DOM.welcome.classList.add('z-20');
-            DOM.video.classList.add('hidden');
-            DOM.img.classList.add('hidden');
-            DOM.canvas.classList.add('opacity-0');
-            DOM.scanner.style.display = 'none';
-            DOM.controls.classList.remove('opacity-100');
-            DOM.controls.classList.add('pointer-events-none');
-            cancelAnimationFrame(STATE.animationFrame);
-            
-            // Reset UI Text
-            DOM.stats.coh.innerText = "--%";
-            DOM.stats.col.innerText = "...";
-            DOM.analysis.title.innerText = "En attente";
-        }
-
-        // --- CORE ANALYSIS ENGINE ---
-        function startAnalysis(sourceElement, isVideo = false) {
-            // UI Transition
-            DOM.welcome.classList.add('opacity-0', 'pointer-events-none');
-            DOM.welcome.classList.remove('z-20');
-            DOM.controls.classList.remove('pointer-events-none');
-            DOM.controls.classList.add('opacity-100');
-            DOM.scanner.style.display = 'block';
-            
-            // Wait a brief moment for effect, then analyze
-            setTimeout(() => {
-                processImage(sourceElement, isVideo);
-                DOM.canvas.classList.remove('opacity-0');
-            }, 800);
-        }
-
-        function processImage(source, isVideo) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 300; // Small resolution for processing speed
-            canvas.height = 300;
-            
-            // Function to run every frame (if video) or once (if image)
-            const loop = () => {
-                if (!source) return;
-                
-                // Draw source to temp canvas
-                ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
-                const frameData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                
-                // 1. Calculate Dominant Color & Coherence
-                const analysis = analyzePixels(frameData.data);
-                
-                // 2. Update Aura Visuals
-                drawAura(analysis.colorRGB);
-                
-                // 3. Update UI (Throttle this if video to avoid flickering text)
-                if (Math.random() > 0.9 || !isVideo) {
-                    updateDashboard(analysis);
-                }
-
-                if (isVideo && STATE.stream) {
-                    STATE.animationFrame = requestAnimationFrame(loop);
-                }
-            };
-
-            loop();
-        }
-
-        function analyzePixels(data) {
-            let r=0, g=0, b=0, count=0;
-            let brightnessTotal = 0;
-            
-            for (let i = 0; i < data.length; i += 40) { // Sample every 10th pixel
-                r += data[i];
-                g += data[i+1];
-                b += data[i+2];
-                brightnessTotal += (data[i] + data[i+1] + data[i+2]) / 3;
-                count++;
-            }
-            
-            r = Math.round(r/count);
-            g = Math.round(g/count);
-            b = Math.round(b/count);
-            
-            // Determine Color Category
-            const max = Math.max(r, g, b);
-            let colorKey = 'Blanc'; // Default
-            
-            if (max === r && g < r*0.8 && b < r*0.8) colorKey = 'Rouge';
-            else if (max === r && g > r*0.6) colorKey = 'Orange';
-            else if (max === g && r > g*0.6) colorKey = 'Jaune';
-            else if (max === g) colorKey = 'Vert';
-            else if (max === b && r < b*0.6 && g < b*0.6) colorKey = 'Bleu';
-            else if (max === b) colorKey = 'Violet';
-
-            // Calculate Coherence (Variance simulation)
-            const avgBrightness = brightnessTotal / count;
-            const coherence = Math.min(98, Math.max(40, Math.round((avgBrightness / 255) * 100) + 10));
-
-            return { colorKey, colorRGB: [r,g,b], coherence };
-        }
-
-        // --- VISUALIZATION (Noor-Engine) ---
-        function drawAura(rgb) {
-            const ctx = STATE.canvasCtx;
-            const w = DOM.canvas.width;
-            const h = DOM.canvas.height;
-            
-            // Fade out previous frame slightly for trail effect
-            ctx.clearRect(0,0, w, h);
-            
-            // Create Gradient
-            const cx = w / 2;
-            const cy = h / 2; // Assume centered subject
-            const r = Math.min(w, h) * 0.4;
-            
-            // Main Aura Blob with multi-stop gradient for richness
-            const gradient = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 1.6);
-            gradient.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.0)`);
-            gradient.addColorStop(0.3, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`);
-            gradient.addColorStop(0.5, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.4)`);
-            gradient.addColorStop(0.7, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.1)`);
-            gradient.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.0)`);
-            
-            ctx.fillStyle = gradient;
-            
-            // Add some noise/movement (Simulated)
-            const time = Date.now() / 1500;
-            const offsetX = Math.sin(time) * 15;
-            const offsetY = Math.cos(time * 1.2) * 15;
-            const breathe = Math.sin(time * 2) * 0.05 + 1;
-
-            ctx.save();
-            ctx.translate(cx + offsetX, cy + offsetY);
-            ctx.scale(breathe, breathe);
-            ctx.translate(-cx, -cy);
-            
-            ctx.beginPath();
-            ctx.arc(cx, cy, r * 1.4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-
-        // --- UI UPDATES ---
-        function updateDashboard(data) {
-            const info = KNOWLEDGE.colors[data.colorKey] || KNOWLEDGE.colors['Blanc'];
-            
-            // Stats
-            DOM.stats.coh.innerText = data.coherence + "%";
-            DOM.stats.col.innerText = data.colorKey;
-            DOM.stats.col.style.color = `rgb(${data.colorRGB.join(',')})`;
-            DOM.stats.hal.innerText = data.coherence > 70 ? "Aligné" : "Dispersé";
-            DOM.stats.hal.className = data.coherence > 70 
-                ? "text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/10"
-                : "text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/10";
-
-            // Analysis Tab
-            DOM.analysis.title.innerText = info.name;
-            DOM.analysis.title.style.background = `linear-gradient(to bottom, #fff, rgb(${data.colorRGB.join(',')}))`;
-            DOM.analysis.title.style.webkitBackgroundClip = "text";
-            DOM.analysis.title.style.webkitTextFillColor = "transparent";
-            
-            DOM.analysis.subtitle.innerText = info.desc;
-            DOM.analysis.dhikr.innerText = `${info.asma} - ${info.dhikr}`;
-
-            // Populate Lists (Only if content changed to avoid DOM thrashing)
-            if (DOM.analysis.lataifList.getAttribute('data-current') !== data.colorKey) {
-                
-                // Animate change
-                DOM.analysis.lataifList.style.opacity = '0';
-                setTimeout(() => {
-                    DOM.analysis.lataifList.innerHTML = `
-                        <div class="glass-panel p-4 rounded-xl border-l-4 border-l-transparent flex items-center justify-between group hover:bg-white/5 transition-all" style="border-color: rgb(${data.colorRGB.join(',')})">
+                <!-- Scanner Module -->
+                <div class="lg:col-span-8 relative h-[75vh] rounded-[2.5rem] overflow-hidden border border-gold/10 bg-black/80 shadow-2xl group" id="scanner-container">
+                    
+                    <!-- Calibration / Welcome Overlay -->
+                    <div id="calibration-overlay" class="absolute inset-0 z-40 bg-black/95 flex flex-col items-center justify-center transition-opacity duration-700">
+                        <div class="text-center space-y-6">
+                            <i class="ph ph-fingerprint text-5xl text-emerald-500/50 animate-pulse"></i>
                             <div>
-                                <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-1">Centre Actif</p>
-                                <p class="font-bold text-white text-lg">${info.lataif}</p>
+                                <h3 class="font-serif text-2xl text-white mb-2">Intention (Niyyah)</h3>
+                                <p class="font-mono text-xs text-white/60 tracking-widest uppercase max-w-xs mx-auto">"Je cherche à purifier mon cœur pour me rapprocher de mon Créateur."</p>
                             </div>
-                            <div class="h-10 w-10 rounded-full shadow-[0_0_20px_currentColor] flex items-center justify-center text-black/50 font-bold" style="background-color: rgb(${data.colorRGB.join(',')}); color: rgb(${data.colorRGB.join(',')})">
-                                <i class="ph ph-sparkle text-white text-lg"></i>
+                            <button onclick="activateScanner()" class="px-8 py-4 bg-emerald-700/80 text-white font-bold text-xs rounded-full hover:scale-105 transition-transform hover:bg-emerald-600 border border-emerald-500/30">
+                                COMMENCER L'ANALYSE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- HUD -->
+                    <div class="absolute inset-0 z-20 pointer-events-none opacity-0 transition-opacity duration-1000" id="hud-layer">
+                        <div class="absolute top-0 w-full h-[1px] bg-gold/50 shadow-[0_0_20px_#D4AF37] animate-scan z-30"></div>
+                        <div class="absolute top-6 left-6 flex items-center gap-2">
+                            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                            <span class="font-mono text-[10px] text-white/60 tracking-widest">SCAN LATAIF : ACTIF</span>
+                        </div>
+                        <div class="absolute inset-0 opacity-10">
+                            <!-- Visual Markers for Lataif Positions (Mirror View) -->
+                            <div class="absolute top-[35%] right-[30%] w-6 h-6 border border-dashed border-white rounded-full flex items-center justify-center text-[8px] text-white">Q</div>
+                            <div class="absolute top-[35%] left-[30%] w-6 h-6 border border-dashed border-white rounded-full flex items-center justify-center text-[8px] text-white">R</div>
+                            <div class="absolute top-[25%] right-[30%] w-6 h-6 border border-dashed border-white rounded-full flex items-center justify-center text-[8px] text-white">S</div>
+                            <div class="absolute top-[25%] left-[30%] w-6 h-6 border border-dashed border-white rounded-full flex items-center justify-center text-[8px] text-white">K</div>
+                            <div class="absolute top-[30%] left-[50%] -translate-x-1/2 w-6 h-6 border border-dashed border-white rounded-full flex items-center justify-center text-[8px] text-white">A</div>
+                            <div class="absolute bottom-[30%] left-[50%] -translate-x-1/2 w-6 h-6 border border-dashed border-white rounded-full flex items-center justify-center text-[8px] text-white">N</div>
+                        </div>
+                    </div>
+
+                    <!-- AR OVERLAY -->
+                    <canvas id="ar-overlay" class="absolute inset-0 w-full h-full object-cover mix-blend-screen z-10 opacity-70"></canvas>
+
+                    <!-- VIDEO FEED -->
+                    <video id="webcam-feed" class="w-full h-full object-cover opacity-60 filter grayscale contrast-125 transition-all duration-1000" playsinline muted></video>
+                </div>
+
+                <!-- Metrics Panel (6 Lataif - Clickable) -->
+                <div class="lg:col-span-4 flex flex-col h-[75vh]">
+                    
+                    <!-- Grid of 6 Lataif Cards -->
+                    <div class="grid grid-cols-2 gap-3 flex-grow overflow-y-auto no-scrollbar pb-4">
+                        <!-- Qalb -->
+                        <div class="glass-card p-4 rounded-2xl flex flex-col justify-between group" id="card-qalb" onclick="generateReport('qalb')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] font-mono uppercase text-white/40 tracking-widest">Al-Qalb</span>
+                                <div class="w-2 h-2 rounded-full bg-lataif-qalb shadow-[0_0_10px_#F1C40F]"></div>
+                            </div>
+                            <div class="mt-2">
+                                <h3 id="val-qalb" class="text-sm font-bold font-serif text-white">En attente...</h3>
+                                <p id="ben-qalb" class="text-[10px] text-white/50 italic leading-tight mt-1">...</p>
                             </div>
                         </div>
-                    `;
-                    
-                    DOM.analysis.remediesList.innerHTML = `
-                        <div class="p-5 rounded-2xl bg-emerald-900/10 border border-emerald-500/10 hover:border-emerald-500/30 transition-colors">
-                            <h5 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i class="ph ph-plant"></i> Nutrition & Corps</h5>
-                            <p class="text-sm text-slate-300 leading-relaxed">${info.remedy}</p>
+
+                        <!-- Ruh -->
+                        <div class="glass-card p-4 rounded-2xl flex flex-col justify-between group" id="card-ruh" onclick="generateReport('ruh')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] font-mono uppercase text-white/40 tracking-widest">Al-Ruh</span>
+                                <div class="w-2 h-2 rounded-full bg-lataif-ruh shadow-[0_0_10px_#E74C3C]"></div>
+                            </div>
+                            <div class="mt-2">
+                                <h3 id="val-ruh" class="text-sm font-bold font-serif text-white">En attente...</h3>
+                                <p id="ben-ruh" class="text-[10px] text-white/50 italic leading-tight mt-1">...</p>
+                            </div>
                         </div>
-                        <div class="p-5 rounded-2xl bg-gold-500/5 border border-gold-500/10 hover:border-gold-500/30 transition-colors">
-                            <h5 class="font-bold text-gold-400 mb-2 flex items-center gap-2"><i class="ph ph-moon-stars"></i> Pratique Spirituelle</h5>
-                            <p class="text-sm text-slate-300 leading-relaxed">Concentrez-vous sur le nom divin <strong class="text-white">${info.asma}</strong>.</p>
+
+                        <!-- Sirr -->
+                        <div class="glass-card p-4 rounded-2xl flex flex-col justify-between group" id="card-sirr" onclick="generateReport('sirr')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] font-mono uppercase text-white/40 tracking-widest">Al-Sirr</span>
+                                <div class="w-2 h-2 rounded-full bg-lataif-sirr shadow-[0_0_10px_#ECF0F1]"></div>
+                            </div>
+                            <div class="mt-2">
+                                <h3 id="val-sirr" class="text-sm font-bold font-serif text-white">En attente...</h3>
+                                <p id="ben-sirr" class="text-[10px] text-white/50 italic leading-tight mt-1">...</p>
+                            </div>
                         </div>
-                    `;
+
+                        <!-- Khafi -->
+                        <div class="glass-card p-4 rounded-2xl flex flex-col justify-between group" id="card-khafi" onclick="generateReport('khafi')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] font-mono uppercase text-white/40 tracking-widest">Al-Khafi</span>
+                                <div class="w-2 h-2 rounded-full bg-lataif-khafi shadow-[0_0_10px_#2ECC71]"></div>
+                            </div>
+                            <div class="mt-2">
+                                <h3 id="val-khafi" class="text-sm font-bold font-serif text-white">En attente...</h3>
+                                <p id="ben-khafi" class="text-[10px] text-white/50 italic leading-tight mt-1">...</p>
+                            </div>
+                        </div>
+
+                        <!-- Akhfa -->
+                        <div class="glass-card p-4 rounded-2xl flex flex-col justify-between group" id="card-akhfa" onclick="generateReport('akhfa')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] font-mono uppercase text-white/40 tracking-widest">Al-Akhfa</span>
+                                <div class="w-2 h-2 rounded-full bg-lataif-akhfa shadow-[0_0_10px_#9B59B6]"></div>
+                            </div>
+                            <div class="mt-2">
+                                <h3 id="val-akhfa" class="text-sm font-bold font-serif text-white">En attente...</h3>
+                                <p id="ben-akhfa" class="text-[10px] text-white/50 italic leading-tight mt-1">...</p>
+                            </div>
+                        </div>
+
+                        <!-- Nafs -->
+                        <div class="glass-card p-4 rounded-2xl flex flex-col justify-between group" id="card-nafs" onclick="generateReport('nafs')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] font-mono uppercase text-white/40 tracking-widest">Al-Nafs</span>
+                                <div class="w-2 h-2 rounded-full bg-lataif-nafs shadow-[0_0_10px_#3498DB]"></div>
+                            </div>
+                            <div class="mt-2">
+                                <h3 id="val-nafs" class="text-sm font-bold font-serif text-white">En attente...</h3>
+                                <p id="ben-nafs" class="text-[10px] text-white/50 italic leading-tight mt-1">...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="h-32 glass-card p-6 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-900/20 hover:border-gold transition-all group mt-3" onclick="generateReport()">
+                        <i class="ph ph-prayer-prayer text-3xl text-gold mb-2 group-hover:scale-110 transition-transform"></i>
+                        <p class="font-mono text-xs font-bold text-white uppercase tracking-widest text-center">Recevoir mon Wird<br>(Prescription Globale)</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- EDUCATION SECTION -->
+        <section id="lataif" class="py-20 px-4 relative bg-black/40 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="font-mono text-xs text-gold uppercase tracking-widest mb-4 block">Psychologie Soufie (Tasawwuf)</span>
+                    <h2 class="text-3xl md:text-5xl font-display text-white mb-4">Les Lataif-e-Sitta</h2>
+                    <p class="text-white/50 max-w-2xl mx-auto font-serif text-sm">Les 6 centres subtils qui connectent l'humain au Divin.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Educ Cards (Simplified) -->
+                    <div class="glass-card p-6 rounded-2xl hover:border-lataif-qalb transition-colors">
+                        <h3 class="text-xl font-serif text-lataif-qalb mb-1">Al-Qalb (Cœur)</h3>
+                        <p class="text-xs text-white/60">Siège de la foi. Couleur: Jaune/Or. Sous le sein gauche.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl hover:border-lataif-ruh transition-colors">
+                        <h3 class="text-xl font-serif text-lataif-ruh mb-1">Al-Ruh (Esprit)</h3>
+                        <p class="text-xs text-white/60">Siège de l'amour divin. Couleur: Rouge. Sous le sein droit.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl hover:border-lataif-sirr transition-colors">
+                        <h3 class="text-xl font-serif text-lataif-sirr mb-1">Al-Sirr (Secret)</h3>
+                        <p class="text-xs text-white/60">Vision spirituelle. Couleur: Blanc. Au-dessus du sein gauche.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl hover:border-lataif-khafi transition-colors">
+                        <h3 class="text-xl font-serif text-lataif-khafi mb-1">Al-Khafi (Caché)</h3>
+                        <p class="text-xs text-white/60">Paix profonde. Couleur: Vert/Noir. Au-dessus du sein droit.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl hover:border-lataif-akhfa transition-colors">
+                        <h3 class="text-xl font-serif text-lataif-akhfa mb-1">Al-Akhfa (Plus Caché)</h3>
+                        <p class="text-xs text-white/60">Union divine. Couleur: Violet/Noir. Centre poitrine.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl hover:border-lataif-nafs transition-colors">
+                        <h3 class="text-xl font-serif text-lataif-nafs mb-1">Al-Nafs (Égo)</h3>
+                        <p class="text-xs text-white/60">Purification. Couleur: Bleu. Nombril/Front.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="py-12 border-t border-white/5 text-center bg-black/60">
+            <div class="flex items-center justify-center gap-3 mb-4 opacity-50">
+                <i class="ph ph-mosque text-xl"></i>
+                <span class="font-display font-bold tracking-widest">NOOR AI</span>
+            </div>
+            <p class="text-[10px] font-mono text-white/30">
+                © 2026 NOOR - Science des Lataif.<br>Fait avec <span class="text-emerald-500">Ihsan</span> (Excellence).
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- MODAL RAPPORT / TASBIH -->
+    <div id="report-modal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl hidden opacity-0 transition-opacity duration-500 flex items-center justify-center">
+        <div class="glass-card max-w-lg w-full m-4 p-8 rounded-[2.5rem] relative overflow-hidden transform scale-95 transition-transform duration-500 max-h-[90vh] overflow-y-auto" id="modal-content">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-white/40 hover:text-white transition-colors z-20"><i class="ph ph-x text-2xl"></i></button>
+            
+            <div class="relative z-10 flex flex-col items-center">
+                <div class="text-center mb-8">
+                    <div class="bismillah text-gold">بسم الله الرحمن الرحيم</div>
+                    <h2 class="text-2xl font-display text-white mt-1">Prescription (Wird)</h2>
+                    <p class="text-white/40 text-[10px] font-mono uppercase tracking-widest mt-2">Latifa à soigner : <span id="dominant-latifa" class="text-emerald-400 font-bold">...</span></p>
+                </div>
+
+                <!-- Info Block: Color & Benefits -->
+                <div class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-center">
+                    <div class="flex justify-center items-center gap-2 mb-2">
+                        <div id="result-color-orb" class="w-3 h-3 rounded-full bg-white shadow-[0_0_10px_white]"></div>
+                        <span id="result-color-name" class="text-xs font-mono uppercase tracking-widest text-white">Couleur...</span>
+                    </div>
+                    <p id="result-benefits" class="text-sm font-serif text-white/80 italic leading-relaxed">
+                        ...
+                    </p>
+                </div>
+
+                <!-- Main Recommendation (Dhikr) -->
+                <div class="w-full bg-emerald-900/10 border border-emerald-500/20 rounded-2xl p-6 mb-8 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-emerald-500/5"></div>
+                    <p class="text-[10px] font-mono text-gold uppercase tracking-widest mb-3">Dhikr Recommandé</p>
+                    <h3 id="dhikr-text" class="text-3xl font-serif text-white mb-2 leading-relaxed">...</h3>
+                    <p id="dhikr-meaning" class="text-sm text-white/60 italic font-serif">... meaning ...</p>
+                </div>
+
+                <!-- Digital Tasbih -->
+                <div class="flex flex-col items-center gap-4 mb-8">
+                    <div class="relative w-40 h-40 flex items-center justify-center">
+                        <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="2" />
+                            <circle id="tasbih-progress" cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" stroke-width="2" stroke-dasharray="283" stroke-dashoffset="283" class="transition-all duration-300" />
+                        </svg>
+                        <div class="flex flex-col items-center">
+                            <span id="tasbih-count" class="text-5xl font-mono text-white">0</span>
+                            <span id="tasbih-target" class="text-xs text-white/30 font-mono mt-1">/ 33</span>
+                        </div>
+                    </div>
                     
-                    DOM.analysis.lataifList.style.opacity = '1';
-                }, 150);
+                    <button onclick="incrementTasbih()" class="tasbih-btn w-full py-4 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl font-bold tracking-widest uppercase transition-all shadow-lg border border-emerald-500/30">
+                        <i class="ph ph-hand-tap mr-2"></i> Compter
+                    </button>
+                    <p class="text-[10px] text-white/30">Cliquez pour égrener le chapelet</p>
+                </div>
+
+                <!-- Footer Quote -->
+                <div class="text-center border-t border-white/10 pt-6 w-full">
+                    <p class="text-xs text-white/50 font-serif italic">"N'est-ce pas par l'évocation d'Allah que se tranquillisent les cœurs?" (Coran 13:28)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        // --- SUFI KNOWLEDGE BASE (Updated with Benefits & Short Virtues) ---
+        const SUFI_STATES = {
+            'Rouge': { 
+                maqam: "Agitation / Force", 
+                virtue: "Courage & Force",
+                dhikr: "Ya Hayyu Ya Qayyum", 
+                meaning: "Ô Vivant, Ô Subsistant", 
+                target: 33, 
+                priority: 8,
+                benefits: "Éveille le courage et la force spirituelle pour vaincre les passions du Nafs."
+            },
+            'Orange': { 
+                maqam: "Passion / Chaleur", 
+                virtue: "Créativité & Lien",
+                dhikr: "Ya Wadud", 
+                meaning: "Ô Tout-Aimant", 
+                target: 33, 
+                priority: 7,
+                benefits: "Apporte chaleur, créativité et renforce les liens de fraternité."
+            },
+            'Jaune': { 
+                maqam: "Lumière du Cœur", 
+                virtue: "Joie & Clarté",
+                dhikr: "Ya Nur", 
+                meaning: "Ô Lumière", 
+                target: 33, 
+                priority: 3,
+                benefits: "Illumine le cœur, dissipe les doutes et apporte la joie spirituelle."
+            },
+            'Vert': { 
+                maqam: "Paix / Vie", 
+                virtue: "Sérénité & Miséricorde",
+                dhikr: "Ya Salam", 
+                meaning: "Ô Paix", 
+                target: 33, 
+                priority: 2,
+                benefits: "Procure la sérénité, la miséricorde et l'équilibre intérieur."
+            },
+            'Bleu': { 
+                maqam: "Profondeur / Ego", 
+                virtue: "Vérité & Sincérité",
+                dhikr: "La ilaha illa Allah", 
+                meaning: "Il n'y a de dieu qu'Allah", 
+                target: 100, 
+                priority: 4,
+                benefits: "Ancre la vérité, favorise le détachement et la sincérité."
+            },
+            'Violet': { 
+                maqam: "Mystère / Esprit", 
+                virtue: "Sagesse Divine",
+                dhikr: "Allah Hu", 
+                meaning: "Allah Lui-même", 
+                target: 100, 
+                priority: 2,
+                benefits: "Ouvre les portes de la sagesse divine et de la transcendance."
+            },
+            'Blanc': { 
+                maqam: "Pureté / Secret", 
+                virtue: "Pureté & Paix",
+                dhikr: "SubhanAllah", 
+                meaning: "Gloire à Allah", 
+                target: 33, 
+                priority: 1,
+                benefits: "Purifie l'âme de toute souillure et clarifie la vision intérieure."
+            },
+            'Noir': { 
+                maqam: "Fana (Néant)", 
+                virtue: "Humilité & Néant",
+                dhikr: "Astaghfirullah", 
+                meaning: "Pardon Allah", 
+                target: 100, 
+                priority: 6,
+                benefits: "Aide à l'anéantissement de l'ego et à l'humilité profonde."
+            },
+            'Turquoise': { 
+                maqam: "Guérison", 
+                virtue: "Guérison & Douceur",
+                dhikr: "Ya Shafee", 
+                meaning: "Ô Guérisseur", 
+                target: 33, 
+                priority: 2,
+                benefits: "Facilite le rétablissement spirituel et la douceur du cœur."
+            },
+            'Gris': { 
+                maqam: "Voile / Neutre", 
+                virtue: "Neutralité",
+                dhikr: "Bismillah", 
+                meaning: "Au nom d'Allah", 
+                target: 33, 
+                priority: 5,
+                benefits: "Un point de départ neutre pour toute nouvelle intention."
+            }
+        };
+
+        // Standard Colors for display
+        const COLOR_MAP = {
+            'Rouge': [231, 76, 60], 'Orange': [230, 126, 34], 'Jaune': [241, 196, 15], 'Vert': [46, 204, 113],
+            'Bleu': [52, 152, 219], 'Violet': [155, 89, 182], 'Blanc': [236, 240, 241], 'Noir': [44, 62, 80],
+            'Turquoise': [26, 188, 156], 'Gris': [149, 165, 166]
+        };
+
+        const STATE = { 
+            stream: null, 
+            zones: { 
+                qalb: { x: 0.5, rgb: [0,0,0], label: 'Gris', pendingLabel: 'Gris', stabilityCount: 0 }, 
+                ruh: { x: 0.5, rgb: [0,0,0], label: 'Gris', pendingLabel: 'Gris', stabilityCount: 0 },  
+                sirr: { x: 0.5, rgb: [0,0,0], label: 'Gris', pendingLabel: 'Gris', stabilityCount: 0 }, 
+                khafi: { x: 0.5, rgb: [0,0,0], label: 'Gris', pendingLabel: 'Gris', stabilityCount: 0 },
+                akhfa: { x: 0.5, rgb: [0,0,0], label: 'Gris', pendingLabel: 'Gris', stabilityCount: 0 },
+                nafs: { x: 0.5, rgb: [0,0,0], label: 'Gris', pendingLabel: 'Gris', stabilityCount: 0 }  
+            },
+            tasbihCount: 0,
+            currentWird: null
+        };
+        
+        // Contexts
+        const procCanvas = document.createElement('canvas'); procCanvas.width = 64; procCanvas.height = 64;
+        const procCtx = procCanvas.getContext('2d');
+        const arCanvas = document.getElementById('ar-overlay');
+        const arCtx = arCanvas.getContext('2d');
+        const bgCanvas = document.getElementById('aura-bg');
+        const bgCtx = bgCanvas.getContext('2d');
+
+        // --- INIT ---
+        function scrollToScanner() { document.getElementById('scanner').scrollIntoView({ behavior: 'smooth' }); }
+
+        async function activateScanner() {
+            try {
+                STATE.stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" } });
+                const vid = document.getElementById('webcam-feed');
+                vid.srcObject = STATE.stream;
                 
-                DOM.analysis.lataifList.setAttribute('data-current', data.colorKey);
+                vid.onloadedmetadata = async () => {
+                    try {
+                        await vid.play();
+                        resizeAR();
+                        document.getElementById('calibration-overlay').classList.add('opacity-0', 'pointer-events-none');
+                        document.getElementById('hud-layer').classList.remove('opacity-0');
+                        vid.classList.remove('opacity-60', 'grayscale', 'contrast-125');
+                        vid.classList.add('opacity-100');
+                        processLoop();
+                    } catch (e) {}
+                };
+            } catch (e) { alert("Accès caméra requis."); }
+        }
+
+        function resizeAR() {
+            const container = document.getElementById('scanner-container');
+            if(container && arCanvas) { arCanvas.width = container.offsetWidth; arCanvas.height = container.offsetHeight; }
+            if(bgCanvas) { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; }
+        }
+        window.addEventListener('resize', resizeAR);
+        resizeAR();
+
+        // --- LOOP ---
+        function processLoop() {
+            if(!STATE.stream) return;
+            const vid = document.getElementById('webcam-feed');
+            if (vid.readyState < 2 || vid.videoWidth === 0) { requestAnimationFrame(processLoop); return; }
+
+            try {
+                procCtx.drawImage(vid, 0, 0, 64, 64);
+                const data = procCtx.getImageData(0,0,64,64).data;
+
+                // MAPPING 64x64 GRID (MIRROR EFFECT APPLIED)
+                analyzeRect(data, 35, 55, 30, 45, STATE.zones.qalb);
+                analyzeRect(data, 9, 29, 30, 45, STATE.zones.ruh);
+                analyzeRect(data, 35, 55, 15, 28, STATE.zones.sirr);
+                analyzeRect(data, 9, 29, 15, 28, STATE.zones.khafi);
+                analyzeRect(data, 25, 39, 20, 35, STATE.zones.akhfa);
+                analyzeRect(data, 25, 39, 45, 60, STATE.zones.nafs);
+
+                updateDashboard();
+                drawAR();
+            } catch (e) {}
+            requestAnimationFrame(processLoop);
+        }
+
+        // --- ANALYSIS ---
+        function analyzeRect(data, startX, endX, startY, endY, zoneState) {
+            let r=0, g=0, b=0, count=0;
+            const width = 64;
+
+            for(let y=startY; y<endY; y++) {
+                for(let x=startX; x<endX; x++) {
+                    const idx = (y * width + x) * 4;
+                    r += data[idx]; g += data[idx+1]; b += data[idx+2]; count++;
+                }
+            }
+
+            if(count > 0) {
+                zoneState.rgb = [Math.floor(r/count), Math.floor(g/count), Math.floor(b/count)];
+                const detectedLabel = getHSLKey(zoneState.rgb);
+                
+                // Stabilization Logic
+                if (detectedLabel === zoneState.pendingLabel) {
+                    zoneState.stabilityCount++;
+                } else {
+                    zoneState.pendingLabel = detectedLabel;
+                    zoneState.stabilityCount = 0;
+                }
+
+                if (zoneState.stabilityCount > 10) { // Stable for ~10 frames
+                    zoneState.label = detectedLabel;
+                }
             }
         }
 
-        // --- TABS & UTILS ---
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tabName}`).classList.remove('hidden', 'flex');
-            document.getElementById(`tab-${tabName}`).classList.add('flex');
+        function getHSLKey([r,g,b]) {
+            r/=255; g/=255; b/=255;
+            const max = Math.max(r,g,b), min = Math.min(r,g,b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) h = 0;
+            else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch(max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            const hue = h * 360;
+            if (s < 0.15) return 'Gris'; 
+            if (l < 0.2) return 'Noir';
+            if (l > 0.8) return 'Blanc';
             
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-white/10', 'text-white', 'shadow-sm');
-                el.classList.add('text-slate-400', 'hover:text-white');
-            });
-            const activeBtn = document.querySelector(`button[data-tab="${tabName}"]`);
-            activeBtn.classList.add('bg-white/10', 'text-white', 'shadow-sm');
-            activeBtn.classList.remove('text-slate-400');
+            if (hue >= 330 || hue < 15) return 'Rouge';
+            if (hue >= 15 && hue < 45) return 'Orange';
+            if (hue >= 45 && hue < 70) return 'Jaune';
+            if (hue >= 70 && hue < 160) return 'Vert';
+            if (hue >= 160 && hue < 190) return 'Turquoise';
+            if (hue >= 190 && hue < 250) return 'Bleu';
+            if (hue >= 250 && hue < 330) return 'Violet';
+            return 'Gris';
         }
 
-        function captureAnalysis() {
-            window.print();
+        // --- RENDERERS ---
+        function drawAR() {
+            const w = arCanvas.width, h = arCanvas.height, t = Date.now() * 0.0015;
+            arCtx.clearRect(0,0,w,h);
+            
+            drawOrb(arCtx, w*0.70, h*0.55, w*0.12, STATE.zones.qalb.rgb, t);
+            drawOrb(arCtx, w*0.30, h*0.55, w*0.12, STATE.zones.ruh.rgb, t+1);
+            drawOrb(arCtx, w*0.70, h*0.35, w*0.10, STATE.zones.sirr.rgb, t+2);
+            drawOrb(arCtx, w*0.30, h*0.35, w*0.10, STATE.zones.khafi.rgb, t+3);
+            drawOrb(arCtx, w*0.50, h*0.40, w*0.10, STATE.zones.akhfa.rgb, t+4);
+            drawOrb(arCtx, w*0.50, h*0.80, w*0.12, STATE.zones.nafs.rgb, t+5);
         }
+
+        function drawOrb(ctx, x, y, r, [red,g,b], t) {
+            const pulse = Math.sin(t*2) * (r * 0.1);
+            const grad = ctx.createRadialGradient(x, y, 0, x, y, r + pulse);
+            grad.addColorStop(0, `rgba(${red},${g},${b}, 0.6)`); 
+            grad.addColorStop(0.5, `rgba(${red},${g},${b}, 0.2)`);
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(x, y, r + pulse, 0, Math.PI*2); ctx.fill();
+        }
+
+        function updateDashboard() {
+            updateCard('val-qalb', 'ben-qalb', 'card-qalb', STATE.zones.qalb);
+            updateCard('val-ruh', 'ben-ruh', 'card-ruh', STATE.zones.ruh);
+            updateCard('val-sirr', 'ben-sirr', 'card-sirr', STATE.zones.sirr);
+            updateCard('val-khafi', 'ben-khafi', 'card-khafi', STATE.zones.khafi);
+            updateCard('val-akhfa', 'ben-akhfa', 'card-akhfa', STATE.zones.akhfa);
+            updateCard('val-nafs', 'ben-nafs', 'card-nafs', STATE.zones.nafs);
+        }
+
+        function updateCard(textId, benId, cardId, zone) {
+            const col = `rgb(${zone.rgb.join(',')})`;
+            const txt = document.getElementById(textId);
+            const ben = document.getElementById(benId);
+            const card = document.getElementById(cardId);
+            
+            const info = SUFI_STATES[zone.label] || SUFI_STATES['Gris'];
+
+            txt.innerText = zone.label;
+            txt.style.color = col;
+            
+            // Affichage de la Vertu (Bienfait)
+            if(ben) {
+                ben.innerText = "Vertu : " + info.virtue;
+            }
+
+            // Subtle border glow
+            card.style.borderColor = `rgba(${zone.rgb.join(',')}, 0.4)`;
+        }
+
+        // --- MODAL / REPORT ---
+        function generateReport(forcedZoneKey = null) {
+            let targetZoneKey = forcedZoneKey;
+            
+            if (!targetZoneKey) {
+                let maxPriority = -1;
+                for (const [key, zone] of Object.entries(STATE.zones)) {
+                    const info = SUFI_STATES[zone.label] || { priority: 0 };
+                    if (info.priority > maxPriority) {
+                        maxPriority = info.priority;
+                        targetZoneKey = key;
+                    }
+                }
+            }
+
+            const targetZone = STATE.zones[targetZoneKey];
+            const info = SUFI_STATES[targetZone.label] || SUFI_STATES['Gris'];
+            
+            STATE.currentWird = info;
+            STATE.tasbihCount = 0;
+
+            const names = {
+                qalb: "Al-Qalb (Cœur)", ruh: "Al-Ruh (Esprit)", sirr: "Al-Sirr (Secret)",
+                khafi: "Al-Khafi (Caché)", akhfa: "Al-Akhfa (Plus Caché)", nafs: "Al-Nafs (Égo)"
+            };
+
+            document.getElementById('dominant-latifa').innerText = names[targetZoneKey];
+            document.getElementById('dhikr-text').innerText = info.dhikr;
+            document.getElementById('dhikr-meaning').innerText = info.meaning;
+            document.getElementById('tasbih-target').innerText = "/ " + info.target;
+            
+            document.getElementById('result-color-name').innerText = targetZone.label;
+            document.getElementById('result-benefits').innerText = info.benefits;
+            
+            const col = COLOR_MAP[targetZone.label] ? `rgb(${COLOR_MAP[targetZone.label].join(',')})` : '#fff';
+            document.getElementById('result-color-orb').style.backgroundColor = col;
+            document.getElementById('result-color-orb').style.boxShadow = `0 0 15px ${col}`;
+
+            updateTasbihUI();
+
+            const m = document.getElementById('report-modal');
+            const c = document.getElementById('modal-content');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
+        }
+
+        function closeModal() {
+            const m = document.getElementById('report-modal');
+            const c = document.getElementById('modal-content');
+            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
+            setTimeout(() => m.classList.add('hidden'), 500);
+        }
+
+        // --- TASBIH LOGIC ---
+        function incrementTasbih() {
+            if (STATE.tasbihCount < STATE.currentWird.target) {
+                STATE.tasbihCount++;
+                updateTasbihUI();
+            }
+            if (STATE.tasbihCount === STATE.currentWird.target) {
+                document.getElementById('dhikr-text').style.color = "#2ECC71"; // Green success
+            }
+        }
+
+        function updateTasbihUI() {
+            document.getElementById('tasbih-count').innerText = STATE.tasbihCount;
+            const progress = (STATE.tasbihCount / STATE.currentWird.target) * 283; 
+            document.getElementById('tasbih-progress').style.strokeDashoffset = 283 - progress;
+        }
+
+        // GSAP
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from("#hero h1", { opacity: 0, y: 50, duration: 1.5, ease: "power3.out" });
+        gsap.from("#hero p", { opacity: 0, y: 30, duration: 1.5, delay: 0.2, ease: "power3.out" });
+        gsap.utils.toArray('.glass-card').forEach(card => {
+            gsap.from(card, { scrollTrigger: { trigger: card, start: "top 85%" }, opacity: 0, y: 30, duration: 0.8, ease: "power2.out" });
+        });
+
     </script>
 </body>
 </html>
